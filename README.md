@@ -40,6 +40,29 @@
 /plugin install doc-maintainer@smite-marketplace
 ```
 
+### 🗑️ Uninstallation
+
+```bash
+# Uninstall all SMITE agents
+/plugin uninstall smite-initializer
+/plugin uninstall smite-analyst
+/plugin uninstall smite-architect
+/plugin uninstall smite-economist
+/plugin uninstall smite-aura
+/plugin uninstall smite-constructor
+/plugin uninstall smite-gatekeeper
+/plugin uninstall smite-handover
+/plugin uninstall smite-surgeon
+/plugin uninstall smite-orchestrator
+
+# Uninstall quality assurance plugins
+/plugin uninstall linter-sentinel
+/plugin uninstall doc-maintainer
+
+# Remove marketplace (optional)
+/plugin marketplace remove smite-marketplace
+```
+
 ---
 
 ## 📦 Available Plugins
