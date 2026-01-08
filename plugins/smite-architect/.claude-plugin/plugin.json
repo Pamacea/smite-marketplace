@@ -2,6 +2,7 @@
   "name": "smite-architect",
   "description": "SMITE Architect - Software architecture and system design agent",
   "version": "1.0.0",
-  "author": "Pamacea",
-  "category": "development"
+  "author": {
+    "name": "Pamacea"
+  }
 }

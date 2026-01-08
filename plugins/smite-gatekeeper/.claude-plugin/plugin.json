@@ -2,6 +2,7 @@
   "name": "smite-gatekeeper",
   "description": "SMITE Gatekeeper - Code review and quality assurance agent",
   "version": "1.0.0",
-  "author": "Pamacea",
-  "category": "development"
+  "author": {
+    "name": "Pamacea"
+  }
 }

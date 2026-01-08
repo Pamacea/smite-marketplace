@@ -2,6 +2,7 @@
   "name": "doc-maintainer",
   "description": "Doc Maintainer - Automatically synchronize documentation with code changes",
   "version": "1.0.0",
-  "author": "Pamacea",
-  "category": "documentation"
+  "author": {
+    "name": "Pamacea"
+  }
 }

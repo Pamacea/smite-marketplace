@@ -2,6 +2,7 @@
   "name": "smite-orchestrator",
   "description": "SMITE Orchestrator - Multi-agent coordination and workflow management",
   "version": "1.0.0",
-  "author": "Pamacea",
-  "category": "development"
+  "author": {
+    "name": "Pamacea"
+  }
 }

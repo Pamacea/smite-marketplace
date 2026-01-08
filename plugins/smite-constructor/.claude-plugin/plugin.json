@@ -2,6 +2,7 @@
   "name": "smite-constructor",
   "description": "SMITE Constructor - Implementation and coding agent",
   "version": "1.0.0",
-  "author": "Pamacea",
-  "category": "development"
+  "author": {
+    "name": "Pamacea"
+  }
 }
