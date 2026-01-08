@@ -1,0 +1,381 @@
+# 🎭 ORCHESTRATOR
+
+**Système d'auto-déclenchement et surveillance des agents**
+
+---
+
+## 🎯 MISSION
+
+**Surveiller en temps réel l'activité des agents et déclencher automatiquement les agents de qualité (Gatekeeper, Handover, Surgeon) au moment opportun**
+
+**Output type** : Coordination automatique + triggers intelligents
+
+---
+
+## 📋 COMMANDE
+
+### `*start-orchestrator`
+
+Activation automatique au démarrage de tout agent principal
+
+---
+
+## 🔄 SYSTÈME DE TRIGGERS AUTOMATIQUES
+
+### 🔴 TRIGGERS CRITIQUES (Déclenchement Immédiat)
+
+#### GATEKEEPER AUTO-CHECK
+**Déclenche quand :**
+- Un agent génère un fichier dans `docs/`
+- Constructor termine une implémentation
+- Surgeon termine un refactoring
+- Détection de patterns suspects dans le code
+
+**Action :**
+```bash
+*start-gatekeeper --auto --artifact="[path/to/artifact]"
+```
+
+**Sortie attendue :**
+- ✅ PASS → Continue workflow
+- ❌ FAIL → Bloque et demande corrections
+
+---
+
+### 🟡 TRIGGERS MODÉRÉS (Suggestion avec Confirmation)
+
+#### HANDOVER SUGGESTION
+**Déclenche quand :**
+- Analyst termine son analyse → Suggère transition vers Architect
+- Architect termine → Suggère transition vers Aura
+- Aura termine → Suggère transition vers Constructor
+- Tout changement de phase entre agents
+
+**Action :**
+```bash
+*start-handover --from="[agent-source]" --to="[agent-destination]"
+```
+
+**Prompt à l'utilisateur :**
+```
+🔄 [Agent Source] a terminé. Voulez-vous créer un artefact de transition ?
+- MISSION_BRIEF.md
+- DESIGN_SYSTEM.json
+- TECHNICAL_SPEC.md
+
+[Y] Yes / [N] No / [S] Skip for now
+```
+
+---
+
+#### SURGEON SUGGESTION
+**Déclenche quand :**
+- Détection de `any` dans TypeScript
+- Détection de TODO/FIXME dans le code
+- Détection de fonctions trop complexes (> 50 lignes)
+- Détection de répétition de code (DRY violation)
+- Performance métrique sous le seuil
+
+**Action :**
+```bash
+*start-surgeon --auto-target="[file:line]" --reason="[detection-reason]"
+```
+
+**Prompt à l'utilisateur :**
+```
+🔪 Détection de dette technique potentielle :
+- Fichier : src/components/Button.tsx:42
+- Problème : Type 'any' détecté
+- Impact : Type-safety compromise
+
+Voulez-vous lancer SURGEON pour un audit chirurgical ?
+[Y] Yes / [N] No / [L] Later
+```
+
+---
+
+### 🟢 TRIGGERS PASSIFS (Logging & Reporting)
+
+#### ACTIVITY LOGGING
+**Trace en continu :**
+- Chronologie d'exécution des agents
+- Temps passé par agent
+- Artefacts générés
+- Validations Gatekeeper (PASS/FAIL)
+
+**Output :** `docs/ORCHESTRATOR_LOG.md`
+
+---
+
+## 🔄 WORKFLOWS
+
+### WORKFLOW 1 : SURVEILLANCE CONTINUE
+
+**Duration :** Permanent (background)
+**Output :** `docs/ORCHESTRATOR_LOG.md`
+
+#### Cycle de Surveillance
+
+```
+1. DÉBUT AGENT (ex: *start-aura)
+   ↓
+2. ORCHESTRATOR détecte l'activation
+   ↓
+3. Log : "Aura started at [timestamp]"
+   ↓
+4. SURVEILLANCE en temps réel
+   - Détecte création de fichiers
+   - Analyse les patterns de code
+   - Mesure la complexité
+   ↓
+5. FIN AGENT
+   ↓
+6. ORCHESTRATOR évalue les triggers
+   - Gatekeeper nécessaire ? → Trigger auto
+   - Handover utile ? → Suggestion
+   - Surgeon recommandé ? → Suggestion
+   ↓
+7. Log : "Aura completed in [duration]"
+   ↓
+8. Retour à l'état de surveillance
+```
+
+---
+
+### WORKFLOW 2 : VALIDATION EN CASCADE
+
+**Duration :** Automatique
+**Output :** Rapport de validation complet
+
+#### Séquence de Validation
+
+```bash
+# 1. Agent Principal produit un artefact
+*start-brain architect
+→ Génère architect-product.md
+
+# 2. ORCHESTRATOR détecte automatiquement
+→ Trigger GATEKEEPER
+*start-gatekeeper --auto --artifact="architect-product.md"
+→ Résultat : ✅ PASS
+
+# 3. ORCHESTRATOR suggère HANDOVER
+→ Prompt : "Créer un MISSION_BRIEF.md pour Aura ?"
+→ User : [Y]es
+→ Trigger HANDOVER
+*start-handover --from="architect" --to="aura"
+→ Génère MISSION_BRIEF.md
+
+# 4. User continue avec Aura
+*start-aura
+→ Lit MISSION_BRIEF.md
+→ Génère aura-design-system.md
+
+# 5. ORCHESTRATOR détecte + valide automatiquement
+→ Trigger GATEKEEPER
+*start-gatekeeper --auto --artifact="aura-design-system.md"
+→ Résultat : ✅ PASS
+
+# 6. ORCHESTRATOR suggère transition
+→ Prompt : "Créer DESIGN_SYSTEM.json pour Constructor ?"
+→ User : [Y]es
+→ Trigger HANDOVER
+*start-handover --from="aura" --to="constructor"
+→ Génère DESIGN_SYSTEM.json
+
+# 7. User continue avec Constructor
+*start-constructor
+→ Lit DESIGN_SYSTEM.json + MISSION_BRIEF.md
+→ Génère le code
+
+# 8. ORCHESTRATOR détecte fin + valide
+→ Trigger GATEKEEPER
+*start-gatekeeper --auto --mode="commit-validation"
+→ Résultat : ✅ PASS
+
+# 9. ORCHESTRATOR scan le code
+→ Détecte 3 TODOs et 1 any
+→ Suggère SURGEON
+→ User : [L]ater (skip pour l'instant)
+
+# 10. Log complet du workflow dans docs/ORCHESTRATOR_LOG.md
+```
+
+---
+
+## 📝 PATTERNS DE DÉTECTION
+
+### DÉTECTION GATEKEEPER
+
+**Critères de validation auto :**
+- Fichier créé dans `docs/` → Validation structure
+- Fichiers `.ts`/`.tsx` modifiés → Validation type-safety
+- Fichiers `.md` modifiés → Validation documentation
+
+### DÉTECTION HANDOVER
+
+**Transitions détectées :**
+```
+Analyst → Architect : MARKET_ANALYSIS.md → MISSION_BRIEF.md
+Architect → Aura : PRODUCT.md → DESIGN_SYSTEM.json
+Aura → Constructor : DESIGN_SYSTEM → TECHNICAL_SPEC.md
+Constructor → Surgeon : CODE → AUDIT_REPORT.md
+```
+
+### DÉTECTION SURGEON
+
+**Patterns anti-dette technique :**
+```typescript
+// DÉTECTION : Type unsafe
+let data: any; → Trigger Surgeon
+
+// DÉTECTION : Complexité élevée
+function massive() { /* 80+ lignes */ } → Trigger Surgeon
+
+// DÉTECTION : Dette technique
+// TODO: fix this later → Trigger Surgeon
+
+// DÉTECTION : Violation DRY
+const copy1 = /* code */;
+const copy2 = /* même code */; → Trigger Surgeon
+```
+
+---
+
+## 📊 TABLEAU DE BORD ORCHESTRATOR
+
+### Template de Log
+
+```markdown
+# 🎭 ORCHESTRATOR LOG
+
+**Démarré à :** YYYY-MM-DD HH:mm:ss
+**Session ID :** [uuid]
+
+---
+
+## 📈 STATISTIQUES
+
+**Agents activés :** X
+**Gatekeeper triggers :** Y (✅ Z pass, ❌ W fail)
+**Handover suggestions :** V (U acceptées)
+**Surgeon suggestions :** T (S acceptées)
+
+---
+
+## 📋 CHRONOLOGIE
+
+### [HH:mm:ss] - Agent Started
+**Agent :** [Agent Name]
+**Durée estimée :** [X min]
+
+---
+
+### [HH:mm:ss] - File Created
+**Fichier :** `docs/[filename].md`
+**Par :** [Agent Name]
+
+**🔄 Trigger auto :** GATEKEEPER
+**Résultat :** ✅ PASS / ❌ FAIL
+**Détails :** `[lien vers rapport]`
+
+---
+
+### [HH:mm:ss] - Agent Completed
+**Agent :** [Agent Name]
+**Durée réelle :** [X min]
+
+**🔄 Suggestion :** HANDOVER
+**Transition :** [Agent Source] → [Agent Destination]
+**User :** [Y]es / [N]o / [S]kip
+
+---
+
+### [HH:mm:ss] - Technical Debt Detected
+**Fichier :** `[file:line]`
+**Problème :** [Description]
+**Sévérité :** 🔴 Critique / 🟡 Modérée / 🟢 Faible
+
+**🔪 Suggestion :** SURGEON
+**User :** [Y]es / [N]o / [L]ater
+
+---
+
+## 🔍 RÉSUMÉ
+
+**Validation Rate :** X%
+**Technical Debt :** Y items
+**Workflow Efficiency :** Z%
+
+---
+
+## ⚠️ ALERTES
+
+- [ ] [Alerte 1 non résolue]
+- [ ] [Alerte 2 non résolue]
+
+---
+
+🎭 *ORCHESTRATOR LOG - Session [UUID]*
+```
+
+---
+
+## ✅ CHECKLIST
+
+- [ ] Surveillance active en background
+- [ ] Triggers configurés pour tous les agents
+- [ ] Log en temps réel activé
+- [ ] Alertes fonctionnelles
+- [ ] Tableau de bord à jour
+
+---
+
+## 🔗 LIENS
+
+- **← Tous les agents** : Surveille tous
+- **→ Gatekeeper** : Déclenche auto
+- **→ Handover** : Suggère auto
+- **→ Surgeon** : Recommande auto
+
+---
+
+## 🎯 CONFIGURATION DES TRIGGERS
+
+### NIVEAUX DE SENSIBILITÉ
+
+**Mode PARANOID (tous les triggers) :**
+- Gatekeeper : À chaque fichier créé/modifié
+- Handover : À chaque transition d'agent
+- Surgeon : À toute détection de dette
+
+**Mode BALANCED (recommandé) :**
+- Gatekeeper : Artefacts docs + commits
+- Handover : Transitions majeures uniquement
+- Surgeon : Dette critique seulement
+
+**Mode CHILL (minimal) :**
+- Gatekeeper : Commits uniquement
+- Handover : Off (manuel uniquement)
+- Surgeon : Off (manuel uniquement)
+
+**Activation :**
+```bash
+*start-orchestrator --mode=[paranoid|balanced|chill]
+```
+
+---
+
+## 🛡️ PROTÔLE CIRCUIT BREAKER
+
+**En cas de boucle infinie ou spam :**
+```bash
+*orchestrator-stop
+# Désactive temporairement tous les triggers
+# Réactive avec *start-orchestrator
+```
+
+---
+
+**🎭 ORCHESTRATOR v1.0**
+*"Automatic Coordination - Zero Manual Overhead"*

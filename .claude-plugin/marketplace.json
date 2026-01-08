@@ -1,0 +1,119 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "smite-marketplace",
+  "version": "1.0.0",
+  "description": "SMITE Marketplace - Zero-debt engineering agents and specialized development tools",
+  "owner": {
+    "name": "Pamacea"
+  },
+  "plugins": [
+    {
+      "name": "smite-initializer",
+      "source": "./plugins/smite-initializer",
+      "description": "Project initialization and technical stack definition agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-analyst",
+      "source": "./plugins/smite-analyst",
+      "description": "Code analysis and technical debt detection agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-architect",
+      "source": "./plugins/smite-architect",
+      "description": "Software architecture and system design agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-economist",
+      "source": "./plugins/smite-economist",
+      "description": "Technical debt optimization and cost management agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-aura",
+      "source": "./plugins/smite-aura",
+      "description": "Design system and UI/UX component creation agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-constructor",
+      "source": "./plugins/smite-constructor",
+      "description": "Implementation and coding agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-gatekeeper",
+      "source": "./plugins/smite-gatekeeper",
+      "description": "Code review and quality assurance agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-handover",
+      "source": "./plugins/smite-handover",
+      "description": "Documentation and knowledge transfer agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-surgeon",
+      "source": "./plugins/smite-surgeon",
+      "description": "Surgical code refactoring and optimization agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-orchestrator",
+      "source": "./plugins/smite-orchestrator",
+      "description": "Multi-agent coordination and workflow management",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "linter-sentinel",
+      "source": "./plugins/linter-sentinel",
+      "description": "Auto-fix ESLint, TypeScript, and Prettier violations with surgical precision",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "quality"
+    },
+    {
+      "name": "doc-maintainer",
+      "source": "./plugins/doc-maintainer",
+      "description": "Automatically synchronize documentation with code changes",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "documentation"
+    }
+  ]
+}
