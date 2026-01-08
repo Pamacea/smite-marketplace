@@ -1,4 +1,4 @@
-# 🏪 SMITE Marketplace
+# 🏪 SMITE for Claude Code
 
 **Zero-debt engineering agents and specialized development tools for Claude Code**
 
@@ -198,8 +198,6 @@ Edit: agent/configs/doc-maintainer.json
 
 ## 📚 Resources
 
-- **SMITE Framework**: [https://github.com/Pamacea/smite](https://github.com/Pamacea/smite)
-- **Smite-Code**: [https://github.com/Pamacea/smite-code](https://github.com/Pamacea/smite-code)
 - **Claude Code**: [https://claude.com/claude-code](https://claude.com/claude-code)
 
 ---
