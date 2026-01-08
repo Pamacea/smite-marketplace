@@ -13,7 +13,12 @@
       "mcp__web-reader__webReader",
       "Bash(del:*)",
       "Bash(npm install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(/plugin install:*)",
+      "Bash(/plugin install smite-architect@smite-marketplace)",
+      "Bash(/plugin install smite-handover@smite-marketplace)",
+      "Bash(/plugin:*)",
+      "Bash(bash:*)"
     ]
   }
 }
