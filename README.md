@@ -27,13 +27,13 @@
 /plugin install smite-initializer@smite-marketplace
 /plugin install smite-explorer@smite-marketplace
 /plugin install smite-strategist@smite-marketplace
-/plugin install smite-architect@smite-marketplace
 /plugin install smite-aura@smite-marketplace
 /plugin install smite-constructor@smite-marketplace
 /plugin install smite-gatekeeper@smite-marketplace
 /plugin install smite-handover@smite-marketplace
 /plugin install smite-surgeon@smite-marketplace
 /plugin install smite-orchestrator@smite-marketplace
+/plugin install smite-brainstorm@smite-marketplace
 
 # Install quality assurance plugins
 /plugin install linter-sentinel@smite-marketplace
@@ -47,13 +47,13 @@
 /plugin uninstall smite-initializer
 /plugin uninstall smite-explorer
 /plugin uninstall smite-strategist
-/plugin uninstall smite-architect
 /plugin uninstall smite-aura
 /plugin uninstall smite-constructor
 /plugin uninstall smite-gatekeeper
 /plugin uninstall smite-handover
 /plugin uninstall smite-surgeon
 /plugin uninstall smite-orchestrator
+/plugin uninstall smite-brainstorm
 
 # Uninstall quality assurance plugins
 /plugin uninstall linter-sentinel
@@ -73,14 +73,14 @@
 |--------|-------------|----------|---------|
 | **smite-initializer** | Project initialization and technical stack definition | Development | `/smite-init` |
 | **smite-explorer** | Codebase exploration, dependency mapping & pattern discovery | Development | `/smite:explorer` |
-| **smite-strategist** | Business strategy, market analysis & revenue optimization (merged analyst+economist) | Development | `/smite:strategist` |
-| **smite-architect** | Software architecture and system design | Development | `/smite-architect` |
+| **smite-strategist** | Business strategy, market analysis & revenue optimization | Development | `/smite:strategist` |
 | **smite-aura** | Design system and UI/UX component creation | Development | `/smite-aura` |
-| **smite-constructor** | Implementation and coding | Development | `/smite-constructor` |
-| **smite-gatekeeper** | Code review and quality assurance | Development | `/smite-gatekeeper` |
+| **smite-constructor** | Implementation with tech specialization & design mode | Development | `/smite-constructor --tech=[nextjs\|rust\|python]` |
+| **smite-gatekeeper** | Code review, QA, testing & performance validation | Development | `/smite-gatekeeper --mode=[test\|coverage\|perf\|security]` |
 | **smite-handover** | Documentation and knowledge transfer | Development | `/smite-handover` |
 | **smite-surgeon** | Surgical code refactoring and optimization | Development | `/smite-surgeon` |
-| **smite-orchestrator** | Auto-orchestration, workflow tracking & technical debt detection | Development | `/smite-orchestrator` |
+| **smite-orchestrator** | Auto-orchestration, custom workflows & technical debt detection | Development | `/smite-orchestrator --workflow=custom` |
+| **smite-brainstorm** | Creative thinking, ideation & problem-solving partner | Development | `/smite:brainstorm --mode=[explore\|plan\|solve]` |
 
 ### 🔍 Quality & Documentation Plugins
 
@@ -98,10 +98,32 @@ The **smite-orchestrator** plugin provides intelligent workflow coordination thr
 ### Features
 
 - **Workflow State Tracking**: Automatically tracks agent execution and artifacts
+- **Custom Workflows**: Build your own agent sequences with `--workflow=custom`
 - **Technical Debt Detection**: Scans code for anti-patterns (any types, console logs, TODOs, etc.)
 - **Smart Suggestions**: Suggests next agent in workflow based on current state
 - **Session Persistence**: Maintains workflow state across sessions
 - **Non-Intrusive**: Provides suggestions without forcing actions
+
+### Custom Workflow Mode
+
+Create personalized agent sequences:
+
+```bash
+# Quick feature development
+/smite-orchestrator --workflow=custom --agents=explorer,constructor,gatekeeper
+
+# Business focus
+/smite-orchestrator --workflow=custom --agents=strategist,brainstorm,handover
+
+# Full refactoring
+/smite-orchestrator --workflow=custom --agents=explorer,surgeon,constructor,gatekeeper
+```
+
+### Standard Workflow Order
+
+```
+initializer → explorer → strategist → aura → constructor → gatekeeper → handover
+```
 
 ### How It Works
 
@@ -120,14 +142,6 @@ The orchestrator creates these files automatically:
 - `.smite/suggestions/next-action.md` - Next agent recommendation
 - `.smite/suggestions/fix-surgeon.md` - Technical debt alerts
 - `docs/MISSION_BRIEF_{AGENT}.md` - Handoff documents between agents
-
-### Workflow Order
-
-```
-initializer → explorer → strategist → architect → aura → constructor → gatekeeper → handover
-```
-
-**Note**: The `smite-strategist` agent merges the capabilities of the former `smite-analyst` and `smite-economist` agents.
 
 ### Performance
 
@@ -156,17 +170,72 @@ initializer → explorer → strategist → architect → aura → constructor �
 /smite:strategist --workflow=business-model
 
 # Orchestrator tracks artifacts and suggests:
-# "Next: /smite-architect"
+# "Next: /smite-aura"
 
 # 4. Follow the workflow
-/smite-architect
 /smite-aura
-/smite-constructor
-/smite-gatekeeper
+/smite-constructor --tech=nextjs
+/smite-gatekeeper --mode=test
 /smite-handover
 
 # Technical debt detected? Orchestrator suggests:
 # "⚠️ Technical debt detected - run /smite-surgeon"
+```
+
+### Tech-Specialized Development
+
+```bash
+# Next.js full-stack development
+/smite-constructor --tech=nextjs
+  → React 18, TypeScript, Server Components, Prisma, PostgreSQL
+
+# Rust systems programming
+/smite-constructor --tech=rust
+  → Cargo, Tokio, Sqlx, async/await, zero-copy patterns
+
+# Python backend
+/smite-constructor --tech=python
+  → FastAPI, SQLAlchemy 2.0, Pydantic, asyncio
+
+# Design implementation
+/smite-constructor --design --source="figma:file-id"
+  → Figma to code, SVG components, design tokens
+```
+
+### Quality Assurance & Testing
+
+```bash
+# Generate test suite
+/smite-gatekeeper --mode=test --tech=nextjs
+  → Unit tests, integration tests, E2E (Playwright)
+
+# Analyze coverage gaps
+/smite-gatekeeper --mode=coverage
+  → Identify untested code, prioritize tests
+
+# Performance testing
+/smite-gatekeeper --mode=performance
+  → Lighthouse CI, Web Vitals, database queries
+
+# Security audit
+/smite-gatekeeper --mode=security
+  → OWASP Top 10, security headers, vulnerability scan
+```
+
+### Creative Problem-Solving
+
+```bash
+# Explore ideas deeply
+/smite:brainstorm --mode=explore --topic="microservices architecture"
+
+# Create implementation plan
+/smite:brainstorm --mode=plan --topic="implement authentication system"
+
+# Solve specific problem
+/smite:brainstorm --mode=solve --topic="performance bottleneck"
+
+# Configure tools
+/smite:brainstorm --mode=configure --topic="setup ESLint"
 ```
 
 ### Individual Plugin Installation
@@ -177,8 +246,17 @@ Install only what you need:
 # For new projects
 /plugin install smite-initializer@smite-marketplace
 
-# For architecture decisions
-/plugin install smite-architect@smite-marketplace
+# For codebase exploration
+/plugin install smite-explorer@smite-marketplace
+
+# For tech-specialized implementation
+/plugin install smite-constructor@smite-marketplace
+
+# For quality assurance & testing
+/plugin install smite-gatekeeper@smite-marketplace
+
+# For creative thinking & planning
+/plugin install smite-brainstorm@smite-marketplace
 
 # For code quality
 /plugin install linter-sentinel@smite-marketplace
@@ -231,18 +309,19 @@ smite-marketplace/
 │   │   └── skills/initializer.md
 │   │
 │   ├── smite-explorer/               # Codebase exploration agent
-│   ├── smite-strategist/             # Business strategy agent (merged analyst+economist)
-│   ├── smite-architect/              # Architecture agent
+│   ├── smite-strategist/             # Business strategy agent
 │   ├── smite-aura/                   # Design system agent
-│   ├── smite-constructor/            # Implementation agent
-│   ├── smite-gatekeeper/             # Code review agent
+│   ├── smite-constructor/            # Implementation agent (with --tech, --design modes)
+│   ├── smite-gatekeeper/             # Code review & QA agent (with --mode test/coverage/perf/security)
 │   ├── smite-handover/               # Documentation agent
 │   ├── smite-surgeon/                # Refactoring agent
-│   ├── smite-orchestrator/           # Auto-orchestration system
+│   ├── smite-orchestrator/           # Auto-orchestration system (with custom workflows)
 │   │   ├── scripts/                   # TypeScript source
 │   │   ├── dist/                      # Compiled JavaScript
 │   │   ├── tsconfig.json              # TypeScript config
 │   │   └── package.json               # Build scripts
+│   │
+│   ├── smite-brainstorm/             # Creative thinking & problem-solving agent
 │   │
 │   ├── linter-sentinel/              # Auto-fix linting agent
 │   │   ├── .claude-plugin/plugin.json
@@ -273,15 +352,19 @@ smite-marketplace/
 ## 🎯 Categories
 
 ### Development (SMITE Agents)
-- Specialized agents for each phase of software development
-- From initialization to deployment
+- **10 specialized agents** covering all development phases
+- **Tech specialization modes**: Next.js, Rust, Python, Go
+- **Design implementation mode**: Figma to code, SVG components
+- **Custom workflows**: Build your own agent sequences
 - **Auto-orchestrated workflow** with intelligent suggestions
-- Automatic technical debt detection and tracking
+- **Automatic technical debt detection** and tracking
 
 ### Quality
+- **Comprehensive testing**: Unit, integration, E2E generation
+- **Performance analysis**: Lighthouse, Web Vitals, database queries
+- **Security audits**: OWASP Top 10, vulnerability scanning
 - Automated linting and type-safety enforcement
 - Zero-debt code quality maintenance
-- Real-time violation detection and fixing
 
 ### Documentation
 - Automatic documentation synchronization
@@ -334,9 +417,12 @@ Built by **Pamacea** for zero-debt engineering with Claude Code
 
 ---
 
-**SMITE Marketplace v1.1.0**
-*12 plugins available*
+**SMITE Marketplace v2.0.0**
+*13 plugins available*
+*10 specialized development agents*
+*Tech specialization modes (Next.js, Rust, Python)*
+*Custom workflows & design implementation*
+*Comprehensive QA (test, coverage, performance, security)*
 *Modular installation*
 *Zero-debt development*
 *Auto-orchestration with TypeScript*
-*<0.1% performance overhead*
