@@ -1,0 +1,17 @@
+{
+  "description": "SMITE Surgeon - Surgical code refactoring and optimization hooks",
+  "hooks": {
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node plugins/smite-orchestrator/dist/agent-complete.js surgeon",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
