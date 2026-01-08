@@ -18,7 +18,10 @@
       "Bash(/plugin install smite-architect@smite-marketplace)",
       "Bash(/plugin install smite-handover@smite-marketplace)",
       "Bash(/plugin:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(ls:*)",
+      "Bash(git config:*)",
+      "Skill(smite-orchestrator:smite:orchestrator)"
     ]
   }
 }

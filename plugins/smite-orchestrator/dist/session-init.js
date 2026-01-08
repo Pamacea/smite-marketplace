@@ -80,8 +80,8 @@ function createSessionInfo(projectDir) {
 ## Workflow Progress
 
 \`\`\`
-initializer → analyst → architect → economist → aura → constructor → gatekeeper → handover
-     [ ]           [ ]         [ ]          [ ]        [ ]       [ ]           [ ]         [ ]
+initializer → explorer → strategist → architect → aura → constructor → gatekeeper → handover
+     [ ]           [ ]          [ ]         [ ]        [ ]       [ ]           [ ]         [ ]
 \`\`\`
 
 ## Artifacts

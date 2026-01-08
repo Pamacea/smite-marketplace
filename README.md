@@ -25,9 +25,9 @@
 ```bash
 # Install all SMITE agents (10 specialized agents)
 /plugin install smite-initializer@smite-marketplace
-/plugin install smite-analyst@smite-marketplace
+/plugin install smite-explorer@smite-marketplace
+/plugin install smite-strategist@smite-marketplace
 /plugin install smite-architect@smite-marketplace
-/plugin install smite-economist@smite-marketplace
 /plugin install smite-aura@smite-marketplace
 /plugin install smite-constructor@smite-marketplace
 /plugin install smite-gatekeeper@smite-marketplace
@@ -45,9 +45,9 @@
 ```bash
 # Uninstall all SMITE agents
 /plugin uninstall smite-initializer
-/plugin uninstall smite-analyst
+/plugin uninstall smite-explorer
+/plugin uninstall smite-strategist
 /plugin uninstall smite-architect
-/plugin uninstall smite-economist
 /plugin uninstall smite-aura
 /plugin uninstall smite-constructor
 /plugin uninstall smite-gatekeeper
@@ -72,9 +72,9 @@
 | Plugin | Description | Category | Command |
 |--------|-------------|----------|---------|
 | **smite-initializer** | Project initialization and technical stack definition | Development | `/smite-init` |
-| **smite-analyst** | Code analysis and technical debt detection | Development | `/smite-analyst` |
+| **smite-explorer** | Codebase exploration, dependency mapping & pattern discovery | Development | `/smite:explorer` |
+| **smite-strategist** | Business strategy, market analysis & revenue optimization (merged analyst+economist) | Development | `/smite:strategist` |
 | **smite-architect** | Software architecture and system design | Development | `/smite-architect` |
-| **smite-economist** | Business model, profitability & revenue strategy | Development | `/smite-economist` |
 | **smite-aura** | Design system and UI/UX component creation | Development | `/smite-aura` |
 | **smite-constructor** | Implementation and coding | Development | `/smite-constructor` |
 | **smite-gatekeeper** | Code review and quality assurance | Development | `/smite-gatekeeper` |
@@ -124,8 +124,10 @@ The orchestrator creates these files automatically:
 ### Workflow Order
 
 ```
-initializer → analyst → architect → economist → aura → constructor → gatekeeper → handover
+initializer → explorer → strategist → architect → aura → constructor → gatekeeper → handover
 ```
+
+**Note**: The `smite-strategist` agent merges the capabilities of the former `smite-analyst` and `smite-economist` agents.
 
 ### Performance
 
@@ -144,17 +146,20 @@ initializer → analyst → architect → economist → aura → constructor →
 /smite-init
 
 # After completion, orchestrator suggests next agent:
-# "Next: /smite-analyst"
+# "Next: /smite:explorer"
 
-# 2. Continue with suggested agent
-/smite-analyst
+# 2. Explore the codebase (if applicable)
+/smite:explorer --task=map-architecture
+
+# 3. Continue with business strategy
+/smite:strategist --workflow=market-analysis
+/smite:strategist --workflow=business-model
 
 # Orchestrator tracks artifacts and suggests:
 # "Next: /smite-architect"
 
-# 3. Follow the workflow
+# 4. Follow the workflow
 /smite-architect
-/smite-economist
 /smite-aura
 /smite-constructor
 /smite-gatekeeper
@@ -225,9 +230,9 @@ smite-marketplace/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/initializer.md
 │   │
-│   ├── smite-analyst/                # Code analysis agent
+│   ├── smite-explorer/               # Codebase exploration agent
+│   ├── smite-strategist/             # Business strategy agent (merged analyst+economist)
 │   ├── smite-architect/              # Architecture agent
-│   ├── smite-economist/              # Technical debt management
 │   ├── smite-aura/                   # Design system agent
 │   ├── smite-constructor/            # Implementation agent
 │   ├── smite-gatekeeper/             # Code review agent

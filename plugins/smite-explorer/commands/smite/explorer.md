@@ -1,0 +1,29 @@
+---
+description: Codebase exploration, dependency mapping & pattern discovery
+argument-hint: [--task=find-function|find-component|find-bug|find-deps|map-architecture|analyze-impacts] [--scope=module|full] [--target=pattern]
+---
+
+Use the smite-explorer skill to explore and understand the codebase structure.
+
+**Tasks:**
+- `find-function` - Locate specific functions and their usage across the codebase
+- `find-component` - Find React/Vue/Angular components and their relationships
+- `find-bug` - Investigate potential bugs or error patterns
+- `find-deps` - Map dependencies and imports between modules
+- `map-architecture` - Create a visual map of the codebase architecture
+- `analyze-impacts` - Analyze impact of changes (blast radius)
+
+**Scopes:**
+- `module` - Explore specific module or directory
+- `full` - Explore entire codebase
+
+**Output:**
+- `docs/explorer-findings.md` - Exploration results
+- `docs/explorer-dependencies.md` - Dependency mapping
+- `docs/explorer-architecture.md` - Architecture overview
+
+**Usage:**
+/smite:explorer --task=find-function --target="getUserData"
+/smite:explorer --task=find-component --scope=module
+/smite:explorer --task=map-architecture
+/smite:explorer --task=find-bug --target="memory leak"

@@ -46,7 +46,8 @@ Activation automatique au démarrage de tout agent principal
 
 #### HANDOVER SUGGESTION
 **Déclenche quand :**
-- Analyst termine son analyse → Suggère transition vers Architect
+- Strategist termine son analyse → Suggère transition vers Architect
+- Explorer termine son exploration → Suggère transition vers Architect/Surgeon
 - Architect termine → Suggère transition vers Aura
 - Aura termine → Suggère transition vers Constructor
 - Tout changement de phase entre agents
@@ -216,7 +217,9 @@ Voulez-vous lancer SURGEON pour un audit chirurgical ?
 
 **Transitions détectées :**
 ```
-Analyst → Architect : MARKET_ANALYSIS.md → MISSION_BRIEF.md
+Strategist → Architect : MARKET_ANALYSIS.md → MISSION_BRIEF.md
+Explorer → Architect : CODEBASE_MAP.md → TECHNICAL_CONTEXT.md
+Explorer → Surgeon : DEPENDENCIES.md → REFACTORING_TARGETS.md
 Architect → Aura : PRODUCT.md → DESIGN_SYSTEM.json
 Aura → Constructor : DESIGN_SYSTEM → TECHNICAL_SPEC.md
 Constructor → Surgeon : CODE → AUDIT_REPORT.md

@@ -19,17 +19,17 @@ const AGENT_INFO = {
         description: 'Initialize project with technical stack',
         deliverables: 'Technical stack definition, project structure, initial configuration'
     },
-    analyst: {
-        description: 'Analyze requirements and user needs',
-        deliverables: 'Market analysis, competitive landscape, user personas'
+    explorer: {
+        description: 'Explore codebase and map architecture',
+        deliverables: 'Codebase map, dependency graph, architecture overview, pattern analysis'
+    },
+    strategist: {
+        description: 'Business strategy, market analysis & revenue optimization',
+        deliverables: 'Market analysis, business model, pricing strategy, personas, financial projections'
     },
     architect: {
         description: 'Design system architecture',
         deliverables: 'Architecture diagrams, database schema, API specifications'
-    },
-    economist: {
-        description: 'Create business model and pricing strategy',
-        deliverables: 'Business plan, pricing tiers, revenue projections'
     },
     aura: {
         description: 'Create design system and UI components',
@@ -98,8 +98,8 @@ function generateReason(state, nextAgent) {
  * Generate workflow progress string
  */
 function generateWorkflowProgress(calledAgents) {
-    const agents = ['initializer', 'analyst', 'architect', 'economist', 'aura', 'constructor', 'gatekeeper', 'handover'];
-    let progress = 'initializer → analyst → architect → economist → aura → constructor → gatekeeper → handover\n';
+    const agents = ['initializer', 'explorer', 'strategist', 'architect', 'aura', 'constructor', 'gatekeeper', 'handover'];
+    let progress = 'initializer → explorer → strategist → architect → aura → constructor → gatekeeper → handover\n';
     agents.forEach(agent => {
         const called = calledAgents.includes(agent);
         progress += called ? ' [✓]' : ' [ ]';

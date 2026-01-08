@@ -17,9 +17,18 @@
       "category": "development"
     },
     {
-      "name": "smite-analyst",
-      "source": "./plugins/smite-analyst",
-      "description": "Code analysis and technical debt detection agent",
+      "name": "smite-explorer",
+      "source": "./plugins/smite-explorer",
+      "description": "Codebase exploration, dependency mapping & pattern discovery agent",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
+      "name": "smite-strategist",
+      "source": "./plugins/smite-strategist",
+      "description": "Business strategy, market analysis & revenue optimization agent (merged analyst+economist)",
       "author": {
         "name": "Pamacea"
       },
@@ -29,15 +38,6 @@
       "name": "smite-architect",
       "source": "./plugins/smite-architect",
       "description": "Software architecture and system design agent",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
-    },
-    {
-      "name": "smite-economist",
-      "source": "./plugins/smite-economist",
-      "description": "Technical debt optimization and cost management agent",
       "author": {
         "name": "Pamacea"
       },

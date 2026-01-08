@@ -62,9 +62,9 @@ const STATE_FILE = path.join(STATE_DIR, 'orchestrator-state.json');
 // SMITE Workflow Order
 const WORKFLOW_ORDER = [
     'initializer',
-    'analyst',
+    'explorer',
+    'strategist',
     'architect',
-    'economist',
     'aura',
     'constructor',
     'gatekeeper',
@@ -161,9 +161,9 @@ function addArtifact(artifactPath, projectDir = process.cwd()) {
 function determinePhase(agentName) {
     const phaseMap = {
         'initializer': 'init',
-        'analyst': 'analysis',
+        'explorer': 'exploration',
+        'strategist': 'strategy',
         'architect': 'design',
-        'economist': 'business',
         'aura': 'design-system',
         'constructor': 'implementation',
         'gatekeeper': 'review',
@@ -211,9 +211,9 @@ function getNext(projectDir = process.cwd()) {
 function suggestByPhase(state) {
     const phaseTransitions = {
         'init': 'initializer',
-        'analysis': 'architect',
-        'design': 'economist',
-        'business': 'aura',
+        'exploration': 'strategist',
+        'strategy': 'architect',
+        'design': 'aura',
         'design-system': 'constructor',
         'implementation': 'gatekeeper',
         'review': 'handover',

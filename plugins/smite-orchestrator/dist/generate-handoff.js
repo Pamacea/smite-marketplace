@@ -212,12 +212,20 @@ function generateChecklist(agent) {
             'Initialize documentation',
             'Create configuration files'
         ],
-        analyst: [
+        explorer: [
+            'Map codebase architecture',
+            'Identify dependencies',
+            'Find components and functions',
+            'Analyze patterns',
+            'Document code structure'
+        ],
+        strategist: [
             'Analyze market landscape',
             'Identify competitors',
             'Define user personas',
-            'Document requirements',
-            'Create market analysis report'
+            'Create business model',
+            'Define pricing strategy',
+            'Project financial scenarios'
         ],
         architect: [
             'Design system architecture',
@@ -225,13 +233,6 @@ function generateChecklist(agent) {
             'Specify API endpoints',
             'Create architecture diagrams',
             'Document technical decisions'
-        ],
-        economist: [
-            'Define business model',
-            'Create pricing strategy',
-            'Calculate unit economics',
-            'Project revenue scenarios',
-            'Analyze profitability'
         ],
         aura: [
             'Define design tokens',

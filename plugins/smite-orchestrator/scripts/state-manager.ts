@@ -25,9 +25,9 @@ const STATE_FILE = path.join(STATE_DIR, 'orchestrator-state.json');
 // SMITE Workflow Order
 const WORKFLOW_ORDER: AgentName[] = [
   'initializer',
-  'analyst',
+  'explorer',
+  'strategist',
   'architect',
-  'economist',
   'aura',
   'constructor',
   'gatekeeper',
@@ -37,9 +37,9 @@ const WORKFLOW_ORDER: AgentName[] = [
 // Type Definitions
 type AgentName =
   | 'initializer'
-  | 'analyst'
+  | 'explorer'
+  | 'strategist'
   | 'architect'
-  | 'economist'
   | 'aura'
   | 'constructor'
   | 'gatekeeper'
@@ -48,9 +48,9 @@ type AgentName =
 
 type WorkflowPhase =
   | 'init'
-  | 'analysis'
+  | 'exploration'
+  | 'strategy'
   | 'design'
-  | 'business'
   | 'design-system'
   | 'implementation'
   | 'review'
@@ -201,9 +201,9 @@ function addArtifact(artifactPath: string, projectDir: string = process.cwd()): 
 function determinePhase(agentName: AgentName): WorkflowPhase {
   const phaseMap: Record<AgentName, WorkflowPhase> = {
     'initializer': 'init',
-    'analyst': 'analysis',
+    'explorer': 'exploration',
+    'strategist': 'strategy',
     'architect': 'design',
-    'economist': 'business',
     'aura': 'design-system',
     'constructor': 'implementation',
     'gatekeeper': 'review',
@@ -262,9 +262,9 @@ function getNext(projectDir: string = process.cwd()): NextAgentResult | null {
 function suggestByPhase(state: OrchestratorState): NextAgentResult {
   const phaseTransitions: Record<WorkflowPhase, AgentName | null> = {
     'init': 'initializer',
-    'analysis': 'architect',
-    'design': 'economist',
-    'business': 'aura',
+    'exploration': 'strategist',
+    'strategy': 'architect',
+    'design': 'aura',
     'design-system': 'constructor',
     'implementation': 'gatekeeper',
     'review': 'handover',
