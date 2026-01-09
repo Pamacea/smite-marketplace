@@ -6,7 +6,5 @@
     "name": "Pamacea"
   },
   "commands": "./commands/",
-  "skills": {
-    "initializer": "./skills/initializer.md"
-  }
+  "skills": "./skills/"
 }

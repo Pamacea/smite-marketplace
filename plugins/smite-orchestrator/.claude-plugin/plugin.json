@@ -6,7 +6,5 @@
     "name": "Pamacea"
   },
   "commands": "./commands/",
-  "skills": {
-    "orchestrator": "./skills/orchestrator.md"
-  }
+  "skills": "./skills/"
 }

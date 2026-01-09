@@ -6,7 +6,5 @@
     "name": "Pamacea"
   },
   "commands": "./commands/",
-  "skills": {
-    "surgeon": "./skills/surgeon.md"
-  }
+  "skills": "./skills/"
 }
