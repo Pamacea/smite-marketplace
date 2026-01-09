@@ -22,7 +22,16 @@
       "Bash(ls:*)",
       "Bash(git config:*)",
       "Skill(smite-orchestrator:smite:orchestrator)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(findstr:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(while read dir)",
+      "Bash(do if [ -f \"C:\\\\Users\\\\Yanis\\\\Projects\\\\smite-marketplace\\\\plugins$dir\\\\agents$dir.task.md\" ])",
+      "Bash(then echo \"✅ $dir\")",
+      "Bash(else echo \"❌ $dir \\(missing\\)\")",
+      "Bash(fi:*)",
+      "Bash(done:*)",
+      "Bash(if exist \"plugins\\\\nul\" del \"plugins\\\\nul\")"
     ]
   }
 }

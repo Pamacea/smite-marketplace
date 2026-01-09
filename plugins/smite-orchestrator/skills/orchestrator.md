@@ -10,6 +10,17 @@
 
 **Output type** : Coordination automatique + triggers intelligents
 
+**IMPORTANT - Agent Invocation Protocol:**
+When launching smite agents, ALWAYS follow this pattern for proper "Running x Agents" display:
+
+```
+1. Print: "🚀 Running Agent [Name]..." before calling Skill
+2. Use: Skill tool with agent name
+3. Print: "✅ Agent [Name] completed" after completion
+```
+
+For multiple agents running in parallel, print all "🚀 Running Agent..." messages first, then launch all Skills in a single message block.
+
 ---
 
 ## 📋 COMMANDE
@@ -33,7 +44,8 @@ Activation automatique au démarrage de tout agent principal
 
 **Action :**
 ```bash
-*start-gatekeeper --auto --artifact="[path/to/artifact]"
+🚀 Running Agent Gatekeeper...
+[Then invoke Skill tool with: skill="smite-gatekeeper:smite:gatekeeper", args="--auto --artifact=..."]
 ```
 
 **Sortie attendue :**
@@ -54,7 +66,8 @@ Activation automatique au démarrage de tout agent principal
 
 **Action :**
 ```bash
-*start-handover --from="[agent-source]" --to="[agent-destination]"
+🚀 Running Agent Handover...
+[Then invoke Skill tool with: skill="smite-handover:smite:handover", args="--from=... --to=..."]
 ```
 
 **Prompt à l'utilisateur :**
@@ -79,7 +92,8 @@ Activation automatique au démarrage de tout agent principal
 
 **Action :**
 ```bash
-*start-surgeon --auto-target="[file:line]" --reason="[detection-reason]"
+🚀 Running Agent Surgeon...
+[Then invoke Skill tool with: skill="smite-surgeon:\smite:surgeon", args="--auto-target=... --reason=..."]
 ```
 
 **Prompt à l'utilisateur :**
@@ -105,6 +119,91 @@ Voulez-vous lancer SURGEON pour un audit chirurgical ?
 - Validations Gatekeeper (PASS/FAIL)
 
 **Output :** `docs/ORCHESTRATOR_LOG.md`
+
+---
+
+## 🔧 AGENT INVOCATION PATTERNS
+
+### Mode 1: Individual Execution (Skill Tool)
+
+**Use when:** Running single agents sequentially
+
+```text
+🚀 Running Agent Gatekeeper...
+[Skill tool call: smite-gatekeeper:smite:gatekeeper]
+✅ Agent Gatekeeper completed
+```
+
+### Mode 2: Parallel Execution (Task Tool) ⭐ **RECOMMENDED**
+
+**Use when:** Running multiple agents simultaneously with real-time tracking
+
+**Agent Files Location:** Each smite agent has a Task agent definition in `plugins/[agent-name]/agents/[agent].task.md`
+
+**Example - Parallel Validation:**
+```
+User request: "Validate and document this feature"
+
+🚀 Running 3 Agents in parallel...
+
+[Single message with 3 Task tool calls]:
+Task(subagent_type="general-purpose", prompt="Read plugins/smite-gatekeeper/agents/gatekeeper.task.md and execute with --artifact=...")
+Task(subagent_type="general-purpose", prompt="Read plugins/smite-surgeon/agents/surgeon.task.md and execute with --auto-target=...")
+Task(subagent_type="general-purpose", prompt="Read plugins/smite-handover/agents/handover.task.md and execute with --from=constructor --to=docs")
+
+✅ All 3 Agents completed
+```
+
+**Benefits of Task Tool:**
+- ✅ Native "Running x Agents" UI message
+- ✅ Real-time progress tracking
+- ✅ Task IDs for monitoring
+- ✅ Better error isolation
+- ✅ Background execution support
+
+### Task Tool Invocation Pattern
+
+**For parallel smite agents:**
+
+```text
+1. Print: "🚀 Running [N] Agents in parallel..."
+
+2. Launch all agents in ONE message with multiple Task calls:
+   Task(subagent_type="general-purpose", prompt="Execute [agent-path] with [args]")
+   Task(subagent_type="general-purpose", prompt="Execute [agent-path] with [args]")
+   Task(subagent_type="general-purpose", prompt="Execute [agent-path] with [args]")
+
+3. Each agent runs independently with progress tracking
+
+4. Print: "✅ All [N] Agents completed"
+```
+
+### Available Task Agents
+
+| Agent | Task File | Purpose |
+|-------|-----------|---------|
+| **Initializer** | `plugins/smite-initializer/agents/initializer.task.md` | Project initialization |
+| **Explorer** | `plugins/smite-explorer/agents/explorer.task.md` | Codebase analysis |
+| **Strategist** | `plugins/smite-strategist/agents/strategist.task.md` | Business strategy |
+| **Aura** | `plugins/smite-aura/agents/aura.task.md` | Design systems |
+| **Constructor** | `plugins/smite-constructor/agents/constructor.task.md` | Implementation |
+| **Gatekeeper** | `plugins/smite-gatekeeper/agents/gatekeeper.task.md` | Code review & validation |
+| **Handover** | `plugins/smite-handover/agents/handover.task.md` | Knowledge transfer |
+| **Surgeon** | `plugins/smite-surgeon/agents/surgeon.task.md` | Refactoring |
+| **Brainstorm** | `plugins/smite-brainstorm/agents/brainstorm.task.md` | Creative problem-solving |
+
+### Choosing Between Skill vs Task
+
+**Use SKILL tool when:**
+- Running single agents
+- Sequential workflow
+- User directly invokes agent via `/smite-[agent]` command
+
+**Use TASK tool when:**
+- Running 2+ agents in parallel
+- Real-time progress tracking needed
+- Orchestrator coordinates workflow
+- Background execution desired
 
 ---
 
@@ -150,48 +249,58 @@ Voulez-vous lancer SURGEON pour un audit chirurgical ?
 
 #### Séquence de Validation
 
-```bash
+```text
 # 1. Agent Principal produit un artefact
-*start-brain strategist
+User runs: /smite-brainstorm strategist
 → Génère strategist-business-model.md
 
 # 2. ORCHESTRATOR détecte automatiquement
 → Trigger GATEKEEPER
-*start-gatekeeper --auto --artifact="strategist-business-model.md"
+🚀 Running Agent Gatekeeper...
+[Skill: smite-gatekeeper:smite:gatekeeper --auto --artifact="strategist-business-model.md"]
+✅ Agent Gatekeeper completed
 → Résultat : ✅ PASS
 
 # 3. ORCHESTRATOR suggère HANDOVER
 → Prompt : "Créer un MISSION_BRIEF.md pour Aura ?"
 → User : [Y]es
 → Trigger HANDOVER
-*start-handover --from="strategist" --to="aura"
+🚀 Running Agent Handover...
+[Skill: smite-handover:smite:handover --from="strategist" --to="aura"]
+✅ Agent Handover completed
 → Génère MISSION_BRIEF.md
 
 # 4. User continue avec Aura
-*start-aura
+User runs: /smite-aura
 → Lit MISSION_BRIEF.md
 → Génère aura-design-system.md
 
 # 5. ORCHESTRATOR détecte + valide automatiquement
 → Trigger GATEKEEPER
-*start-gatekeeper --auto --artifact="aura-design-system.md"
+🚀 Running Agent Gatekeeper...
+[Skill: smite-gatekeeper:smite:gatekeeper --auto --artifact="aura-design-system.md"]
+✅ Agent Gatekeeper completed
 → Résultat : ✅ PASS
 
 # 6. ORCHESTRATOR suggère transition
 → Prompt : "Créer DESIGN_SYSTEM.json pour Constructor ?"
 → User : [Y]es
 → Trigger HANDOVER
-*start-handover --from="aura" --to="constructor"
+🚀 Running Agent Handover...
+[Skill: smite-handover:smite:handover --from="aura" --to="constructor"]
+✅ Agent Handover completed
 → Génère DESIGN_SYSTEM.json
 
 # 7. User continue avec Constructor
-*start-constructor
+User runs: /smite-constructor
 → Lit DESIGN_SYSTEM.json + MISSION_BRIEF.md
 → Génère le code
 
 # 8. ORCHESTRATOR détecte fin + valide
 → Trigger GATEKEEPER
-*start-gatekeeper --auto --mode="commit-validation"
+🚀 Running Agent Gatekeeper...
+[Skill: smite-gatekeeper:smite:gatekeeper --auto --mode="commit-validation"]
+✅ Agent Gatekeeper completed
 → Résultat : ✅ PASS
 
 # 9. ORCHESTRATOR scan le code

@@ -40,34 +40,11 @@
 /plugin install doc-maintainer@smite-marketplace
 ```
 
-### 🗑️ Uninstallation
-
-```bash
-# Uninstall all SMITE agents
-/plugin uninstall smite-initializer
-/plugin uninstall smite-explorer
-/plugin uninstall smite-strategist
-/plugin uninstall smite-aura
-/plugin uninstall smite-constructor
-/plugin uninstall smite-gatekeeper
-/plugin uninstall smite-handover
-/plugin uninstall smite-surgeon
-/plugin uninstall smite-orchestrator
-/plugin uninstall smite-brainstorm
-
-# Uninstall quality assurance plugins
-/plugin uninstall linter-sentinel
-/plugin uninstall doc-maintainer
-
-# Remove marketplace (optional)
-/plugin marketplace remove smite-marketplace
-```
-
 ---
 
 ## 📦 Available Plugins
 
-### 🤖 SMITE Agents (10 Specialized Agents)
+### 🤖 SMITE Agents (9 Specialized Agents)
 
 | Plugin | Description | Category | Command |
 |--------|-------------|----------|---------|
@@ -79,7 +56,6 @@
 | **smite-gatekeeper** | Code review, QA, testing & performance validation | Development | `/smite-gatekeeper --mode=[test\|coverage\|perf\|security]` |
 | **smite-handover** | Documentation and knowledge transfer | Development | `/smite-handover` |
 | **smite-surgeon** | Surgical code refactoring and optimization | Development | `/smite-surgeon` |
-| **smite-orchestrator** | Auto-orchestration, custom workflows & technical debt detection | Development | `/smite-orchestrator --workflow=custom` |
 | **smite-brainstorm** | Creative thinking, ideation & problem-solving partner | Development | `/smite:brainstorm --mode=[explore\|plan\|solve]` |
 
 ### 🔍 Quality & Documentation Plugins
@@ -88,6 +64,8 @@
 |--------|-------------|----------|---------|
 | **linter-sentinel** | Auto-fix ESLint, TypeScript, and Prettier violations | Quality | `*start-linter-sentinel --mode=fix` |
 | **doc-maintainer** | Synchronize documentation with code changes | Documentation | `*start-doc-maintainer --mode=sync` |
+
+**Total:** 11 plugins with dual execution mode (Skill + Task)
 
 ---
 
@@ -148,6 +126,52 @@ The orchestrator creates these files automatically:
 - **Overhead**: <0.1% per operation
 - **Detection Speed**: <50ms for technical debt scanning
 - **State Management**: <10ms for JSON operations
+
+---
+
+## ⚡ NEW: Dual Execution Mode (v2.0)
+
+**Each SMITE agent now supports two execution modes:**
+
+| Mode | Execution | Progress UI | Best For |
+|------|-----------|-------------|----------|
+| **Skill** | Sequential | Manual logging | Single agents, `/smite-[agent]` commands |
+| **Task** | Parallel | Native "Running x Agents" | Multi-agent workflows, orchestration |
+
+### Skill Mode (Sequential)
+
+```bash
+# Run single agent
+/smite-gatekeeper --mode=commit-validation
+```
+
+### Task Mode (Parallel) ⭐
+
+```bash
+# Ask for parallel workflow
+"Please validate, refactor, and document this feature"
+
+# Result:
+🚀 Running 3 Agents in parallel...
+
+[Real-time progress for each agent]
+
+✅ All 3 Agents completed
+```
+
+### Benefits of Task Mode
+
+- ✅ **Real-time tracking** - See "Running x Agents" progress
+- ✅ **Parallel execution** - Multiple agents run simultaneously
+- ✅ **Faster workflows** - ~2-3x speedup for independent tasks
+- ✅ **Better error isolation** - One failure doesn't block others
+
+### Documentation
+
+- **[docs/DUAL_MODE_GUIDE.md](./docs/DUAL_MODE_GUIDE.md)** - Complete guide for dual execution mode
+- **[docs/COMPLETION_REPORT.md](./docs/COMPLETION_REPORT.md)** - Implementation summary
+
+**Backwards compatible:** All existing `/smite-[agent]` commands still work exactly as before!
 
 ---
 
@@ -306,30 +330,61 @@ smite-marketplace/
 ├── plugins/
 │   ├── smite-initializer/            # Project initialization agent
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/initializer.md
+│   │   ├── skills/initializer.md     # Skill mode (sequential)
+│   │   └── agents/initializer.task.md # Task mode (parallel) ⭐ NEW
 │   │
 │   ├── smite-explorer/               # Codebase exploration agent
-│   ├── smite-strategist/             # Business strategy agent
-│   ├── smite-aura/                   # Design system agent
-│   ├── smite-constructor/            # Implementation agent (with --tech, --design modes)
-│   ├── smite-gatekeeper/             # Code review & QA agent (with --mode test/coverage/perf/security)
-│   ├── smite-handover/               # Documentation agent
-│   ├── smite-surgeon/                # Refactoring agent
-│   ├── smite-orchestrator/           # Auto-orchestration system (with custom workflows)
-│   │   ├── scripts/                   # TypeScript source
-│   │   ├── dist/                      # Compiled JavaScript
-│   │   ├── tsconfig.json              # TypeScript config
-│   │   └── package.json               # Build scripts
+│   │   ├── skills/explorer.md
+│   │   └── agents/explorer.task.md   # ⭐ NEW
 │   │
-│   ├── smite-brainstorm/             # Creative thinking & problem-solving agent
+│   ├── smite-strategist/             # Business strategy agent
+│   │   ├── skills/strategist.md
+│   │   └── agents/strategist.task.md # ⭐ NEW
+│   │
+│   ├── smite-aura/                   # Design system agent
+│   │   ├── skills/aura.md
+│   │   └── agents/aura.task.md       # ⭐ NEW
+│   │
+│   ├── smite-constructor/            # Implementation agent
+│   │   ├── skills/constructor.md
+│   │   └── agents/constructor.task.md # ⭐ NEW
+│   │
+│   ├── smite-gatekeeper/             # Code review & QA agent
+│   │   ├── skills/gatekeeper.md
+│   │   └── agents/gatekeeper.task.md # ⭐ NEW
+│   │
+│   ├── smite-handover/               # Documentation agent
+│   │   ├── skills/handover.md
+│   │   └── agents/handover.task.md   # ⭐ NEW
+│   │
+│   ├── smite-surgeon/                # Refactoring agent
+│   │   ├── skills/surgeon.md
+│   │   └── agents/surgeon.task.md    # ⭐ NEW
+│   │
+│   ├── smite-orchestrator/           # Auto-orchestration system
+│   │   ├── scripts/                  # TypeScript source
+│   │   ├── dist/                     # Compiled JavaScript
+│   │   ├── tsconfig.json
+│   │   ├── package.json
+│   │   └── skills/orchestrator.md    # Updated for dual mode
+│   │
+│   ├── smite-brainstorm/             # Creative thinking agent
+│   │   ├── skills/brainstorm.md
+│   │   └── agents/brainstorm.task.md # ⭐ NEW
 │   │
 │   ├── linter-sentinel/              # Auto-fix linting agent
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/linter-sentinel.md
+│   │   ├── skills/linter-sentinel.md
+│   │   └── agents/linter-sentinel.task.md # ⭐ NEW
 │   │
 │   └── doc-maintainer/               # Documentation sync agent
 │       ├── .claude-plugin/plugin.json
-│       └── skills/doc-maintainer.md
+│       ├── skills/doc-maintainer.md
+│       └── agents/doc-maintainer.task.md # ⭐ NEW
+│
+├── docs/                             # Documentation
+│   ├── DUAL_MODE_GUIDE.md            # Complete dual mode guide ⭐
+│   └── COMPLETION_REPORT.md          # Implementation summary
 │
 ├── README.md                          # This file
 └── LICENSE
@@ -418,8 +473,11 @@ Built by **Pamacea** for zero-debt engineering with Claude Code
 ---
 
 **SMITE Marketplace v2.0.0**
-*13 plugins available*
-*10 specialized development agents*
+*11 plugins available*
+*9 specialized development agents*
+*2 quality & documentation plugins*
+*Dual execution mode (Skill + Task)*
+*Parallel agent workflows with real-time tracking*
 *Tech specialization modes (Next.js, Rust, Python)*
 *Custom workflows & design implementation*
 *Comprehensive QA (test, coverage, performance, security)*
