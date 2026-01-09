@@ -1,3 +1,18 @@
+---
+name: smite-gatekeeper
+description: Code Review & Quality Validation Agent
+version: 2.1.0
+hooks:
+  PostToolUse:
+    - type: prompt
+      prompt: "Gatekeeper was just run. If validation FAILED, block any further operations until violations are fixed. If PASSED, allow workflow to continue and suggest next agent or handover."
+      matcher: "Skill.*smite-gatekeeper"
+  PreToolUse:
+    - type: prompt
+      prompt: "Before running Gatekeeper, check:\n1. Are there files to validate?\n2. Was a previous agent invoked? Which one?\n3. What artifacts were created?\n\nGatekeeper should validate the OUTPUT of other agents, not run blindly."
+      matcher: "Skill.*smite-gatekeeper"
+---
+
 # 🛡️ GATEKEEPER
 
 **Validation stricte de la conformité architecturelle & respect des principes CLAUDE.md**

@@ -41,7 +41,59 @@
       "Skill(smite-explorer:explorer)",
       "Skill(linter-sentinel:linter-sentinel)",
       "Skill(doc-maintainer:doc-maintainer)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx prettier:*)",
+      "Bash(npx eslint:*)",
+      "Bash(grep:*)",
+      "Skill(smite-gatekeeper:smite:gatekeeper)",
+      "Skill(smite-handover:smite:handover)",
+      "Skill(smite-surgeon:smite:surgeon)",
+      "Bash(node:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A file was just modified. Check if:\n1. The file path contains 'docs/' directory\n2. The file extension is .md\n\nIf BOTH conditions are true:\n1. Inform the user: '📄 Documentation modified: {filePath}'\n2. Suggest: 'Should I run Gatekeeper to validate this documentation?'\n3. If user agrees, use: Skill tool with skill='smite-gatekeeper:smite:gatekeeper' and args='--artifact={filePath}'\n\nDo NOT trigger for:\n- node_modules/\n- dist/\n- .git/\n- Files matching *.test.md or *.spec.md"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A source file was just modified. Read the file and scan for:\n1. Type 'any' usage (search for ': any' or ':any')\n2. TODO/FIXME/HACK comments\n3. Functions longer than 50 lines\n4. Repeated code patterns (copy-paste detection)\n\nIf ANY technical debt is found:\n1. Inform the user: '🔪 Technical debt detected in {filePath}'\n2. List each issue with line number and severity\n3. Suggest: 'Run Surgeon to address {N} technical debt items?'\n4. If user agrees, use: Skill tool with skill='smite-surgeon:smite:surgeon' and args='--target={filePath} --auto-detect'\n\nOnly scan these extensions: .ts, .tsx, .js, .jsx, .rs, .go\nIgnore: test files, node_modules/, dist/"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A subagent just completed. Check if it was a smite agent by examining the agent name. If it matches any of:\n- smite-explorer\n- smite-strategist\n- smite-aura\n- smite-constructor\n- smite-surgeon\n- smite-gatekeeper\n- smite-handover\n\nThen:\n1. Read .smite/orchestrator-state.json to understand workflow state\n2. Identify which agent just completed\n3. Determine the next logical agent based on:\n   - Standard workflow: explorer → strategist → aura → constructor → gatekeeper → handover\n   - OR custom workflow if defined in orchestrator state\n4. Inform user: '✅ {agentName} completed'\n5. Suggest: '🔄 Next agent: {nextAgent} - {reason}'\n6. Ask: 'Run {nextAgent}? [Y]es / [N]o / [S]kip'\n7. Update orchestrator state with completion status using: node plugins/smite-orchestrator/dist/state-manager.js set-agent {agentName}"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Task.*smite-|Skill.*smite-",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "About to invoke a smite agent. Before execution:\n1. Read .smite/orchestrator-state.json\n2. Check which agents have already been called\n3. Validate workflow order:\n   - Standard: initializer → explorer → strategist → aura → constructor → gatekeeper → handover\n4. If workflow order is violated, warn the user:\n   '⚠️ Workflow warning: {agent} should run BEFORE {currentAgent}'\n5. Ask: 'Continue anyway or run recommended agents first?'\n\nSkip this validation if:\n- User explicitly requested this specific agent\n- --force flag is present\n- Workflow is custom (defined in orchestrator state)"
+          }
+        ]
+      }
     ]
   }
 }
