@@ -152,6 +152,91 @@ Active l'agent Constructor pour le développement.
 
 ---
 
+## 📚 DOCUMENTATION REFERENCES
+
+### Essential Resources (Must Read)
+
+**Core Technologies:**
+- **React 18**: https://react.dev/ - Latest React patterns and Server Components
+- **Next.js 14**: https://nextjs.org/docs - App Router, Server Actions, streaming
+- **TypeScript 5**: https://www.typescriptlang.org/docs/ - Type safety and patterns
+- **Tailwind CSS**: https://tailwindcss.com/docs - Utility-first styling
+
+**State & Data:**
+- **Zustand**: https://zustand.docs.pmnd.rs/ - State management
+- **TanStack Query**: https://tanstack.com/query/latest/docs/react/overview - Server state
+- **Prisma**: https://www.prisma.io/docs/ - Type-safe database ORM
+
+**Rust Stack:**
+- **The Rust Book**: https://doc.rust-lang.org/book/ - Complete Rust guide
+- **Tokio**: https://tokio.rs/ - Async runtime
+- **Axum**: https://docs.rs/axum/latest/axum/ - Web framework
+- **SQLx**: https://docs.rs/sqlx/latest/sqlx/ - Database toolkit
+
+**Python Stack:**
+- **FastAPI**: https://fastapi.tiangolo.com/ - Modern web framework
+- **Pydantic**: https://docs.pydantic.dev/ - Data validation
+- **SQLAlchemy**: https://docs.sqlalchemy.org/ - ORM
+
+### Quick Reference by Technology
+
+#### Next.js
+- **App Router**: https://nextjs.org/docs/app
+- **Server Components**: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+- **Server Actions**: https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
+- **Streaming**: https://nextjs.org/docs/app/building-your-application/route-pages-and-components/streaming
+- **Caching**: https://nextjs.org/docs/app/building-your-application/caching
+
+#### React
+- **Hooks**: https://react.dev/reference/react
+- **Suspense**: https://react.dev/reference/react/Suspense
+- **Rendering**: https://react.dev/learn/render-and-commit
+- **Performance**: https://react.dev/learn/render-and-commit
+
+#### TypeScript
+- **Handbook**: https://www.typescriptlang.org/docs/handbook/intro.html
+- **Declaration Merging**: https://www.typescriptlang.org/docs/handbook/declaration-merging.html
+- **Generics**: https://www.typescriptlang.org/docs/handbook/2/generics.html
+- **Utility Types**: https://www.typescriptlang.org/docs/handbook/utility-types.html
+
+#### Prisma
+- **Schema**: https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference
+- **Client**: https://www.prisma.io/docs/reference/api-reference/prisma-client-reference
+- **Migrations**: https://www.prisma.io/docs/concepts/components/prisma-migrate
+- **Seed**: https://www.prisma.io/docs/reference/api-reference/command-reference
+
+#### Zustand
+- **Guide**: https://zustand.docs.pmnd.rs/guides/overview
+- **API**: https://zustand.docs.pmnd.rs/api/getting-started
+- **Middleware**: https://zustand.docs.pmnd.rs/guides/middleware
+- **Persist**: https://zustand.docs.pmnd.rs/guides/persisting-store-data
+
+#### TanStack Query
+- **Overview**: https://tanstack.com/query/latest/docs/react/overview
+- **useQuery**: https://tanstack.com/query/latest/docs/react/reference/useQuery
+- **useMutation**: https://tanstack.com/query/latest/docs/react/reference/useMutation
+- **DevTools**: https://tanstack.com/query/latest/docs/devtools/overview
+
+#### Rust
+- **Ownership**: https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html
+- **Error Handling**: https://doc.rust-lang.org/book/ch09-00-error-handling.html
+- **Async**: https://rust-lang.github.io/async-book/01-getting-started/01-why-async.html
+- **Testing**: https://doc.rust-lang.org/book/ch11-00-testing.html
+
+#### Axum
+- **Tutorial**: https://docs.rs/axum/latest/axum/
+- **Extractors**: https://docs.rs/axum/latest/axum/extract/index.html
+- **Handlers**: https://docs.rs/axum/latest/axum/handlers/index.html
+- **Routing**: https://docs.rs/axum/latest/axum/routing/index.html
+
+#### FastAPI
+- **Tutorial**: https://fastapi.tiangolo.com/tutorial/
+- **Security**: https://fastapi.tiangolo.com/tutorial/security/
+- **Dependencies**: https://fastapi.tiangolo.com/tutorial/dependencies/
+- **Background Tasks**: https://fastapi.tiangolo.com/tutorial/background-tasks/
+
+---
+
 ## 🎨 TECH SPECIALIZATION
 
 ### MODE: --tech=nextjs

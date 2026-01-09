@@ -98,6 +98,15 @@
       "category": "development"
     },
     {
+      "name": "smite-router",
+      "source": "./plugins/smite-router",
+      "description": "Intelligent agent routing based on automatic project context detection",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
+    },
+    {
       "name": "linter-sentinel",
       "source": "./plugins/linter-sentinel",
       "description": "Auto-fix ESLint, TypeScript, and Prettier violations with surgical precision",

@@ -23,7 +23,7 @@
 ### Or Install All Plugins
 
 ```bash
-# Install all SMITE agents (10 specialized agents)
+# Install all SMITE agents (11 specialized agents)
 /plugin install smite-initializer@smite-marketplace
 /plugin install smite-explorer@smite-marketplace
 /plugin install smite-strategist@smite-marketplace
@@ -34,6 +34,7 @@
 /plugin install smite-surgeon@smite-marketplace
 /plugin install smite-orchestrator@smite-marketplace
 /plugin install smite-brainstorm@smite-marketplace
+/plugin install smite-router@smite-marketplace
 
 # Install quality assurance plugins
 /plugin install linter-sentinel@smite-marketplace
@@ -44,7 +45,7 @@
 
 ## 📦 Available Plugins
 
-### 🤖 SMITE Agents (9 Specialized Agents)
+### 🤖 SMITE Agents (10 Specialized Agents)
 
 | Plugin | Description | Category | Command |
 |--------|-------------|----------|---------|
@@ -57,6 +58,7 @@
 | **smite-handover** | Documentation and knowledge transfer | Development | `/smite-handover` |
 | **smite-surgeon** | Surgical code refactoring and optimization | Development | `/smite-surgeon` |
 | **smite-brainstorm** | Creative thinking, ideation & problem-solving partner | Development | `/smite:brainstorm --mode=[explore\|plan\|solve]` |
+| **smite-router** ⭐ NEW | Intelligent agent routing based on project context detection | Development | `*start-s_router` |
 
 ### 🔍 Quality & Documentation Plugins
 
@@ -65,7 +67,7 @@
 | **linter-sentinel** | Auto-fix ESLint, TypeScript, and Prettier violations | Quality | `*start-linter-sentinel --mode=fix` |
 | **doc-maintainer** | Synchronize documentation with code changes | Documentation | `*start-doc-maintainer --mode=sync` |
 
-**Total:** 11 plugins with dual execution mode (Skill + Task)
+**Total:** 12 plugins with dual execution mode (Skill + Task)
 
 ---
 
@@ -201,6 +203,114 @@ Hooks are configured in `.claude/settings.local.json`:
 ### Documentation
 
 - **[docs/SMITE_HOOKS_ARCHITECTURE.md](./docs/SMITE_HOOKS_ARCHITECTURE.md)** - Complete guide to hooks implementation
+
+---
+
+## 🔀 Intelligent Agent Routing with smite-router ⭐ NEW
+
+**smite-router** automatically detects your project context and routes to the best agent with correct parameters - no manual configuration needed!
+
+### Features
+
+- **🎯 Automatic Framework Detection**: Detects TypeScript, Rust, Python, Go from project files
+- **📦 Automatic Framework Detection**: Identifies Next.js, Axum, FastAPI, and more
+- **🔧 Zero Configuration**: No need to specify `--tech=nextjs` - router handles it
+- **📚 Documentation Links**: Provides official documentation links for detected technologies
+- **⚙️ Custom Framework Support**: Works with any framework via custom mode
+- **🔄 Multi-Project Support**: Automatically adapts when switching between projects
+
+### How It Works
+
+```
+You: "Implement a feature"
+  ↓
+smite-router analyzes project
+  ↓
+Detects: Next.js + TypeScript + Tailwind
+  ↓
+Routes to: smite-constructor --tech=nextjs
+  ↓
+Provides relevant docs links:
+  - https://nextjs.org/docs
+  - https://react.dev/
+  - https://zustand.docs.pmnd.rs/
+  ↓
+Agent implements with correct flags!
+```
+
+### Detection Capabilities
+
+**Languages:**
+- TypeScript (tsconfig.json)
+- Rust (Cargo.toml)
+- Python (pyproject.toml)
+- Go (go.mod)
+
+**Frameworks:**
+- **Web**: Next.js, React, Angular, Vue, Svelte
+- **Rust**: Axum, Actix, Rocket
+- **Python**: FastAPI, Django, Flask
+
+### Usage
+
+```bash
+# Auto mode (recommended)
+*start-s_router
+
+# Custom framework
+*start-s_router --framework=custom
+
+# Manual override
+*start-s_router --agent=constructor --mode=custom
+```
+
+### Documentation Integration
+
+All agents now include **official documentation links** for their respective technologies:
+
+- **React Ecosystem**: Next.js, React, Zustand, TanStack Query, Prisma
+- **Rust Ecosystem**: The Rust Book, Tokio, Axum, SQLx, Diesel
+- **Python Ecosystem**: FastAPI, Pydantic, SQLAlchemy
+- **Build Tools**: Vite, Turbopack, esbuild
+- **Testing**: Vitest, Jest, Playwright
+- **Styling**: Tailwind CSS, Emotion, styled-components
+
+### Knowledge Base
+
+Centralized documentation hub: `.smite/knowledge-base.md`
+
+**Quick Links:**
+- [React 18](https://react.dev/)
+- [Next.js 14](https://nextjs.org/docs)
+- [TypeScript 5](https://www.typescriptlang.org/docs/)
+- [Zustand](https://zustand.docs.pmnd.rs/)
+- [TanStack Query](https://tanstack.com/query/latest/docs/react/overview)
+- [Prisma](https://www.prisma.io/docs/)
+- [The Rust Book](https://doc.rust-lang.org/book/)
+- [Tokio](https://tokio.rs/)
+- [Axum](https://docs.rs/axum/latest/axum/)
+- [SQLx](https://docs.rs/sqlx/latest/sqlx/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+
+### Example: Multi-Language Project
+
+```bash
+# Morning: Working on Next.js
+User: "Add a profile page"
+Router: "Next.js detected → smite-constructor --tech=nextjs"
+Docs: Next.js docs + React docs + Zustand docs
+
+# Afternoon: Working on Rust
+User: "Add an API endpoint"
+Router: "Rust + Axum detected → smite-constructor --tech=rust"
+Docs: Rust Book + Axum docs + Tokio docs
+
+# Router adapts automatically!
+```
+
+### Documentation
+
+- **[docs/SMITE_ROUTER_GUIDE.md](./docs/SMITE_ROUTER_GUIDE.md)** - Complete router guide with examples
 
 ---
 
@@ -492,6 +602,90 @@ smite-marketplace/
 │   │   ├── package.json
 │   │   └── skills/orchestrator.md    # Orchestrator interface
 │   │
+│   ├── smite-router/                # Intelligent agent routing ⭐ NEW
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── skills/router/SKILL.md    # Routing logic
+│   │   ├── commands/smite-router.md  # Router interface
+│   │   ├── scripts/detect-framework.ts # Framework detection
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── smite-brainstorm/             # Creative thinking agent
+│   │   ├── skills/brainstorm.md
+│   │   └── agents/brainstorm.task.md # ⭐ NEW
+│   │
+│   ├── linter-sentinel/              # Auto-fix linting agent
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── skills/linter-sentinel.md
+│   │   └── agents/linter-sentinel.task.md # ⭐ NEW
+│   │
+│   └── doc-maintainer/               # Documentation sync agent
+│       ├── .claude-plugin/plugin.json
+│       ├── skills/doc-maintainer.md
+│       └── agents/doc-maintainer.task.md # ⭐ NEW
+│
+├── .smite/                            # Orchestrator runtime state & knowledge ⭐ NEW
+│   ├── orchestrator-state.json       # Session state & workflow progress
+│   ├── knowledge-base.md             # Centralized documentation hub
+│   └── suggestions/                  # Auto-generated recommendations
+│       ├── next-action.md            # Next agent suggestion
+│       └── fix-surgeon.md            # Technical debt alerts
+│
+├── plugins/
+│   ├── smite-initializer/            # Project initialization agent
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── skills/initializer.md     # Skill mode (sequential)
+│   │   └── agents/initializer.task.md # Task mode (parallel) ⭐ NEW
+│   │
+│   ├── smite-explorer/               # Codebase exploration agent
+│   │   ├── skills/explorer.md
+│   │   └── agents/explorer.task.md   # ⭐ NEW
+│   │
+│   ├── smite-strategist/             # Business strategy agent
+│   │   ├── skills/strategist.md
+│   │   └── agents/strategist.task.md # ⭐ NEW
+│   │
+│   ├── smite-aura/                   # Design system agent
+│   │   ├── skills/aura.md
+│   │   └── agents/aura.task.md       # ⭐ NEW
+│   │
+│   ├── smite-constructor/            # Implementation agent
+│   │   ├── skills/constructor.md
+│   │   ├── skills/constructor/SKILL.md # With docs links ⭐ NEW
+│   │   └── agents/constructor.task.md # ⭐ NEW
+│   │
+│   ├── smite-gatekeeper/             # Code review & QA agent
+│   │   ├── skills/gatekeeper.md
+│   │   ├── skills/gatekeeper/SKILL.md # With hooks frontmatter ⭐ NEW
+│   │   └── agents/gatekeeper.task.md # ⭐ NEW
+│   │
+│   ├── smite-handover/               # Documentation agent
+│   │   ├── skills/handover.md
+│   │   └── agents/handover.task.md   # ⭐ NEW
+│   │
+│   ├── smite-surgeon/                # Refactoring agent
+│   │   ├── skills/surgeon.md
+│   │   └── agents/surgeon.task.md    # ⭐ NEW
+│   │
+│   ├── smite-orchestrator/           # Auto-orchestration system
+│   │   ├── scripts/                  # TypeScript source
+│   │   │   ├── state-manager.ts      # Workflow state management
+│   │   │   ├── agent-complete.ts     # SubagentStop handler
+│   │   │   ├── detect-debt.ts        # PostToolUse handler
+│   │   │   └── suggest-next.ts       # Next agent logic
+│   │   ├── dist/                     # Compiled JavaScript (used by hooks)
+│   │   ├── tsconfig.json
+│   │   ├── package.json
+│   │   └── skills/orchestrator.md    # Orchestrator interface
+│   │
+│   ├── smite-router/                # Intelligent agent routing ⭐ NEW
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── skills/router/SKILL.md    # Routing logic
+│   │   ├── commands/smite-router.md  # Router interface
+│   │   ├── scripts/detect-framework.ts # Framework detection
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
 │   ├── smite-brainstorm/             # Creative thinking agent
 │   │   ├── skills/brainstorm.md
 │   │   └── agents/brainstorm.task.md # ⭐ NEW
@@ -508,6 +702,7 @@ smite-marketplace/
 │
 ├── docs/                             # Documentation
 │   ├── SMITE_HOOKS_ARCHITECTURE.md  # Complete hooks guide ⭐ NEW
+│   ├── SMITE_ROUTER_GUIDE.md        # Router guide with examples ⭐ NEW
 │   ├── DUAL_MODE_GUIDE.md           # Complete dual mode guide ⭐
 │   └── COMPLETION_REPORT.md         # Implementation summary
 │
@@ -597,9 +792,9 @@ Built by **Pamacea** for zero-debt engineering with Claude Code
 
 ---
 
-**SMITE Marketplace v2.1.0**
-*11 plugins available*
-*9 specialized development agents*
+**SMITE Marketplace v2.2.0**
+*12 plugins available*
+*10 specialized development agents*
 *2 quality & documentation plugins*
 *Dual execution mode (Skill + Task)*
 *Parallel agent workflows with real-time tracking*
@@ -608,6 +803,10 @@ Built by **Pamacea** for zero-debt engineering with Claude Code
 *Comprehensive QA (test, coverage, performance, security)*
 *Modular installation*
 *Zero-debt development*
-*Auto-orchestration with Claude Code 2.1.0 native hooks* ⭐ NEW
-*Automatic technical debt detection* ⭐ NEW
-*Zero-overhead workflow coordination* ⭐ NEW
+*Auto-orchestration with Claude Code 2.1.0 native hooks*
+*Automatic technical debt detection*
+*Zero-overhead workflow coordination*
+*Intelligent agent routing with smite-router* ⭐ NEW
+*Automatic framework & language detection* ⭐ NEW
+*Centralized documentation knowledge base* ⭐ NEW
+*Official docs links integration (80+ references)* ⭐ NEW
