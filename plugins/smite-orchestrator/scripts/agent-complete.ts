@@ -41,6 +41,12 @@ function handleAgentComplete(
     // Update state
     state.current_agent = null; // Clear current agent (completed)
     state.last_completed_agent = agentName as AgentName;
+
+    // Track agent call if not already tracked
+    if (!state.agents_called.includes(agentName as AgentName)) {
+      state.agents_called.push(agentName as AgentName);
+    }
+
     saveState(state, projectDir);
 
     // Get next agent suggestion

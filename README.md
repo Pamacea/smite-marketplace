@@ -71,16 +71,34 @@
 
 ## 🤖 Auto-Orchestration System
 
-The **smite-orchestrator** plugin provides intelligent workflow coordination through automatic hooks:
+The **smite-orchestrator** plugin provides intelligent workflow coordination through **Claude Code 2.1.0 native hooks**:
 
 ### Features
 
-- **Workflow State Tracking**: Automatically tracks agent execution and artifacts
-- **Custom Workflows**: Build your own agent sequences with `--workflow=custom`
-- **Technical Debt Detection**: Scans code for anti-patterns (any types, console logs, TODOs, etc.)
-- **Smart Suggestions**: Suggests next agent in workflow based on current state
-- **Session Persistence**: Maintains workflow state across sessions
-- **Non-Intrusive**: Provides suggestions without forcing actions
+- **🎯 Claude Code 2.1.0 Hooks Integration**: Uses native PostToolUse, SubagentStop, and PreToolUse hooks
+- **📊 Workflow State Tracking**: Automatically tracks agent execution and artifacts
+- **🔍 Automatic Technical Debt Detection**: Scans code for anti-patterns after every file write
+- **💡 Smart Agent Suggestions**: Suggests next agent in workflow based on current state
+- **📝 Documentation Validation**: Auto-detects docs changes and suggests Gatekeeper
+- **🔄 Session Persistence**: Maintains workflow state across sessions
+- **⚡ Zero Overhead**: No daemon required, hooks run only when needed
+- **🛡️ Non-Intrusive**: Provides suggestions without forcing actions
+
+### Hook Types
+
+| Hook | Trigger | Action |
+|------|---------|--------|
+| **PostToolUse** | After Edit/Write | Detects technical debt in code, suggests Gatekeeper for docs |
+| **SubagentStop** | After agent completes | Updates state, suggests next agent in workflow |
+| **PreToolUse** | Before smite agent | Validates workflow order, warns on violations |
+
+### Technical Debt Detection
+
+Automatically detects these patterns in `.ts`, `.tsx`, `.js`, `.jsx` files:
+
+- 🔴 **High**: `@ts-ignore`, debugger statements
+- 🟡 **Medium**: `any` types, `@ts-expect-error`, empty interfaces
+- 🟢 **Low**: TODO/FIXME comments, console statements, hardcoded strings
 
 ### Custom Workflow Mode
 
@@ -106,26 +124,83 @@ initializer → explorer → strategist → aura → constructor → gatekeeper 
 ### How It Works
 
 ```
-User executes agent → Hook detects completion → State updated → Next agent suggested
-                        ↓
-                   Technical debt scanned → Issues detected → Surgeon suggested
+User edits file → PostToolUse hook fires
+  ↓
+  ├─ Code file? → detect-debt.js scans for patterns
+  │                → Creates .smite/suggestions/fix-surgeon.md
+  │                → Prompt hook suggests Surgeon
+  │
+  └─ Docs file? → Prompt hook suggests Gatekeeper
+
+Agent completes → SubagentStop hook fires
+  ↓
+  ├─ agent-complete.js updates state
+  ├─ Adds agent to agents_called list
+  ├─ Determines next agent in workflow
+  └─ Creates .smite/suggestions/next-action.md
+      → Prompt hook suggests next agent
+
+Before agent → PreToolUse hook fires
+  ↓
+  └─ Validates workflow order
+     → Warns if order violated
+     → Suggests correct sequence
 ```
 
 ### Generated Artifacts
 
 The orchestrator creates these files automatically:
 
-- `.smite/orchestrator-state.json` - Current workflow state
-- `.smite/workflow/session-info.md` - Workflow progress and artifacts
+- `.smite/orchestrator-state.json` - Current workflow state and progress
 - `.smite/suggestions/next-action.md` - Next agent recommendation
-- `.smite/suggestions/fix-surgeon.md` - Technical debt alerts
-- `docs/MISSION_BRIEF_{AGENT}.md` - Handoff documents between agents
+- `.smite/suggestions/fix-surgeon.md` - Technical debt alerts with line numbers
+- `.smite/workflow/session-info.md` - Workflow progress and artifacts (optional)
+
+### Configuration
+
+Hooks are configured in `.claude/settings.local.json`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write.*\\.(ts|tsx|js|jsx)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node plugins/smite-orchestrator/dist/detect-debt.js file $FILE_PATH",
+            "statusMessage": "🔪 Detecting technical debt..."
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "smite-",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node plugins/smite-orchestrator/dist/agent-complete.js $AGENT_NAME",
+            "statusMessage": "🎯 Updating workflow state..."
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
 ### Performance
 
-- **Overhead**: <0.1% per operation
+- **RAM Overhead**: 0MB (uses Claude Code process)
+- **CPU Overhead**: Minimal (hooks only fire on tool use)
 - **Detection Speed**: <50ms for technical debt scanning
 - **State Management**: <10ms for JSON operations
+
+### Documentation
+
+- **[docs/SMITE_HOOKS_ARCHITECTURE.md](./docs/SMITE_HOOKS_ARCHITECTURE.md)** - Complete guide to hooks implementation
 
 ---
 
@@ -307,30 +382,49 @@ Install only what you need:
 
 ## 🔧 Orchestrator Scripts
 
-The auto-orchestration system is built with **TypeScript** and includes:
+The auto-orchestration system is built with **TypeScript** and includes compiled scripts used by Claude Code 2.1.0 hooks:
 
-### Core Scripts (scripts/)
+### Core Scripts (plugins/smite-orchestrator/scripts/)
 
-- **state-manager.ts** - Workflow state management
+- **state-manager.ts** - Workflow state management and next agent logic
 - **session-init.ts** - Session initialization
 - **track-artifacts.ts** - Artifact tracking and logging
-- **agent-complete.ts** - Agent completion handler
-- **detect-debt.ts** - Technical debt pattern detection
+- **agent-complete.ts** - Agent completion handler (SubagentStop hook)
+- **detect-debt.ts** - Technical debt pattern detection (PostToolUse hook)
 - **suggest-next.ts** - Next agent suggestion engine
 - **generate-handoff.ts** - Handoff document generation
 - **suggest-display.ts** - Suggestion display system
+
+### Compiled Scripts (dist/)
+
+Used directly by hooks in `.claude/settings.local.json`:
+
+```bash
+# Technical debt detection (PostToolUse hook)
+node plugins/smite-orchestrator/dist/detect-debt.js file $FILE_PATH
+
+# Agent completion handler (SubagentStop hook)
+node plugins/smite-orchestrator/dist/agent-complete.js $AGENT_NAME
+
+# State management (used by scripts)
+node plugins/smite-orchestrator/dist/state-manager.js get-state
+```
 
 ### Build System
 
 ```bash
 # Compile TypeScript to JavaScript
+cd plugins/smite-orchestrator
 npm run build
 
 # Watch mode for development
 npm run watch
+
+# Test state manager
+npm test
 ```
 
-Compiled scripts are in `dist/` and used by hooks.
+Compiled scripts are automatically generated in `plugins/smite-orchestrator/dist/` and used by hooks.
 
 ---
 
@@ -340,6 +434,16 @@ Compiled scripts are in `dist/` and used by hooks.
 smite-marketplace/
 ├── .claude-plugin/
 │   └── marketplace.json              # Marketplace configuration
+│
+├── .claude/
+│   ├── settings.local.json           # Claude Code 2.1.0 hooks configuration ⭐ NEW
+│   └── hooks.json                    # Alternative hooks format
+│
+├── .smite/                            # Orchestrator state
+│   ├── orchestrator-state.json       # Current workflow state
+│   └── suggestions/                  # Auto-generated suggestions
+│       ├── next-action.md            # Next agent recommendation
+│       └── fix-surgeon.md            # Technical debt alerts
 │
 ├── plugins/
 │   ├── smite-initializer/            # Project initialization agent
@@ -361,10 +465,12 @@ smite-marketplace/
 │   │
 │   ├── smite-constructor/            # Implementation agent
 │   │   ├── skills/constructor.md
+│   │   ├── skills/constructor/SKILL.md # With hooks frontmatter ⭐ NEW
 │   │   └── agents/constructor.task.md # ⭐ NEW
 │   │
 │   ├── smite-gatekeeper/             # Code review & QA agent
 │   │   ├── skills/gatekeeper.md
+│   │   ├── skills/gatekeeper/SKILL.md # With hooks frontmatter ⭐ NEW
 │   │   └── agents/gatekeeper.task.md # ⭐ NEW
 │   │
 │   ├── smite-handover/               # Documentation agent
@@ -377,10 +483,14 @@ smite-marketplace/
 │   │
 │   ├── smite-orchestrator/           # Auto-orchestration system
 │   │   ├── scripts/                  # TypeScript source
-│   │   ├── dist/                     # Compiled JavaScript
+│   │   │   ├── state-manager.ts      # Workflow state management
+│   │   │   ├── agent-complete.ts     # SubagentStop handler
+│   │   │   ├── detect-debt.ts        # PostToolUse handler
+│   │   │   └── suggest-next.ts       # Next agent logic
+│   │   ├── dist/                     # Compiled JavaScript (used by hooks)
 │   │   ├── tsconfig.json
 │   │   ├── package.json
-│   │   └── skills/orchestrator.md    # Updated for dual mode
+│   │   └── skills/orchestrator.md    # Orchestrator interface
 │   │
 │   ├── smite-brainstorm/             # Creative thinking agent
 │   │   ├── skills/brainstorm.md
@@ -397,8 +507,9 @@ smite-marketplace/
 │       └── agents/doc-maintainer.task.md # ⭐ NEW
 │
 ├── docs/                             # Documentation
-│   ├── DUAL_MODE_GUIDE.md            # Complete dual mode guide ⭐
-│   └── COMPLETION_REPORT.md          # Implementation summary
+│   ├── SMITE_HOOKS_ARCHITECTURE.md  # Complete hooks guide ⭐ NEW
+│   ├── DUAL_MODE_GUIDE.md           # Complete dual mode guide ⭐
+│   └── COMPLETION_REPORT.md         # Implementation summary
 │
 ├── README.md                          # This file
 └── LICENSE
@@ -486,7 +597,7 @@ Built by **Pamacea** for zero-debt engineering with Claude Code
 
 ---
 
-**SMITE Marketplace v2.0.0**
+**SMITE Marketplace v2.1.0**
 *11 plugins available*
 *9 specialized development agents*
 *2 quality & documentation plugins*
@@ -497,4 +608,6 @@ Built by **Pamacea** for zero-debt engineering with Claude Code
 *Comprehensive QA (test, coverage, performance, security)*
 *Modular installation*
 *Zero-debt development*
-*Auto-orchestration with TypeScript*
+*Auto-orchestration with Claude Code 2.1.0 native hooks* ⭐ NEW
+*Automatic technical debt detection* ⭐ NEW
+*Zero-overhead workflow coordination* ⭐ NEW

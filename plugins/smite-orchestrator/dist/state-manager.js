@@ -178,8 +178,9 @@ function getNext(projectDir = process.cwd()) {
     if (!state) {
         return null;
     }
-    // Find current agent index
-    const currentIndex = WORKFLOW_ORDER.indexOf(state.current_agent);
+    // Find last completed agent index (use current_agent if running, last_completed_agent if just finished)
+    const agentToFind = state.current_agent || state.last_completed_agent;
+    const currentIndex = WORKFLOW_ORDER.indexOf(agentToFind);
     if (currentIndex === -1) {
         // Current agent not in standard workflow, suggest next based on phase
         return suggestByPhase(state);
