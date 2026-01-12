@@ -191,12 +191,12 @@ batches = [
 ```typescript
 // Batch 2: Launch 2 agents in parallel
 Task(
-  subagent_type="builder:builder.task",
+  subagent_type="builder:constructor.task",
   prompt="Implement US-002: Create API endpoints"
 );
 
 Task(
-  subagent_type="builder:builder.task",
+  subagent_type="explorer:explorer.task",
   prompt="Implement US-003: Build UI components"
 );
 
@@ -208,8 +208,8 @@ Task(
 ```typescript
 // Single agent
 Task(
-  subagent_type="builder:builder.task",
-  prompt="Implement US-001: Add tasks table"
+  subagent_type="architect:architect",
+  prompt="Implement US-001: Setup project structure"
 );
 ```
 
@@ -250,7 +250,7 @@ appendProgress(`
         "Typecheck passes"
       ],
       "priority": 1,
-      "agent": "smite-builder",
+      "agent": "builder",
       "tech": "nextjs",
       "dependencies": [],
       "passes": false,
@@ -308,10 +308,10 @@ Stories execute in priority order. Earlier stories are implicit dependencies.
 
 Match agent to story type:
 
-- **smite-architect**: Design, strategy, initialization
-- **smite-builder**: Implementation (Next.js, Rust, Python)
-- **smite-finalize**: QA, documentation
-- **smite-explorer**: Codebase analysis
+- **architect**: Design, strategy, initialization → `architect:architect`
+- **builder**: Implementation (Next.js, Rust, Python) → `builder:constructor.task`
+- **finalize**: QA, documentation → `finalize:finalize`
+- **explorer**: Codebase analysis → `explorer:explorer.task`
 
 ### 4. Verifiable Criteria
 

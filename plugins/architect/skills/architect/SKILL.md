@@ -1,417 +1,260 @@
 ---
-name: smite-architect
-description: Unified design, strategy, initialization, and creative thinking agent (merged initializer+strategist+aura+brainstorm)
+name: architect
+description: Unified design, strategy, initialization and creative thinking agent
 version: 3.0.0
 ---
 
-# 🏛️ SMITE ARCHITECT
+# 🏛️ SMITE Architect
 
 **Unified Design, Strategy, Initialization & Creative Thinking**
 
 ---
 
-## 🎯 MISSION
+## 🎯 Mission
 
-**Guide projects from initial concept to complete technical and business architecture. Define strategy, design systems, technical stacks, and facilitate creative problem-solving.**
-
-**Output type:** Complete architectural documentation (PRD, design system, tech stack, business model)
+**Provide complete architectural guidance from project initialization to design specification.**
 
 ---
 
-## 📋 COMMANDE
+## 📋 Commands
 
-### `/smite-architect`
+### `/architect --mode=init`
 
-Launch architect with mode selection.
+Initialize a new project with proper structure and dependencies.
 
-```bash
-# Mode selection
-/smite-architect --mode=[init|strategy|design|brainstorm]
-
-# With prompt
-/smite-architect --mode=init "SaaS dashboard with Next.js"
-/smite-architect --mode=strategy "Define monetization"
-/smite-architect --mode=design "Create modern minimalist UI"
-/smite-architect --mode=brainstorm "Solve user engagement problem"
-```
-
----
-
-## 🔄 MODES
-
-### MODE 1: INIT (Project Initialization)
-
-```bash
-/smite-architect --mode=init "<project description>"
-```
-
-Initialize new project with tech stack and structure.
-
-**Capabilities:**
-- Define technical stack
-- Create project structure
-- Setup tooling (TypeScript, ESLint, Prettier)
-- Configure build pipeline
-- Initialize git repository
-- Setup development environment
-
-**Output:**
-- `docs/INIT_PLAN.md` - Initialization plan
-- `docs/TECH_STACK.md` - Technology decisions
-- Project scaffolded with tooling configured
-
-**Conversation Flow (5 questions):**
-
-1. **What type of project?** (web app, API, library, CLI)
-2. **What are the core features?** (MVP scope)
-3. **What are the constraints?** (timeline, team, budget)
-4. **Any specific tech preferences?** (frameworks, languages)
-5. **What's the deployment target?** (Vercel, AWS, self-hosted)
+**What it does:**
+- Analyze project requirements
+- Setup project structure
+- Configure build tools
+- Initialize dependencies
+- Create basic configuration files
 
 **Example:**
-
 ```bash
-/smite-architect --mode=init "Build a SaaS dashboard for analytics with real-time updates"
+/architect --mode=init "Setup Next.js 14 with TypeScript and Tailwind"
+```
 
-→ Generates:
-- Tech stack: Next.js 14, TypeScript, Tailwind, shadcn/ui, WebSocket
-- Project structure: app/, components/, lib/, styles/
-- Tooling: ESLint, Prettier, Vitest, Playwright
-- Deployment: Vercel with Edge functions
+### `/architect --mode=strategy`
+
+Create business strategy and market analysis.
+
+**What it does:**
+- Market research
+- Competitive analysis
+- Revenue models
+- Go-to-market strategy
+- Product roadmap
+
+**Example:**
+```bash
+/architect --mode=strategy "SaaS dashboard with analytics platform"
+```
+
+### `/architect --mode=design`
+
+Design system and UI/UX specifications.
+
+**What it does:**
+- Design tokens
+- Component library
+- UI patterns
+- User flows
+- Style guide
+
+**Example:**
+```bash
+/architect --mode=design "Create design system with primary colors and typography"
+```
+
+### `/architect --mode=brainstorm`
+
+Creative thinking and problem-solving.
+
+**What it does:**
+- Ideation sessions
+- Solution exploration
+- Feature innovation
+- Problem reframing
+- Lateral thinking
+
+**Example:**
+```bash
+/architect --mode=brainstorm "How to improve user engagement in mobile app"
 ```
 
 ---
 
-### MODE 2: STRATEGY (Business Strategy)
+## 🎨 Architect Modes
 
-```bash
-/smite-architect --mode=strategy "<business question>"
-```
+### Init Mode
 
-Develop comprehensive business and market strategy.
+**Use when:** Starting a new project
 
-**Capabilities:**
+**Process:**
+1. Analyze requirements
+2. Choose tech stack
+3. Setup folder structure
+4. Configure build tools
+5. Initialize dependencies
+6. Create basic configs
+
+**Output:**
+- Project structure
+- Configuration files
+- Dependency list
+- Setup instructions
+
+### Strategy Mode
+
+**Use when:** Business planning needed
+
+**Process:**
+1. Market analysis
+2. Competitor research
+3. User personas
+4. Business model
+5. Revenue strategy
+6. Success metrics
+
+**Output:**
 - Market analysis
 - Competitive landscape
-- Business model design
-- Pricing strategy
-- Revenue optimization
-- Growth strategy
+- Business plan
+- KPI framework
+
+### Design Mode
+
+**Use when:** UI/UX design needed
+
+**Process:**
+1. Design research
+2. Design tokens
+3. Component patterns
+4. User flows
+5. Style guide
+6. Prototype
 
 **Output:**
-- `docs/STRATEGY_ANALYSIS.md` - Market analysis
-- `docs/BUSINESS_MODEL.md` - Revenue model
-- `docs/PRICING_STRATEGY.md` - Pricing tiers
+- Design system
+- Component library
+- User flows
+- Style guide
 
-**Conversation Flow (8 questions):**
+### Brainstorm Mode
 
-1. **What market are we analyzing?** (sector, geography)
-2. **Who are the target users?** (B2C, B2B, segments)
-3. **What's the market size?** (TAM, SAM, SOM)
-4. **Who are the competitors?** (direct, indirect)
-5. **What are the barriers to entry?** (technical, financial)
-6. **What's the revenue model?** (subscription, transaction, freemium)
-7. **What are the costs?** (fixed, variable, CAC)
-8. **What are the success metrics?** (KPIs, OKRs)
+**Use when:** Creative solutions needed
 
-**Example:**
-
-```bash
-/smite-architect --mode=strategy "Define pricing strategy for a project management tool"
-
-→ Generates:
-- Competitor pricing analysis
-- Recommended pricing tiers (Free, Pro, Enterprise)
-- Revenue projections
-- Growth strategy
-```
-
----
-
-### MODE 3: DESIGN (Design System)
-
-```bash
-/smite-architect --mode=design "<design requirements>"
-```
-
-Create comprehensive design system and UI specifications.
-
-**Capabilities:**
-- Define visual identity
-- Create design tokens (colors, typography, spacing)
-- Specify UI components
-- Design layouts and structures
-- Document micro-interactions
-- Create specifications for development
+**Process:**
+1. Problem definition
+2. Ideation techniques
+3. Solution evaluation
+4. Prototype concepts
+5. Validation plan
 
 **Output:**
-- `docs/DESIGN_SYSTEM.md` - Complete design specs
-- `docs/DESIGN_TOKENS.json` - Design tokens
-- Component specifications with props and variants
-
-**Conversation Flow (6 questions):**
-
-1. **What's the brand identity?** (name, mission, values)
-2. **What's the design personality?** (minimalist, playful, serious)
-3. **What are the primary colors?** (brand colors, accents)
-4. **What typography system?** (fonts, scales, weights)
-5. **What components are needed?** (buttons, inputs, cards)
-6. **What are the layout patterns?** (grids, spacing, responsive)
-
-**Example:**
-
-```bash
-/smite-architect --mode=design "Create a modern minimalist design system for a fintech app"
-
-→ Generates:
-- Color palette (trustworthy blues, green for success)
-- Typography (Inter, 4 scale system)
-- Component library (Button, Input, Card, etc.)
-- Layout system (12-column grid, 8pt spacing)
-- Design tokens JSON
-```
+- Solution concepts
+- Innovation roadmap
+- Implementation plan
+- Success metrics
 
 ---
 
-### MODE 4: BRAINSTORM (Creative Thinking)
+## 📊 Best Practices
 
-```bash
-/smite-architect --mode=brainstorm "<problem or topic>"
-```
+### For Init Mode:
+- Start simple, add complexity as needed
+- Follow convention over configuration
+- Use modern tooling
+- Document decisions
 
-Facilitate creative problem-solving and ideation.
+### For Strategy Mode:
+- Base on data, not assumptions
+- Consider multiple scenarios
+- Focus on value proposition
+- Define clear metrics
 
-**Capabilities:**
-- Generate innovative ideas
-- Explore multiple perspectives
-- Challenge assumptions
-- Find unconventional solutions
-- Brainstorm features and improvements
-- Solve complex problems
+### For Design Mode:
+- Mobile-first approach
+- Accessibility first
+- Consistent language
+- Test with users
 
-**Output:**
-- `docs/BRAINSTORM_SESSION.md` - Ideas and solutions
-- Ranked list of recommendations
-- Implementation suggestions
-
-**Conversation Flow (5 questions):**
-
-1. **What problem are we solving?** (define clearly)
-2. **What are the constraints?** (technical, business, time)
-3. **What's been tried before?** (existing solutions)
-4. **What if anything was possible?** (blue sky thinking)
-5. **What are the top 3 ideas?** (prioritize)
-
-**Example:**
-
-```bash
-/smite-architect --mode=brainstorm "How to increase user engagement in our app"
-
-→ Generates:
-- Gamification ideas
-- Notification strategies
-- Social features
-- Onboarding improvements
-- Retention tactics
-- Ranked by impact and feasibility
-```
+### For Brainstorm Mode:
+- Quantity over quality initially
+- Build on others' ideas
+- Encourage wild ideas
+- Defer judgment
 
 ---
 
-## 📊 WORKFLOW EXAMPLES
-
-### Example 1: New SaaS Project
-
-```bash
-# Step 1: Initialize
-/smite-architect --mode=init "Build a project management SaaS"
-
-# Step 2: Define strategy
-/smite-architect --mode=strategy "Analyze project management market, define pricing"
-
-# Step 3: Create design system
-/smite-architect --mode=design "Modern professional design for enterprise tool"
-
-# Step 4: Brainstorm features
-/smite-architect --mode=brainstorm "Innovative features for project collaboration"
-
-→ Complete architecture ready for Builder agent
-```
-
-### Example 2: Feature Brainstorming
-
-```bash
-# Quick brainstorming session
-/smite-architect --mode=brainstorm "How to improve user onboarding"
-
-→ 10 innovative ideas ranked by impact
-→ Top 3 with implementation suggestions
-```
-
-### Example 3: Design System Creation
-
-```bash
-# Full design system
-/smite-architect --mode=design "Create a design system for a mobile fitness app"
-
-→ Complete design tokens
-→ Component specifications
-→ Layout patterns
-→ Ready for implementation
-```
-
----
-
-## 🎨 DESIGN TOKENS FORMAT
-
-When using `--mode=design`, generates `DESIGN_TOKENS.json`:
-
-```json
-{
-  "colors": {
-    "primary": {
-      "50": "#f0f9ff",
-      "500": "#0ea5e9",
-      "900": "#0c4a6e"
-    },
-    "semantic": {
-      "success": "#22c55e",
-      "warning": "#f59e0b",
-      "error": "#ef4444",
-      "info": "#3b82f6"
-    }
-  },
-  "typography": {
-    "fontFamily": {
-      "sans": "Inter, sans-serif",
-      "mono": "Fira Code, monospace"
-    },
-    "fontSize": {
-      "xs": "0.75rem",
-      "sm": "0.875rem",
-      "base": "1rem",
-      "lg": "1.125rem",
-      "xl": "1.25rem",
-      "2xl": "1.5rem",
-      "3xl": "1.875rem"
-    }
-  },
-  "spacing": {
-    "unit": "4px",
-    "scale": [0, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128]
-  },
-  "borderRadius": {
-    "sm": "4px",
-    "md": "8px",
-    "lg": "12px",
-    "xl": "16px",
-    "full": "9999px"
-  },
-  "shadows": {
-    "sm": "0 1px 2px rgba(0,0,0,0.05)",
-    "md": "0 4px 6px rgba(0,0,0,0.1)",
-    "lg": "0 10px 15px rgba(0,0,0,0.1)"
-  }
-}
-```
-
----
-
-## 💼 BUSINESS MODEL FORMAT
-
-When using `--mode=strategy`, generates business model documentation:
-
-```markdown
-# BUSINESS MODEL
-
-## Revenue Model
-- Type: SaaS Subscription
-- Tiers: Free, Pro ($29/mo), Enterprise ($99/mo)
-
-## Market Analysis
-- TAM: $10B
-- SAM: $2B
-- SOM: $50M (realistic target)
-
-## Pricing Strategy
-- Freemium to drive adoption
-- Tiered feature sets
-- Annual billing discount (20%)
-- Enterprise custom pricing
-
-## Unit Economics
-- CAC: $150
-- LTV: $900
-- LTV/CAC: 6x
-- Payback period: 12 months
-
-## Growth Strategy
-- Content marketing
-- Product-led growth
-- Free trial conversion
-- Enterprise sales
-```
-
----
-
-## ✅ CHECKLIST
-
-**After architect mode:**
-- [ ] Documentation generated
-- [ ] All requirements captured
-- [ ] Technical decisions justified
-- [ ] Design system complete (if mode=design)
-- [ ] Strategy validated (if mode=strategy)
-- [ ] Ideas prioritized (if mode=brainstorm)
-- [ ] Ready for Builder agent
-
----
-
-## 🔗 INTEGRATION
+## 🎯 Integration
 
 **Works with:**
-- smite-explorer (analyze existing codebase)
-- smite-builder (implement architecture)
-- smite-finalize (document decisions)
-- smite-ralph (orchestrate full workflow)
+- builder:constructor.task (implementation)
+- explorer:explorer.task (codebase analysis)
+- finalize:finalize (QA & docs)
 
-**Triggers:**
-- New project start
-- Feature planning
-- Design system creation
-- Strategy definition
-- Problem-solving sessions
+**Common workflow:**
+1. architect:architect (init)
+2. explorer:explorer.task (analyze)
+3. builder:constructor.task (build)
+4. finalize:finalize (QA & docs)
 
 ---
 
-## 🎓 WHEN TO USE EACH MODE
+## ✨ Examples
 
-**Use INIT when:**
-- Starting a new project
-- Need to define tech stack
-- Setting up tooling
-- Creating project structure
+### Example 1: Initialize Project
+```bash
+/architect --mode=init "Setup Next.js with shadcn/ui"
+```
 
-**Use STRATEGY when:**
-- Analyzing market opportunities
-- Defining business model
-- Planning pricing strategy
-- Evaluating competition
+**Output:**
+```
+✅ Project initialized
+✅ Next.js 14 configured
+✅ TypeScript strict mode
+✅ Tailwind CSS setup
+✅ shadcn/ui components ready
+```
 
-**Use DESIGN when:**
-- Creating design system
-- Defining visual identity
-- Specifying components
-- Documenting design tokens
+### Example 2: Design System
+```bash
+/architect --mode=design "Create modern design system"
+```
 
-**Use BRAINSTORM when:**
-- Solving complex problems
-- Generating feature ideas
-- Exploring alternatives
-- Challenging assumptions
-- Finding innovative solutions
+**Output:**
+```
+✅ Design tokens created
+✅ Color palette defined
+✅ Typography scale set
+✅ Spacing system
+✅ Component patterns documented
+```
+
+### Example 3: Brainstorm
+```bash
+/architect --mode=brainstorm "Improve app retention"
+```
+
+**Output:**
+```
+💡 5 innovative solutions
+💡 Feasibility analysis
+💡 Implementation roadmap
+💡 Success metrics
+```
 
 ---
 
-**🏛️ SMITE ARCHITECT v3.0**
-_"Complete Architecture - From Concept to Technical and Business Design"_
+## 🔧 Quick Reference
+
+**Init:** `/architect --mode=init "<prompt>"`
+**Strategy:** `/architect --mode=strategy "<prompt>"`
+**Design:** `/architect --mode=design "<prompt>"`
+**Brainstorm:** `/architect --mode=brainstorm "<prompt>"`
+
+---
+
+**Built with ❤️ by SMITE v3.0**
+*Architecture & Design Excellence*
