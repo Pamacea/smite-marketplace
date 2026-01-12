@@ -191,12 +191,12 @@ batches = [
 ```typescript
 // Batch 2: Launch 2 agents in parallel
 Task(
-  subagent_type="smite-builder",
+  subagent_type="builder:builder.task",
   prompt="Implement US-002: Create API endpoints"
 );
 
 Task(
-  subagent_type="smite-builder",
+  subagent_type="builder:builder.task",
   prompt="Implement US-003: Build UI components"
 );
 
@@ -208,7 +208,7 @@ Task(
 ```typescript
 // Single agent
 Task(
-  subagent_type="smite-builder",
+  subagent_type="builder:builder.task",
   prompt="Implement US-001: Add tasks table"
 );
 ```
@@ -427,10 +427,10 @@ See `plugins/smite-ralph/examples/` for complete examples:
 ## 🔗 INTEGRATION
 
 **Works with:**
-- smite-architect (design & strategy)
-- smite-builder (implementation)
-- smite-finalize (QA & docs)
-- smite-explorer (analysis)
+- architect (design & strategy)
+- builder (implementation)
+- finalize (QA & docs)
+- explorer (analysis)
 
 **Automatic triggers:**
 - Manual invocation
