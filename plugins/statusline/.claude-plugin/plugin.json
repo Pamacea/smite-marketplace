@@ -1,0 +1,22 @@
+{
+  "name": "statusline",
+  "description": "SMITE Statusline - Auto-configuring statusline with tokens, context, git, and more",
+  "version": "1.0.0",
+  "author": {
+    "name": "Pamacea"
+  },
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "hooks": {
+    "PostPluginInstall": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node plugins/statusline/dist/install.js"
+          }
+        ]
+      }
+    ]
+  }
+}

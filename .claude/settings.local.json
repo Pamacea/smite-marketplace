@@ -45,7 +45,14 @@
       "Bash(git remote get-url:*)",
       "Skill(ralph:ralph)",
       "Bash(node:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Skill(builder:smite-builder)",
+      "Bash(bun install)",
+      "Bash(bun run build)",
+      "Bash(npx tsx:*)",
+      "Bash(git reset:*)",
+      "Bash(git branch:*)",
+      "Bash(git rm:*)"
     ]
   },
   "hooks": {

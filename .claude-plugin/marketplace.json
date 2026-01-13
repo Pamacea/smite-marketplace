@@ -60,6 +60,15 @@
         "name": "Pamacea"
       },
       "category": "quality"
+    },
+    {
+      "name": "statusline",
+      "source": "./plugins/statusline",
+      "description": "Auto-configuring statusline with tokens, context, git, and more",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development"
     }
   ]
 }

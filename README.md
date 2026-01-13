@@ -14,6 +14,9 @@
 
 # Install Ralph (multi-agent orchestrator)
 /plugin install ralph@smite
+
+# Optional: Install statusline plugin
+/plugin install statusline@smite
 ```
 
 ### One-Shot Execution
@@ -187,6 +190,35 @@ The revolution: autonomous coding with parallel execution.
 
 **See:** [plugins/simplifier/README.md](plugins/simplifier/README.md)
 
+### 7. **statusline** - Auto-Configuring Statusline 🎨
+
+```bash
+# Install (auto-configures itself!)
+/plugin install statusline@smite
+
+# Manual configuration if needed
+/statusline install
+/statusline config
+/statusline reset
+```
+
+**Features:**
+- 🌿 Git branch with changes (+added -deleted ~modified)
+- 💰 Session cost and duration tracking
+- 🧩 Context tokens used with percentage
+- 📊 Visual progress bars
+- ⏱️ Usage limits (5-hour, weekly)
+- 📈 Daily spend tracking
+- 🚀 Zero-configuration setup
+
+**Display Example:**
+```
+main • Sonnet 4.5 • $0.15 • 5m23s • 45.2K/200K ⣿⣿⣧⣀⣀⣀⣀⣀⣀⣀ 23%
+smite-marketplace • /Users/username/Projects/smite
+```
+
+**See:** [plugins/statusline/README.md](plugins/statusline/README.md)
+
 ---
 
 ## 📊 Ralph PRD Format
@@ -310,6 +342,7 @@ smite/
 │   ├── builder/                      # Implementation
 │   ├── simplifier/                   # Code simplification
 │   ├── finalize/                     # QA + docs
+│   ├── statusline/                   # Auto-configuring statusline ⭐
 │   └── ralph/                        # Multi-agent orchestrator
 │       ├── src/                      # TypeScript source
 │       ├── dist/                     # Compiled JavaScript
@@ -394,6 +427,7 @@ EOF
 | **[AGENTS.md](AGENTS.md)** | Complete agent reference & convention guide |
 | **[RALPH_GUIDE.md](docs/RALPH_GUIDE.md)** | Complete Ralph usage guide |
 | **[SMITE_COMPLETE_GUIDE.md](docs/SMITE_COMPLETE_GUIDE.md)** | Legacy SMITE guide |
+| **[plugins/statusline/README.md](plugins/statusline/README.md)** | Statusline plugin guide |
 | **plugins/ralph/README.md** | Ralph technical documentation |
 
 ---
@@ -411,6 +445,9 @@ EOF
 
 ### Orchestration
 - **ralph**: Multi-agent parallel execution (2-3x speedup)
+
+### Tools
+- **statusline**: Auto-configuring statusline with git, context, and usage tracking ⭐
 
 ---
 
@@ -444,6 +481,6 @@ Inspired by:
 
 **SMITE v3.0**
 
-_6 core agents • Multi-agent parallel orchestration • 2-3x faster execution • Zero-debt engineering_
+_7 core plugins • Multi-agent parallel orchestration • 2-3x faster execution • Zero-debt engineering_
 
 📖 **[RALPH_GUIDE.md](docs/RALPH_GUIDE.md)** for complete Ralph documentation and examples.

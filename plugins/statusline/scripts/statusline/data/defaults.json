@@ -1,0 +1,34 @@
+{
+  "segments": [
+    {
+      "type": "token",
+      "enabled": true,
+      "style": "compact"
+    },
+    {
+      "type": "context",
+      "enabled": true,
+      "showProject": true,
+      "showBranch": true
+    },
+    {
+      "type": "git",
+      "enabled": true,
+      "showDirty": true
+    },
+    {
+      "type": "timestamp",
+      "enabled": true,
+      "format": "HH:mm:ss"
+    }
+  ],
+  "style": {
+    "separator": "•",
+    "color": "auto",
+    "padding": {
+      "left": 1,
+      "right": 1
+    }
+  },
+  "updateInterval": 1000
+}

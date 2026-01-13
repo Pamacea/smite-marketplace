@@ -166,6 +166,43 @@ agent-name:task
 
 ---
 
+### 7. Statusline - `/statusline`
+
+**Role:** Auto-configuring statusline for Claude Code
+
+**Direct Usage:**
+```bash
+/statusline install               # Install and auto-configure
+/statusline config                # View configuration
+/statusline reset                 # Reset to defaults
+/statusline help                  # Show help
+```
+
+**Use when:**
+- Installing plugin (auto-configures)
+- Viewing current configuration
+- Resetting to defaults
+- Manual configuration needed
+
+**Features:**
+- 🌿 Git branch with changes (+added -deleted ~modified)
+- 💰 Session cost and duration tracking
+- 🧩 Context tokens used with percentage
+- 📊 Visual progress bars
+- ⏱️ Usage limits (5-hour, weekly)
+- 📈 Daily spend tracking
+- 🚀 Zero-configuration setup
+
+**Display Example:**
+```
+main • Sonnet 4.5 • $0.15 • 5m23s • 45.2K/200K ⣿⣿⣧⣀⣀⣀⣀⣀⣀⣀ 23%
+smite-marketplace • /Users/username/Projects/smite
+```
+
+**See:** [plugins/statusline/README.md](plugins/statusline/README.md)
+
+---
+
 ## 📊 Usage Comparison
 
 | Scenario | Recommended Approach | Why |
@@ -241,6 +278,7 @@ Execute with:
 4. **Finalize with Finalize** - Ensure quality
 5. **Simplify when needed** - Reduce complexity
 6. **Orchestrate with Ralph** - For complex workflows
+7. **Install Statusline** - Track your session metrics
 
 ## 📚 Agent Details
 
@@ -250,6 +288,8 @@ See individual plugin documentation for detailed usage:
 - `plugins/builder/commands/smite-builder.md`
 - `plugins/architect/commands/smite-architect.md`
 - `plugins/finalize/commands/smite-finalize.md`
+- `plugins/simplifier/README.md`
+- `plugins/statusline/README.md`
 - `plugins/ralph/README.md`
 
 ---
