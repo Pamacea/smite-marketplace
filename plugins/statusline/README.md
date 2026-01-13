@@ -68,31 +68,42 @@ $1.23 • 45.2K • [████████░░] 78%
 
 ## Installation
 
-### Method 1: Automatic (Recommended)
+### Step 1: Install Plugin
 
 ```bash
 /plugin install statusline@smite
 ```
 
-The plugin will:
+### Step 2: Run Configuration Script
+
+After installation, run the configuration command:
+
+```bash
+/statusline install
+```
+
+This will:
 1. Configure your `~/.claude/settings.json`
 2. Create `~/.claude/statusline.config.json` with defaults
 3. Backup existing settings
 4. Run on platform-specific runtime (Bun or Node.js)
 
-### Method 2: Manual
+### Step 3: Restart Claude Code
 
-1. Clone/download to `plugins/statusline/`
-2. Run installation script:
+That's it! The statusline will appear automatically.
+
+### Manual Installation (Alternative)
+
+If automatic installation doesn't work:
+
+1. Install plugin: `/plugin install statusline@smite`
+2. Run manually:
    ```bash
+   # With Node.js
+   node ~/.claude/plugins/cache/smite/statusline/1.0.0/dist/install.js
+
    # With Bun
-   bun plugins/statusline/scripts/install.ts
-
-   # With Node.js + tsx
-   npx tsx plugins/statusline/scripts/install.ts
-
-   # With Node.js (compiled)
-   node plugins/statusline/scripts/dist/install.js
+   bun ~/.claude/plugins/cache/smite/statusline/1.0.0/dist/install.js
    ```
 
 3. Restart Claude Code

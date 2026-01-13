@@ -6,17 +6,5 @@
     "name": "Pamacea"
   },
   "commands": "./commands/",
-  "skills": "./skills/",
-  "hooks": {
-    "PostPluginInstall": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node plugins/statusline/dist/install.js"
-          }
-        ]
-      }
-    ]
-  }
+  "skills": "./skills/"
 }
