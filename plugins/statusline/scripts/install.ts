@@ -139,7 +139,7 @@ async function writeSettings(
 }
 
 function createStatuslineCommand(pluginCache: string, runtime: 'bun' | 'node'): string {
-  const scriptPath = path.join(pluginCache, 'scripts', 'statusline', 'src', 'index.ts');
+  const scriptPath = path.join(pluginCache, 'scripts', 'statusline', 'dist', 'index.js');
   return `${runtime} ${scriptPath}`;
 }
 

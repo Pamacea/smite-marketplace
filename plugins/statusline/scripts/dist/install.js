@@ -95,7 +95,7 @@ async function writeSettings(settingsPath, settings, options) {
     await atomicWrite(settingsPath, content);
 }
 function createStatuslineCommand(pluginCache, runtime) {
-    const scriptPath = path.join(pluginCache, 'scripts', 'statusline', 'src', 'index.ts');
+    const scriptPath = path.join(pluginCache, 'scripts', 'statusline', 'dist', 'index.js');
     return `${runtime} ${scriptPath}`;
 }
 async function configureSettings(settings, platform, options) {
