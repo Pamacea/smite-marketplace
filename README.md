@@ -65,6 +65,32 @@ With 10+ stories: 2-3x speedup!
 
 ---
 
+## 📋 Agent Convention
+
+SMITE agents follow a simple, intuitive naming convention:
+
+```bash
+# Direct usage (interactive, sequential)
+/explorer
+/builder
+/architect
+/finalize
+
+# Ralph PRD usage (orchestrated, parallel)
+explorer:task
+builder:task
+architect:task
+finalize:task
+```
+
+**When to use:**
+- `/agent-name` → Interactive development, one-off tasks
+- `agent:task` → Ralph PRD orchestration, parallel execution
+
+**See:** [AGENTS.md](AGENTS.md) for complete agent reference.
+
+---
+
 ## 🤖 Core Agents
 
 ### 1. **ralph** - Multi-Agent Orchestrator ⭐
@@ -181,7 +207,7 @@ The revolution: autonomous coding with parallel execution.
         "Build working"
       ],
       "priority": 10,
-      "agent": "architect",
+      "agent": "architect:task",
       "dependencies": [],
       "passes": false,
       "notes": ""
@@ -196,7 +222,7 @@ The revolution: autonomous coding with parallel execution.
         "Responsive design"
       ],
       "priority": 9,
-      "agent": "builder",
+      "agent": "builder:task",
       "dependencies": ["US-001"],
       "passes": false,
       "notes": ""
@@ -211,7 +237,7 @@ The revolution: autonomous coding with parallel execution.
         "Adds to list"
       ],
       "priority": 9,
-      "agent": "builder",
+      "agent": "builder:task",
       "dependencies": ["US-001"],
       "passes": false,
       "notes": ""
@@ -226,7 +252,7 @@ The revolution: autonomous coding with parallel execution.
         "Docs complete"
       ],
       "priority": 1,
-      "agent": "finalize",
+      "agent": "finalize:task",
       "dependencies": ["US-002", "US-003"],
       "passes": false,
       "notes": ""
@@ -365,6 +391,7 @@ EOF
 
 | Document | Description |
 |----------|-------------|
+| **[AGENTS.md](AGENTS.md)** | Complete agent reference & convention guide |
 | **[RALPH_GUIDE.md](docs/RALPH_GUIDE.md)** | Complete Ralph usage guide |
 | **[SMITE_COMPLETE_GUIDE.md](docs/SMITE_COMPLETE_GUIDE.md)** | Legacy SMITE guide |
 | **plugins/ralph/README.md** | Ralph technical documentation |
