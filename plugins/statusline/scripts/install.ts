@@ -146,16 +146,10 @@ async function writeSettings(
   await atomicWrite(settingsPath, content);
 }
 
-function createStatuslineCommand(pluginCache: string, runtime: 'bun' | 'node', platform: Platform): string {
-  const scriptPath = path.join(pluginCache, 'scripts', 'statusline', 'dist', 'index.js');
-
-  // On Windows with bun, use full path for reliability
-  if (platform.os === 'windows' && runtime === 'bun') {
-    const bunPath = path.join(platform.home, '.bun', 'bin', 'bun');
-    return `"${bunPath}" ${scriptPath}`;
-  }
-
-  return `${runtime} ${scriptPath}`;
+function createStatuslineCommand(platform: Platform): string {
+  // Use simplified statusline script (cross-platform, reliable)
+  const statuslineScript = path.join(platform.home, '.claude', 'statusline.js');
+  return `node ${statuslineScript}`;
 }
 
 async function configureSettings(
@@ -164,7 +158,7 @@ async function configureSettings(
   options: InstallOptions
 ): Promise<ClaudeSettings> {
   const currentSettings = settings || {};
-  const command = createStatuslineCommand(platform.pluginCache, platform.runtime, platform);
+  const command = createStatuslineCommand(platform);
 
   const newSettings: ClaudeSettings = {
     ...currentSettings,
@@ -286,6 +280,39 @@ function getLogPath(): string {
   return path.join(homeDir, '.claude', 'logs', 'statusline-install.log');
 }
 
+async function installStatuslineScript(platform: Platform, options: InstallOptions): Promise<void> {
+  // When running from dist/install.js, go up to scripts/ directory
+  const scriptDir = fileURLToPath(import.meta.url);
+  const scriptsDir = path.dirname(path.dirname(scriptDir)); // Go up from dist/ to scripts/
+  const sourceScript = path.join(scriptsDir, 'statusline-simple.js');
+  const targetScript = path.join(platform.home, '.claude', 'statusline.js');
+
+  if (options.verbose) {
+    log.info(`Copying statusline script:`);
+    log.info(`  Script dir: ${scriptDir}`);
+    log.info(`  Scripts parent: ${scriptsDir}`);
+    log.info(`  Source: ${sourceScript}`);
+    log.info(`  Target: ${targetScript}`);
+  }
+
+  if (options.dryRun) {
+    log.dry(`Would copy ${sourceScript} to ${targetScript}`);
+    return;
+  }
+
+  try {
+    // Check if source exists
+    if (!existsSync(sourceScript)) {
+      throw new Error(`Source script not found: ${sourceScript}`);
+    }
+
+    await fs.copyFile(sourceScript, targetScript);
+    log.success('Installed statusline script');
+  } catch (error) {
+    throw new Error(`Failed to copy statusline script: ${error}`);
+  }
+}
+
 async function install(options: InstallOptions): Promise<void> {
   const startTime = Date.now();
   const logPath = getLogPath();
@@ -301,6 +328,9 @@ async function install(options: InstallOptions): Promise<void> {
     log.success(`Detected ${platform.os} with ${platform.runtime}`);
     log.info(`Home directory: ${platform.home}`);
     log.info(`Settings path: ${platform.settingsPath}`);
+
+    // Install simplified statusline script
+    await installStatuslineScript(platform, options);
 
     // Ensure settings file exists
     await ensureSettingsFileExists(platform.settingsPath, options);

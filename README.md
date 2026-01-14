@@ -203,19 +203,24 @@ The revolution: autonomous coding with parallel execution.
 ```
 
 **Features:**
-- 🌿 Git branch with changes (+added -deleted ~modified)
-- 💰 Session cost and duration tracking
-- 🧩 Context tokens used with percentage
-- 📊 Visual progress bars
-- ⏱️ Usage limits (5-hour, weekly)
-- 📈 Daily spend tracking
+- 🌿 Git branch detection (300ms timeout, no hangs)
+- 💰 Session cost tracking
+- ⏱️ Session duration display
+- 🧩 Context usage with visual progress bar
 - 🚀 Zero-configuration setup
+- ✅ Cross-platform (Windows, macOS, Linux)
+- 🔧 Reliable Node.js implementation (no Bun dependency)
 
 **Display Example:**
 ```
-main • Sonnet 4.5 • $0.15 • 5m23s • 45.2K/200K ⣿⣿⣧⣀⣀⣀⣀⣀⣀⣀ 23%
-smite-marketplace • /Users/username/Projects/smite
+main • $0.15 • 3m0s • [████████░░] 11%
 ```
+
+**How it works:**
+- Installs `~/.claude/statusline.js` script
+- Uses synchronous stdin reading (no async hangs)
+- 300ms timeout on all git operations
+- Falls back gracefully on errors
 
 **See:** [plugins/statusline/README.md](plugins/statusline/README.md)
 
@@ -447,7 +452,7 @@ EOF
 - **ralph**: Multi-agent parallel execution (2-3x speedup)
 
 ### Tools
-- **statusline**: Auto-configuring statusline with git, context, and usage tracking ⭐
+- **statusline**: Cross-platform statusline with git, cost, and context tracking ⭐
 
 ---
 
