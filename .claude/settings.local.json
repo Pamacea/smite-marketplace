@@ -56,7 +56,12 @@
       "Skill(statusline:statusline)",
       "Bash(bun:*)",
       "Bash(timeout:*)",
-      "Skill(commit)"
+      "Skill(commit)",
+      "Bash(for:*)",
+      "Bash(if [ -f \"$dirREADME.md\" ])",
+      "Bash(then echo \"HAS README\")",
+      "Bash(else echo \"MISSING README\")",
+      "Bash(fi)"
     ]
   },
   "hooks": {
