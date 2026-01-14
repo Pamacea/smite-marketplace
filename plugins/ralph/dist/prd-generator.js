@@ -42,13 +42,13 @@ class PRDGenerator {
         if (!hasAuth)
             return [];
         return [
-            this.createStory('US-001', 'Setup project structure', 'architect', 10, [
+            this.createStory('US-001', 'Setup project structure', 'architect:task', 10, [
                 'Project structure follows best practices',
                 'Dependencies installed',
                 'TypeScript configured',
                 'Build system working',
             ], []),
-            this.createStory('US-002', 'Implement authentication', 'builder', 9, [
+            this.createStory('US-002', 'Implement authentication', 'builder:task', 9, [
                 'Login form working',
                 'Password hashing implemented',
                 'Session management working',
@@ -57,7 +57,7 @@ class PRDGenerator {
         ];
     }
     static createDefaultStory() {
-        return this.createStory('US-001', 'Initialize project', 'architect', 10, [
+        return this.createStory('US-001', 'Initialize project', 'architect:task', 10, [
             'Project created',
             'Dependencies installed',
             'Basic configuration done',
@@ -66,7 +66,7 @@ class PRDGenerator {
     }
     static createFinalizeStory(dependencies) {
         const id = `US-${String(dependencies.length + 1).padStart(3, '0')}`;
-        return this.createStory(id, 'Finalize and document', 'finalize', 1, [
+        return this.createStory(id, 'Finalize and document', 'finalize:task', 1, [
             'All tests passing',
             'No linting errors',
             'Documentation complete',

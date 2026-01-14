@@ -91,7 +91,7 @@ Finalize: QA + Docs
         "Build working"
       ],
       "priority": 10,
-      "agent": "architect",
+      "agent": "architect:task",
       "dependencies": [],
       "passes": false,
       "notes": ""
@@ -106,7 +106,7 @@ Finalize: QA + Docs
         "Responsive design"
       ],
       "priority": 9,
-      "agent": "builder",
+      "agent": "builder:task",
       "dependencies": ["US-001"],
       "passes": false,
       "notes": ""
@@ -121,7 +121,7 @@ Finalize: QA + Docs
         "Documentation complete"
       ],
       "priority": 1,
-      "agent": "finalize",
+      "agent": "finalize:task",
       "dependencies": ["US-001", "US-002"],
       "passes": false,
       "notes": ""
@@ -200,7 +200,7 @@ The simplifier agent can be used for code refactoring tasks:
     "All tests passing"
   ],
   "priority": 2,
-  "agent": "simplifier",
+  "agent": "simplifier:task",
   "dependencies": ["US-002", "US-003"],
   "passes": false,
   "notes": ""
@@ -239,7 +239,7 @@ Override default agent per story:
 ```json
 {
   "id": "US-002",
-  "agent": "builder",  // Use builder instead of default
+  "agent": "builder:task",  // Use builder instead of default
   ...
 }
 ```

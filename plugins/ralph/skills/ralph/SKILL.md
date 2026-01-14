@@ -109,28 +109,28 @@ Ralph automatically analyzes dependencies and creates execution batches.
       "id": "US-001",
       "title": "Add tasks table",
       "priority": 1,
-      "agent": "smite-builder",
+      "agent": "builder:task",
       "dependencies": []
     },
     {
       "id": "US-002",
       "title": "Create API endpoints",
       "priority": 2,
-      "agent": "smite-builder",
+      "agent": "builder:task",
       "dependencies": ["US-001"]
     },
     {
       "id": "US-003",
       "title": "Build UI components",
       "priority": 2,
-      "agent": "smite-builder",
+      "agent": "builder:task",
       "dependencies": ["US-001"]
     },
     {
       "id": "US-004",
       "title": "Add filter dropdown",
       "priority": 3,
-      "agent": "smite-builder",
+      "agent": "builder:task",
       "dependencies": ["US-003"]
     }
   ]
@@ -191,12 +191,12 @@ batches = [
 ```typescript
 // Batch 2: Launch 2 agents in parallel
 Task(
-  subagent_type="builder:constructor.task",
+  subagent_type="builder:task",
   prompt="Implement US-002: Create API endpoints"
 );
 
 Task(
-  subagent_type="explorer:explorer.task",
+  subagent_type="explorer:task",
   prompt="Implement US-003: Build UI components"
 );
 
@@ -208,7 +208,7 @@ Task(
 ```typescript
 // Single agent
 Task(
-  subagent_type="architect:architect",
+  subagent_type="architect:task",
   prompt="Implement US-001: Setup project structure"
 );
 ```
@@ -250,7 +250,7 @@ appendProgress(`
         "Typecheck passes"
       ],
       "priority": 1,
-      "agent": "builder",
+      "agent": "builder:task",
       "tech": "nextjs",
       "dependencies": [],
       "passes": false,
@@ -308,10 +308,11 @@ Stories execute in priority order. Earlier stories are implicit dependencies.
 
 Match agent to story type:
 
-- **architect**: Design, strategy, initialization → `architect:architect`
-- **builder**: Implementation (Next.js, Rust, Python) → `builder:constructor.task`
-- **finalize**: QA, documentation → `finalize:finalize`
-- **explorer**: Codebase analysis → `explorer:explorer.task`
+- **architect**: Design, strategy, initialization → `architect:task`
+- **builder**: Implementation (Next.js, Rust, Python) → `builder:task`
+- **finalize**: QA, documentation → `finalize:task`
+- **explorer**: Codebase analysis → `explorer:task`
+- **simplifier**: Code refactoring → `simplifier:task`
 
 ### 4. Verifiable Criteria
 
@@ -447,9 +448,9 @@ Multiple agents run simultaneously via Task tool:
 
 ```typescript
 // Launch 3 agents in ONE message
-Task(subagent_type="smite-builder", prompt="US-001...");
-Task(subagent_type="smite-builder", prompt="US-002...");
-Task(subagent_type="smite-builder", prompt="US-003...");
+Task(subagent_type="builder:task", prompt="US-001...");
+Task(subagent_type="builder:task", prompt="US-002...");
+Task(subagent_type="builder:task", prompt="US-003...");
 
 // Result: 🚀 Running 3 Agents in parallel...
 ```
