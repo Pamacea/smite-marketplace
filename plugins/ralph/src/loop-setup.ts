@@ -152,7 +152,7 @@ function generateLoopFileContent(config: LoopConfig, prd: any): string {
     '4. Update notes with learnings and issues',
     '5. Commit changes after each successful story',
     '6. When ALL stories are complete, output:',
-    '   `<promise>' + config.completion_promise + '</promise>`',
+    `   \`<promise>\${config.completion_promise}</promise>\``,
     '',
     '## Loop Mechanics',
     '',
