@@ -54,7 +54,7 @@ export function setupRalphLoop(
     }
 
     // Create loop file with YAML frontmatter
-    const loopFilePath = path.join(claudeDir, 'ralph-loop.local.md');
+    const loopFilePath = path.join(claudeDir, 'loop.md');
     const config: LoopConfig = {
       active: true,
       iteration: 1,
@@ -159,7 +159,7 @@ function generateLoopFileContent(config: LoopConfig, prd: any): string {
  * Read loop configuration from file
  */
 export function readLoopConfig(loopFilePath?: string): LoopConfig | null {
-  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
   if (!fs.existsSync(filePath)) {
     return null;
@@ -213,7 +213,7 @@ export function readLoopConfig(loopFilePath?: string): LoopConfig | null {
  * Update loop iteration counter
  */
 export function incrementLoopIteration(loopFilePath?: string): boolean {
-  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
   if (!fs.existsSync(filePath)) {
     return false;
@@ -239,7 +239,7 @@ export function incrementLoopIteration(loopFilePath?: string): boolean {
  * Clear loop file
  */
 export function clearLoopFile(loopFilePath?: string): boolean {
-  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
   if (!fs.existsSync(filePath)) {
     return true;

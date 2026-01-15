@@ -43,7 +43,7 @@
 # ✅ Dependency analysis
 # ✅ Parallel execution (2-3x faster)
 # ✅ QA & documentation
-# ✅ Auto-looping until completion (with ralph-loop)
+# ✅ Auto-looping until completion (with loop)
 ```
 
 **Ralph Modes:**
@@ -377,7 +377,7 @@ Batch 3: [US-004] (sequential)
 ### Windows (PowerShell)
 
 ```powershell
-.\ralph-loop.ps1 -Prompt "Build a todo app"
+.\loop.ps1 -Prompt "Build a todo app"
 .\ralph-status.ps1
 .\ralph-cancel.ps1
 ```

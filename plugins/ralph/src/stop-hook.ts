@@ -22,7 +22,7 @@ interface HookResponse {
 }
 
 function readLoopConfig(loopFilePath?: string): LoopConfig | null {
-  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
   if (!fs.existsSync(filePath)) {
     return null;
@@ -83,7 +83,7 @@ function readLoopConfig(loopFilePath?: string): LoopConfig | null {
 }
 
 function incrementLoopIteration(loopFilePath?: string): boolean {
-  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
   if (!fs.existsSync(filePath)) {
     return false;
@@ -113,7 +113,7 @@ function incrementLoopIteration(loopFilePath?: string): boolean {
 }
 
 function deleteLoopFile(loopFilePath?: string): boolean {
-  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
   if (!fs.existsSync(filePath)) {
     return true;
@@ -159,7 +159,7 @@ function getPromptFromLoopFile(loopFilePath: string): string {
 
 // Main hook logic
 function main(): HookResponse {
-  const loopFile = path.join(process.cwd(), '.claude', 'ralph-loop.local.md');
+  const loopFile = path.join(process.cwd(), '.claude', 'loop.md');
   const config = readLoopConfig(loopFile);
 
   // No active loop, allow exit

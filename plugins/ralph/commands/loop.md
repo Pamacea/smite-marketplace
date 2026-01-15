@@ -9,7 +9,7 @@ Execute #$ARGUMENTS using autonomous looping with hook-based iteration until tas
 
 This command creates a Ralph Loop that:
 1. Auto-generates a detailed PRD from your prompt
-2. Creates `.claude/ralph-loop.local.md` with loop configuration
+2. Creates `.claude/loop.md` with loop configuration
 3. Executes user stories systematically using agents
 4. Uses stop-hook to intercept exit and re-feed prompt if not complete
 5. Continues until `<promise>COMPLETE</promise>` detected or max iterations
@@ -35,13 +35,13 @@ Run the loop initialization script:
 
 ```bash
 cd plugins/ralph
-node scripts/ralph-loop-init.js $ARGUMENTS
+node scripts/loopjs $ARGUMENTS
 ```
 
 This will:
 - Generate PRD from prompt using `PRDGenerator`
 - Save PRD to `.smite/prd.json`
-- Create `.claude/ralph-loop.local.md` with:
+- Create `.claude/loop.md` with:
   - YAML frontmatter (iteration, max_iterations, completion_promise)
   - Full prompt with PRD details
   - User stories with acceptance criteria
@@ -103,7 +103,7 @@ The stop-hook will detect this and terminate the loop.
 </rules>
 
 <success_criteria>
-- `.claude/ralph-loop.local.md` created successfully
+- `.claude/loop.md` created successfully
 - PRD generated with user stories
 - All user stories executed (marked `passes: true`)
 - All tests passing

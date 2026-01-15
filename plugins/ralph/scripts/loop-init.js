@@ -26,7 +26,7 @@ for (let i = 0; i < args.length; i++) {
 // Validate prompt
 if (!prompt) {
   console.error('Error: No prompt provided');
-  console.error('Usage: node scripts/ralph-loop-init.js "<prompt>" [--max-iterations <n>] [--completion-promise <text>]');
+  console.error('Usage: node scripts/loop-init.js "<prompt>" [--max-iterations <n>] [--completion-promise <text>]');
   process.exit(1);
 }
 

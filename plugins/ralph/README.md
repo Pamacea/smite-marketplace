@@ -25,21 +25,21 @@ Ralph is an autonomous AI agent orchestrator that coordinates multiple agents to
 
 ```bash
 # Auto-generate PRD and loop until complete
-/ralph-loop "Build a todo app with authentication and real-time updates"
+/loopd a todo app with authentication and real-time updates"
 
 # With custom options
-/ralph-loop "Create REST API" --max-iterations 100 --completion-promise "API_DEPLOYED"
+/loopte REST API" --max-iterations 100 --completion-promise "API_DEPLOYED"
 ```
 
 **How it works:**
 1. Generates detailed PRD from your prompt
-2. Creates `.claude/ralph-loop.local.md` with loop configuration
+2. Creates `.claude/loop.md` with loop configuration
 3. You execute stories systematically using agents
 4. Continues until `<promise>COMPLETE</promise>` or max iterations
 
 **Best for:** Complex features, multi-step tasks, when you want autonomous execution
 
-**Documentation:** See `RALPH-LOOP.md` for complete guide
+**Documentation:** See `loop.md` for complete guide
 
 ### Mode 2: Single-Pass Execution
 
@@ -153,26 +153,26 @@ Execute a PRD once with parallel optimization (no looping).
 /ralph "Build a REST API"
 ```
 
-### `/ralph-loop` - Auto-Iterating Execution ⚡ NEW
+### `/loopto-Iterating Execution ⚡ NEW
 
 Execute with automatic looping using hook-based iteration (inspired by Ralph Wiggum).
 
 ```bash
 # Basic usage
-/ralph-loop "Build a todo app with authentication"
+/loopd a todo app with authentication"
 
 # With custom options
-/ralph-loop "Create REST API" --max-iterations 100 --completion-promise "API_DEPLOYED"
+/loopte REST API" --max-iterations 100 --completion-promise "API_DEPLOYED"
 ```
 
 **How it works:**
 1. Generates PRD from your prompt
-2. Creates `.claude/ralph-loop.local.md` with loop configuration
+2. Creates `.claude/loop.md` with loop configuration
 3. Executes user stories iteratively
 4. Hook intercepts exit and re-feeds prompt if not complete
 5. Stops when `<promise>COMPLETE</promise>` is detected
 
-**Documentation:** See `RALPH-LOOP.md` for complete guide.
+**Documentation:** See `loop.md` for complete guide.
 
 ### Check Status
 

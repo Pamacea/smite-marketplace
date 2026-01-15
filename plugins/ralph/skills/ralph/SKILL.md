@@ -67,21 +67,21 @@ Cancel active Ralph workflow.
 /ralph cancel
 ```
 
-### `/ralph-loop "<prompt>"` ⚡ NEW
+### `/loopmpt>"` ⚡ NEW
 
 Auto-generate PRD from prompt and execute with **autonomous looping** until completion.
 
 ```bash
 # Basic usage
-/ralph-loop "Build a todo app with authentication"
+/loopd a todo app with authentication"
 
 # With custom options
-/ralph-loop "Create REST API" --max-iterations 100 --completion-promise "DEPLOYED"
+/loopte REST API" --max-iterations 100 --completion-promise "DEPLOYED"
 ```
 
 **Process:**
 1. Generate detailed PRD from prompt
-2. Create `.claude/ralph-loop.local.md` with loop configuration
+2. Create `.claude/loop.md` with loop configuration
 3. Execute user stories iteratively
 4. Stop hook intercepts exit and re-feeds prompt if not complete
 5. Continues until `<promise>COMPLETE</promise>` detected or max iterations
@@ -392,16 +392,16 @@ Ralph supports two execution modes:
 
 Execute PRD once with parallel optimization, no looping.
 
-### 2. Auto-Iterating Loop (`/ralph-loop`) ⚡ NEW
+### 2. Auto-Iterating Loop (`/loopEW
 
 Uses hook-based system for automatic iteration until completion.
 
 **How it works:**
-1. Creates `.claude/ralph-loop.local.md` with loop configuration
+1. Creates `.claude/loop.md` with loop configuration
 2. Stop hook intercepts exit and re-feeds prompt if not complete
 3. Iterates until `<promise>COMPLETE</promise>` detected or max iterations
 
-**Documentation:** See `RALPH-LOOP.md` for complete guide on loop system.
+**Documentation:** See `loop.md` for complete guide on loop system.
 
 ---
 
