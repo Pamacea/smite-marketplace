@@ -2,6 +2,11 @@
 
 Cross-platform shell aliases for Claude Code - `cc` for normal mode and `ccc` for bypass-permissions mode.
 
+**Platform Support:**
+- ✅ Windows 11 (PowerShell, cmd.exe)
+- ✅ macOS (Bash/Zsh)
+- ✅ Linux (Bash/Zsh)
+
 ---
 
 ## Quick Start
@@ -12,6 +17,7 @@ Cross-platform shell aliases for Claude Code - `cc` for normal mode and `ccc` fo
 
 # Reload your shell
 # PowerShell: . $PROFILE
+# cmd.exe: Works immediately (no reload needed)
 # Bash/Zsh: source ~/.bashrc or source ~/.zshrc
 
 # Use aliases
@@ -25,7 +31,7 @@ ccc "Fix this bug"                        # Auto-accept all edits
 
 Installs global shell aliases:
 - `cc` → `claude` (normal mode, asks for permission on edits)
-- `ccc` → `claude --bypass-permissions` (auto-accepts all edits)
+- `ccc` → `claude --permission-mode bypassPermissions` (auto-accepts all edits)
 
 **Platform Support:**
 - ✅ Windows 11 (PowerShell 5/7)
@@ -46,17 +52,21 @@ Installs global shell aliases:
 
 ## Installation
 
-### Windows (PowerShell)
+### Windows (PowerShell & cmd.exe)
 
 ```bash
 # In smite project, run:
 /install-aliases
 
-# Reload your PowerShell:
+# For PowerShell - Reload your shell:
 . $PROFILE
+
+# For cmd.exe - Works immediately, no reload needed!
 
 # Or close and reopen terminal
 ```
+
+**Note:** The Windows installer creates BOTH PowerShell functions AND cmd.exe .bat files.
 
 ### macOS/Linux (Bash/Zsh)
 

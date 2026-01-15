@@ -8,26 +8,27 @@ allowed-tools: Bash
 <objective>
 Install cross-platform shell aliases for Claude Code:
 - `cc` → claude (normal mode)
-- `ccc` → claude --bypass-permissions (auto-accept edits)
+- `ccc` → claude --permission-mode bypassPermissions (auto-accept edits)
 </objective>
 
 <context>
 This command installs global shell aliases that work from any directory on your system.
 
 Supports:
-- Windows 11 (PowerShell 5/7)
+- Windows 11 (PowerShell, cmd.exe)
 - macOS (Bash/Zsh)
 - Linux (Bash/Zsh)
 
 After installation, reload your shell to activate aliases:
 - PowerShell: `. $PROFILE`
+- cmd.exe: Works immediately (no reload needed)
 - Bash/Zsh: `source ~/.bashrc` or `source ~/.zshrc`
 </context>
 
 <process>
 1. **Detect platform**: Check if Windows (win32) or Unix-like (darwin/linux)
 2. **Run installer script**:
-   - Windows: Execute `scripts/install.ps1` via PowerShell
+   - Windows: Execute `scripts/install.ps1` via PowerShell (installs for both PowerShell and cmd.exe)
    - macOS/Linux: Execute `scripts/install.sh` via Bash
 3. **Display success message**: Show reload instructions
 </process>
@@ -38,10 +39,12 @@ After installation, reload your shell to activate aliases:
 - Must be idempotent (safe to run multiple times)
 - Show clear success/failure messages
 - Detect and skip if already installed
+- On Windows: install both PowerShell functions AND cmd.exe .bat files
 </rules>
 
 <success_criteria>
-- Aliases added to shell profile
+- Aliases added to shell profile (PowerShell/Bash/Zsh)
+- .bat files created for cmd.exe (Windows)
 - Backup created
 - User knows how to reload shell
 - `cc` and `ccc` work after shell reload

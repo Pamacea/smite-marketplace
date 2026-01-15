@@ -63,7 +63,7 @@ ALIAS_CONTENT="
 
 $ALIAS_MARKER
 alias cc='claude'
-alias ccc='claude --bypass-permissions'
+alias ccc='claude --permission-mode bypassPermissions'
 # End Claude Code aliases
 "
 

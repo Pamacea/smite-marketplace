@@ -2,11 +2,13 @@
 
 ## Installation Complete! ✅
 
-Your PowerShell profile has been configured with `cc` and `ccc` aliases.
+Your PowerShell profile and cmd.exe have been configured with `cc` and `ccc` aliases.
 
 ---
 
 ## Step 1: Reload Your Shell
+
+**For PowerShell:**
 
 **Option A:** Reload profile in current terminal
 ```powershell
@@ -14,6 +16,10 @@ Your PowerShell profile has been configured with `cc` and `ccc` aliases.
 ```
 
 **Option B:** Close and reopen your terminal (recommended)
+
+**For cmd.exe:**
+- Works immediately! No reload needed.
+- Open a new cmd.exe window and start using `cc` and `ccc` right away.
 
 ---
 
@@ -42,7 +48,7 @@ Test that aliases work:
 # Should show: cc -> claude
 Get-ChildItem Alias: | Where-Object {$_.Name -eq "cc"}
 
-# Should show: ccc -> claude --bypass-permissions
+# Should show: ccc -> claude --permission-mode bypassPermissions
 Get-ChildItem Alias: | Where-Object {$_.Name -eq "ccc"}
 ```
 
@@ -59,8 +65,14 @@ Delete these lines:
 ```powershell
 # Claude Code aliases
 function cc { claude  }
-function ccc { claude --bypass-permissions  }
+function ccc { claude --permission-mode bypassPermissions  }
 # End Claude Code aliases
+```
+
+**Also delete the .bat files for cmd.exe:**
+```cmd
+del "%LOCALAPPDATA%\Microsoft\WindowsApps\cc.bat"
+del "%LOCALAPPDATA%\Microsoft\WindowsApps\ccc.bat"
 ```
 
 ---

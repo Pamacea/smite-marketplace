@@ -42,7 +42,7 @@ $aliasContent = @"
 
 $aliasMarker
 function cc { claude $args }
-function ccc { claude --bypass-permissions $args }
+function ccc { claude --permission-mode bypassPermissions $args }
 # End Claude Code aliases
 "@
 
@@ -56,7 +56,7 @@ if ($profileContent -and $profileContent.Contains($aliasMarker)) {
     Write-Host ""
     Write-Info "Available aliases:"
     Write-Host "   cc    -> claude" -ForegroundColor Cyan
-    Write-Host "   ccc   -> claude --bypass-permissions" -ForegroundColor Cyan
+    Write-Host "   ccc   -> claude --permission-mode bypassPermissions" -ForegroundColor Cyan
     Write-Host ""
     Write-Info "Reload your shell:"
     Write-Host "   . `$PROFILE" -ForegroundColor Cyan
@@ -67,11 +67,25 @@ if ($profileContent -and $profileContent.Contains($aliasMarker)) {
 Add-Content -Path $profilePath -Value $aliasContent
 
 Write-Success "Installed aliases to: $profilePath"
+
+# Create .bat files for cmd.exe support
+$batDir = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+$ccBatPath = "$batDir\cc.bat"
+$cccBatPath = "$batDir\ccc.bat"
+
+try {
+    "@echo off`nciaude `%*`n" | Out-File -FilePath $ccBatPath -Encoding ASCII
+    "@echo off`nciaude --permission-mode bypassPermissions `%*`n" | Out-File -FilePath $cccBatPath -Encoding ASCII
+    Write-Success "Created cmd.exe aliases: cc.bat, ccc.bat"
+} catch {
+    Write-Warning "Could not create cmd.exe aliases (may require admin privileges)"
+}
+
 Write-Host ""
 
 Write-Info "Aliases added:"
 Write-Host "   cc    -> claude" -ForegroundColor Cyan
-Write-Host "   ccc   -> claude --bypass-permissions" -ForegroundColor Cyan
+Write-Host "   ccc   -> claude --permission-mode bypassPermissions" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Info "Reload your shell to use aliases:"
