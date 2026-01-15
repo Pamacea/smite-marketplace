@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { PRDGenerator } from './prd-generator';
 import { PRDParser } from './prd-parser';
+import { PRD, UserStory, RalphState } from './types';
 
 export interface LoopOptions {
   maxIterations?: number;
@@ -31,7 +32,7 @@ const DEFAULT_COMPLETION_PROMISE = 'COMPLETE';
 export async function setupRalphLoop(
   prompt: string,
   options: LoopOptions = {}
-): Promise<{ success: boolean; loopFilePath: string; prdPath: string; prd?: any; error?: string }> {
+): Promise<{ success: boolean; loopFilePath: string; prdPath: string; prd?: PRD; error?: string }> {
   try {
     const maxIterations = options.maxIterations || DEFAULT_MAX_ITERATIONS;
     const completionPromise = options.completionPromise || DEFAULT_COMPLETION_PROMISE;
@@ -91,7 +92,7 @@ export async function setupRalphLoop(
 /**
  * Generate loop file content with YAML frontmatter
  */
-function generateLoopFileContent(config: LoopConfig, prd: any): string {
+function generateLoopFileContent(config: LoopConfig, prd: PRD): string {
   const yamlFrontmatter = [
     '---',
     `active: ${config.active}`,
@@ -121,7 +122,7 @@ function generateLoopFileContent(config: LoopConfig, prd: any): string {
     '',
     '## User Stories',
     '',
-    ...prd.userStories.map((story: any) => {
+    ...prd.userStories.map((story: UserStory) => {
       const status = story.passes ? '✅ DONE' : '⏳ TODO';
       return [
         `### ${status} ${story.id}: ${story.title}`,
@@ -286,7 +287,7 @@ function escapeRegExp(string: string): string {
 export async function setupAndExecuteLoop(
   prompt: string,
   options: LoopOptions & { maxIterations?: number } = {}
-): Promise<{ success: boolean; loopFilePath: string; prdPath: string; state?: any; error?: string }> {
+): Promise<{ success: boolean; loopFilePath: string; prdPath: string; state?: RalphState; error?: string }> {
   try {
     // Step 1: Setup loop (merges PRD automatically)
     const setupResult = await setupRalphLoop(prompt, options);

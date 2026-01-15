@@ -8,6 +8,7 @@ export interface UserStory {
   acceptanceCriteria: string[];
   priority: number;
   agent: string;
+  tech: string; // Technology stack for the story
   dependencies: string[];
   passes: boolean;
   notes: string;

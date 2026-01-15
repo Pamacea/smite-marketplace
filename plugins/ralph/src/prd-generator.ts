@@ -101,6 +101,9 @@ export class PRDGenerator {
     acceptanceCriteria: string[],
     dependencies: string[],
   ): UserStory {
+    // Extract tech from agent (e.g., "builder:task" with tech "typescript")
+    const tech = this.extractTechFromAgent(agent);
+
     return {
       id,
       title,
@@ -108,10 +111,24 @@ export class PRDGenerator {
       acceptanceCriteria,
       priority,
       agent,
+      tech,
       dependencies,
       passes: false,
       notes: '',
     };
+  }
+
+  private static extractTechFromAgent(agent: string): string {
+    // Default technology mapping based on agent type
+    const techMap: Record<string, string> = {
+      'architect:task': 'general',
+      'builder:task': 'typescript', // Default to TypeScript for builder
+      'finalize:task': 'general',
+      'simplifier:task': 'typescript',
+      'explorer:task': 'general',
+    };
+
+    return techMap[agent] || 'general';
   }
 
   static suggestImprovements(prd: PRD): string[] {
