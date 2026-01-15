@@ -218,7 +218,21 @@ Edit `~/.claude/statusline.config.json`:
 }
 ```
 
-For more troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+### Colors not appearing?
+
+The statusline uses ANSI color codes for visual highlighting. If colors are not showing:
+
+1. **Verify Node.js/Bun is installed**: The statusline script requires a JavaScript runtime
+2. **Test the script manually**:
+   ```bash
+   echo '{}' | bun ~/.claude/statusline.js
+   # or
+   echo '{}' | node ~/.claude/statusline.js
+   ```
+
+3. **Check for errors**: The statusline will show error messages in red if something fails
+
+**Note**: Claude Code's terminal has specific ANSI color support. The statusline uses inline color embedding to ensure compatibility with Claude Code's terminal emulator (see [GitHub Issue #6466](https://github.com/anthropics/claude-code/issues/6466)).
 
 ---
 
