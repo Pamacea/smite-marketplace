@@ -66,7 +66,8 @@
       "Bash(LAST_ASSISTANT_OUTPUT=\"Some work done but not complete\" node:*)",
       "Bash(LAST_ASSISTANT_OUTPUT=\"Still working on it\" node plugins/ralph/dist/stop-hook.js)",
       "Bash(LAST_ASSISTANT_OUTPUT=\"All done! <promise>DONE</promise>\" node plugins/ralph/dist/stop-hook.js)",
-      "Bash(while:*)"
+      "Bash(while:*)",
+      "Skill(builder:builder)"
     ]
   },
   "hooks": {

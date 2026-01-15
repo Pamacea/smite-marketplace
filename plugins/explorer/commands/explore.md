@@ -19,6 +19,15 @@ Explore and understand the codebase structure.
 - `module` - Explore specific module or directory
 - `full` - Explore entire codebase
 
+**Spec-First Mode:**
+
+When executing with a spec file (provided in prompt):
+
+1. **Read the spec completely** - Understand what exploration is needed
+2. **Follow the exploration plan** - Use the steps defined in the spec
+3. **Report findings** - Document results according to spec format
+4. **Flag inconsistencies** - If codebase structure doesn't match spec assumptions, report immediately
+
 **Output:**
 
 - `docs/explorer-findings.md` - Exploration results

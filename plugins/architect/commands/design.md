@@ -7,6 +7,15 @@ argument-hint: "--mode=[init|strategy|design|brainstorm] '<prompt>'"
 
 Complete project architecture from concept to implementation-ready specifications.
 
+## Spec-First Mode
+
+When executing with a spec file (provided in prompt):
+
+1. **Read the spec completely** - Understand the architectural requirements
+2. **Follow the design approach** - Use the specified approach in the spec
+3. **Create detailed specs** - Generate comprehensive technical specifications
+4. **Validate assumptions** - If architectural assumptions don't match reality, update spec first
+
 ## Usage
 
 ```bash
