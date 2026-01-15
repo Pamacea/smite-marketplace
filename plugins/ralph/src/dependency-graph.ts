@@ -2,12 +2,21 @@ import { PRD, UserStory, StoryBatch } from './types';
 
 export class DependencyGraph {
   private readonly storyMap: Map<string, UserStory>;
+  private cachedBatches: StoryBatch[] | null = null;
+  private cachedPrdHash: string | null = null;
 
   constructor(private prd: PRD) {
     this.storyMap = new Map(prd.userStories.map(s => [s.id, s]));
   }
 
   generateBatches(): StoryBatch[] {
+    // Check if cache is valid
+    const currentHash = this.hashPRD();
+    if (this.cachedBatches && this.cachedPrdHash === currentHash) {
+      return this.cachedBatches;
+    }
+
+    // Recalculate and cache
     const batches: StoryBatch[] = [];
     const completed = new Set<string>();
     const inProgress = new Set<string>();
@@ -31,7 +40,18 @@ export class DependencyGraph {
       batchNumber++;
     }
 
+    // Update cache
+    this.cachedBatches = batches;
+    this.cachedPrdHash = currentHash;
+
     return batches;
+  }
+
+  private hashPRD(): string {
+    // Simple hash based on story count and passes status
+    const storyCount = this.prd.userStories.length;
+    const completedCount = this.prd.userStories.filter(s => s.passes).length;
+    return `${storyCount}-${completedCount}`;
   }
 
   private getReadyStories(completed: Set<string>, inProgress: Set<string>): UserStory[] {
