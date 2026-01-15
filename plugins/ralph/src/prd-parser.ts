@@ -11,9 +11,9 @@ export class PRDParser {
   private static readonly STANDARD_PRD_PATH = path.join('.smite', 'prd.json');
 
   /**
-   * Parse PRD from JSON file
+   * Parse PRD from JSON file (async)
    */
-  static parseFromFile(filePath: string): PRD {
+  static async parseFromFile(filePath: string): Promise<PRD> {
     const fullPath = path.resolve(filePath);
 
     // SECURITY: Only allow .smite/prd.json or explicit user intent
@@ -23,8 +23,12 @@ export class PRDParser {
       console.warn(`   Copying to standard location...`);
     }
 
-    const content = fs.readFileSync(fullPath, 'utf-8');
-    return this.parseFromString(content);
+    try {
+      const content = await fs.promises.readFile(fullPath, 'utf-8');
+      return this.parseFromString(content);
+    } catch (error) {
+      throw new Error(`Failed to read PRD file at ${fullPath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
   /**
@@ -105,43 +109,54 @@ export class PRDParser {
   }
 
   /**
-   * Load PRD from .smite directory
+   * Load PRD from .smite directory (async)
    */
-  static loadFromSmiteDir(): PRD | null {
+  static async loadFromSmiteDir(): Promise<PRD | null> {
     const prdPath = path.join(process.cwd(), this.STANDARD_PRD_PATH);
-    if (!fs.existsSync(prdPath)) return null;
-    return this.parseFromFile(prdPath);
+    try {
+      await fs.promises.access(prdPath, fs.constants.F_OK);
+      return await this.parseFromFile(prdPath);
+    } catch {
+      return null;
+    }
   }
 
   /**
-   * Save PRD to .smite directory (ONLY valid location)
+   * Save PRD to .smite directory (ONLY valid location) - async
    * WARNING: This OVERWRITES the existing PRD. Use mergePRD() instead to preserve existing stories.
    */
-  static saveToSmiteDir(prd: PRD): string {
+  static async saveToSmiteDir(prd: PRD): Promise<string> {
     const smiteDir = path.join(process.cwd(), '.smite');
-    if (!fs.existsSync(smiteDir)) {
-      fs.mkdirSync(smiteDir, { recursive: true });
+    try {
+      await fs.promises.mkdir(smiteDir, { recursive: true });
+    } catch (error) {
+      throw new Error(`Failed to create .smite directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+
     const prdPath = path.join(process.cwd(), this.STANDARD_PRD_PATH);
-    fs.writeFileSync(prdPath, JSON.stringify(prd, null, 2));
+    try {
+      await fs.promises.writeFile(prdPath, JSON.stringify(prd, null, 2), 'utf-8');
+    } catch (error) {
+      throw new Error(`Failed to write PRD file at ${prdPath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 
     // Clean up any phantom PRD files
-    this.cleanupPhantomPRDs();
+    await this.cleanupPhantomPRDs();
 
     return prdPath;
   }
 
   /**
-   * Merge new PRD content with existing PRD (preserves completed stories)
+   * Merge new PRD content with existing PRD (preserves completed stories) - async
    * This is the PREFERRED way to update a PRD.
    */
-  static mergePRD(newPrd: PRD): string {
-    const existingPrd = this.loadFromSmiteDir();
+  static async mergePRD(newPrd: PRD): Promise<string> {
+    const existingPrd = await this.loadFromSmiteDir();
 
     if (!existingPrd) {
       // No existing PRD, just save the new one
       console.log('📄 Creating new PRD');
-      return this.saveToSmiteDir(newPrd);
+      return await this.saveToSmiteDir(newPrd);
     }
 
     // Merge: Keep existing stories, add new ones, update description
@@ -157,7 +172,7 @@ export class PRDParser {
     console.log(`   New: ${newPrd.userStories.length} stories`);
     console.log(`   Merged: ${mergedPrd.userStories.length} stories`);
 
-    return this.saveToSmiteDir(mergedPrd);
+    return await this.saveToSmiteDir(mergedPrd);
   }
 
   /**
@@ -223,10 +238,10 @@ export class PRDParser {
   }
 
   /**
-   * Update specific story in PRD (e.g., mark as passed)
+   * Update specific story in PRD (e.g., mark as passed) - async
    */
-  static updateStory(storyId: string, updates: Partial<UserStory>): boolean {
-    const prd = this.loadFromSmiteDir();
+  static async updateStory(storyId: string, updates: Partial<UserStory>): Promise<boolean> {
+    const prd = await this.loadFromSmiteDir();
     if (!prd) return false;
 
     const storyIndex = prd.userStories.findIndex(s => s.id === storyId);
@@ -239,7 +254,7 @@ export class PRDParser {
     };
 
     // Save updated PRD
-    this.saveToSmiteDir(prd);
+    await this.saveToSmiteDir(prd);
     return true;
   }
 
@@ -252,35 +267,40 @@ export class PRDParser {
   }
 
   /**
-   * Clean up phantom PRD files (prd-*.json in .smite or root)
+   * Clean up phantom PRD files (prd-*.json in .smite or root) - async
    * This prevents accumulation of unused PRD files
    */
-  private static cleanupPhantomPRDs(): void {
+  private static async cleanupPhantomPRDs(): Promise<void> {
     try {
       const smiteDir = path.join(process.cwd(), '.smite');
       const rootDir = process.cwd();
 
       // Clean .smite directory
-      if (fs.existsSync(smiteDir)) {
-        const files = fs.readdirSync(smiteDir);
-        files.forEach(file => {
+      try {
+        const files = await fs.promises.readdir(smiteDir);
+        for (const file of files) {
           if (file.match(/^prd-.*\.json$/) || file.match(/^prd-\d+\.json$/)) {
             const filePath = path.join(smiteDir, file);
             console.log(`🧹 Cleaning up phantom PRD: ${file}`);
-            fs.unlinkSync(filePath);
+            await fs.promises.unlink(filePath);
           }
-        });
+        }
+      } catch {
+        // .smite directory doesn't exist yet, skip
       }
 
       // Clean root directory (warn but don't delete unless it's clearly a phantom)
-      const rootFiles = fs.readdirSync(rootDir);
-      rootFiles.forEach(file => {
-        if (file.match(/^prd-\d+\.json$/)) {
-          const filePath = path.join(rootDir, file);
-          console.warn(`⚠️  Warning: Phantom PRD in root: ${file}`);
-          console.warn(`   Consider moving to .smite/prd.json or deleting`);
+      try {
+        const rootFiles = await fs.promises.readdir(rootDir);
+        for (const file of rootFiles) {
+          if (file.match(/^prd-\d+\.json$/)) {
+            console.warn(`⚠️  Warning: Phantom PRD in root: ${file}`);
+            console.warn(`   Consider moving to .smite/prd.json or deleting`);
+          }
         }
-      });
+      } catch {
+        // Root directory read failed, skip
+      }
     } catch (error) {
       // Non-critical: log but don't fail
       console.warn(`Could not cleanup phantom PRDs: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -295,17 +315,23 @@ export class PRDParser {
   }
 
   /**
-   * Check if standard PRD exists
+   * Check if standard PRD exists - async
    */
-  static standardPRDExists(): boolean {
-    return fs.existsSync(this.getStandardPRDPath());
+  static async standardPRDExists(): Promise<boolean> {
+    try {
+      await fs.promises.access(this.getStandardPRDPath(), fs.constants.F_OK);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
-   * Assert that PRD exists - throw error if missing
+   * Assert that PRD exists - throw error if missing (async)
    */
-  static assertPRDExists(message?: string): void {
-    if (!this.standardPRDExists()) {
+  static async assertPRDExists(message?: string): Promise<void> {
+    const exists = await this.standardPRDExists();
+    if (!exists) {
       throw new Error(
         message ||
           `PRD not found at ${this.getStandardPRDPath()}. Use '/ralph \"<prompt>\"' to create one.`

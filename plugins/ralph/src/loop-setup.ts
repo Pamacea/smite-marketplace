@@ -25,13 +25,13 @@ const DEFAULT_MAX_ITERATIONS = Infinity; // No limit by default
 const DEFAULT_COMPLETION_PROMISE = 'COMPLETE';
 
 /**
- * Setup Ralph Loop with hook-based auto-iteration
+ * Setup Ralph Loop with hook-based auto-iteration (async)
  * IMPORTANT: This MERGES with existing PRD instead of overwriting
  */
-export function setupRalphLoop(
+export async function setupRalphLoop(
   prompt: string,
   options: LoopOptions = {}
-): { success: boolean; loopFilePath: string; prdPath: string; prd?: any; error?: string } {
+): Promise<{ success: boolean; loopFilePath: string; prdPath: string; prd?: any; error?: string }> {
   try {
     const maxIterations = options.maxIterations || DEFAULT_MAX_ITERATIONS;
     const completionPromise = options.completionPromise || DEFAULT_COMPLETION_PROMISE;
@@ -41,10 +41,10 @@ export function setupRalphLoop(
 
     // Merge with existing PRD (preserves completed stories)
     console.log('\n🔄 Merging PRD with existing...');
-    const prdPath = PRDParser.mergePRD(newPrd);
+    const prdPath = await PRDParser.mergePRD(newPrd);
 
     // Load merged PRD
-    const prd = PRDParser.loadFromSmiteDir();
+    const prd = await PRDParser.loadFromSmiteDir();
     if (!prd) {
       throw new Error('Failed to load merged PRD');
     }
@@ -55,8 +55,10 @@ export function setupRalphLoop(
 
     // Create .claude directory if it doesn't exist
     const claudeDir = path.join(process.cwd(), '.claude');
-    if (!fs.existsSync(claudeDir)) {
-      fs.mkdirSync(claudeDir, { recursive: true });
+    try {
+      await fs.promises.mkdir(claudeDir, { recursive: true });
+    } catch (error) {
+      throw new Error(`Failed to create .claude directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
     // Create loop file with YAML frontmatter
@@ -71,7 +73,7 @@ export function setupRalphLoop(
     };
 
     const loopContent = generateLoopFileContent(config, prd);
-    fs.writeFileSync(loopFilePath, loopContent, 'utf-8');
+    await fs.promises.writeFile(loopFilePath, loopContent, 'utf-8');
 
     console.log(`✅ Loop file created: ${loopFilePath}`);
 
@@ -165,17 +167,19 @@ function generateLoopFileContent(config: LoopConfig, prd: any): string {
 }
 
 /**
- * Read loop configuration from file
+ * Read loop configuration from file (async)
  */
-export function readLoopConfig(loopFilePath?: string): LoopConfig | null {
+export async function readLoopConfig(loopFilePath?: string): Promise<LoopConfig | null> {
   const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
-  if (!fs.existsSync(filePath)) {
+  try {
+    await fs.promises.access(filePath, fs.constants.F_OK);
+  } catch {
     return null;
   }
 
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = await fs.promises.readFile(filePath, 'utf-8');
     const match = content.match(/^---\n([\s\S]+?)\n---/);
 
     if (!match) {
@@ -219,17 +223,19 @@ export function readLoopConfig(loopFilePath?: string): LoopConfig | null {
 }
 
 /**
- * Update loop iteration counter
+ * Update loop iteration counter (async)
  */
-export function incrementLoopIteration(loopFilePath?: string): boolean {
+export async function incrementLoopIteration(loopFilePath?: string): Promise<boolean> {
   const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
-  if (!fs.existsSync(filePath)) {
+  try {
+    await fs.promises.access(filePath, fs.constants.F_OK);
+  } catch {
     return false;
   }
 
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = await fs.promises.readFile(filePath, 'utf-8');
     let updatedContent = content;
 
     updatedContent = updatedContent.replace(
@@ -237,7 +243,7 @@ export function incrementLoopIteration(loopFilePath?: string): boolean {
       (_, iteration) => `iteration: ${parseInt(iteration, 10) + 1}`
     );
 
-    fs.writeFileSync(filePath, updatedContent, 'utf-8');
+    await fs.promises.writeFile(filePath, updatedContent, 'utf-8');
     return true;
   } catch {
     return false;
@@ -245,19 +251,16 @@ export function incrementLoopIteration(loopFilePath?: string): boolean {
 }
 
 /**
- * Clear loop file
+ * Clear loop file (async)
  */
-export function clearLoopFile(loopFilePath?: string): boolean {
+export async function clearLoopFile(loopFilePath?: string): Promise<boolean> {
   const filePath = loopFilePath || path.join(process.cwd(), '.claude', 'loop.md');
 
-  if (!fs.existsSync(filePath)) {
-    return true;
-  }
-
   try {
-    fs.unlinkSync(filePath);
+    await fs.promises.unlink(filePath);
     return true;
   } catch {
+    // File doesn't exist or cannot be deleted
     return false;
   }
 }
@@ -286,7 +289,7 @@ export async function setupAndExecuteLoop(
 ): Promise<{ success: boolean; loopFilePath: string; prdPath: string; state?: any; error?: string }> {
   try {
     // Step 1: Setup loop (merges PRD automatically)
-    const setupResult = setupRalphLoop(prompt, options);
+    const setupResult = await setupRalphLoop(prompt, options);
 
     if (!setupResult.success) {
       return {

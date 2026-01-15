@@ -30,10 +30,10 @@ export async function execute(prompt: string, options?: { maxIterations?: number
     const newPrd = PRDGenerator.generateFromPrompt(prompt);
 
     // Merge with existing PRD (preserves completed stories)
-    const prdPath = PRDParser.mergePRD(newPrd);
+    const prdPath = await PRDParser.mergePRD(newPrd);
 
     // Load merged PRD for execution
-    const mergedPrd = PRDParser.loadFromSmiteDir();
+    const mergedPrd = await PRDParser.loadFromSmiteDir();
     if (!mergedPrd) {
       throw new Error('Failed to load merged PRD');
     }
@@ -63,20 +63,22 @@ export async function executeFromPRD(prdPath: string, options?: { maxIterations?
   const smiteDir = path.join(process.cwd(), '.smite');
 
   // Validate PRD exists
-  if (!fs.existsSync(prdPath)) {
+  try {
+    await fs.promises.access(prdPath, fs.constants.F_OK);
+  } catch {
     throw new Error(`PRD file not found: ${prdPath}`);
   }
 
   // Load PRD
-  const prd = PRDParser.parseFromFile(prdPath);
+  const prd = await PRDParser.parseFromFile(prdPath);
 
   // Merge with existing PRD at standard location (preserves completed stories)
-  const standardPath = PRDParser.mergePRD(prd);
+  const standardPath = await PRDParser.mergePRD(prd);
 
   console.log(`\n✅ PRD merged to standard location: ${standardPath}`);
 
   // Load merged PRD for execution
-  const mergedPrd = PRDParser.loadFromSmiteDir();
+  const mergedPrd = await PRDParser.loadFromSmiteDir();
   if (!mergedPrd) {
     throw new Error('Failed to load merged PRD');
   }

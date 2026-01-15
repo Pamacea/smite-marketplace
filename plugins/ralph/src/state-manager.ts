@@ -14,12 +14,14 @@ export class StateManager {
     this.progressPath = path.join(smiteDir, 'progress.txt');
   }
 
-  initialize(maxIterations: number, prdPath?: string): RalphState {
+  async initialize(maxIterations: number, prdPath?: string): Promise<RalphState> {
     // Use provided PRD path or default to standard location
     const effectivePrdPath = prdPath || PRDParser.getStandardPRDPath();
 
     // Validate PRD exists
-    if (!fs.existsSync(effectivePrdPath)) {
+    try {
+      await fs.promises.access(effectivePrdPath, fs.constants.F_OK);
+    } catch {
       throw new Error(`PRD not found at ${effectivePrdPath}. Cannot initialize Ralph session.`);
     }
 
@@ -38,39 +40,44 @@ export class StateManager {
       prdPath: effectivePrdPath,
     };
 
-    this.save(state);
-    this.logProgress(`\n🚀 Ralph session started: ${state.sessionId}`);
-    this.logProgress(`📄 PRD: ${effectivePrdPath}`);
-    this.logProgress(`🔄 Max iterations: ${maxIterations}\n`);
+    await this.save(state);
+    await this.logProgress(`\n🚀 Ralph session started: ${state.sessionId}`);
+    await this.logProgress(`📄 PRD: ${effectivePrdPath}`);
+    await this.logProgress(`🔄 Max iterations: ${maxIterations}\n`);
 
     return state;
   }
 
-  load(): RalphState | null {
-    if (!fs.existsSync(this.statePath)) return null;
+  async load(): Promise<RalphState | null> {
+    try {
+      await fs.promises.access(this.statePath, fs.constants.F_OK);
+    } catch {
+      return null;
+    }
 
     try {
-      return JSON.parse(fs.readFileSync(this.statePath, 'utf-8')) as RalphState;
+      const content = await fs.promises.readFile(this.statePath, 'utf-8');
+      return JSON.parse(content) as RalphState;
     } catch {
       return null;
     }
   }
 
-  save(state: RalphState): void {
-    fs.writeFileSync(this.statePath, JSON.stringify(state, null, 2));
+  async save(state: RalphState): Promise<void> {
+    await fs.promises.writeFile(this.statePath, JSON.stringify(state, null, 2), 'utf-8');
   }
 
-  update(updates: Partial<RalphState>): RalphState | null {
-    const state = this.load();
+  async update(updates: Partial<RalphState>): Promise<RalphState | null> {
+    const state = await this.load();
     if (!state) return null;
 
     const updated = { ...state, ...updates, lastActivity: Date.now() };
-    this.save(updated);
+    await this.save(updated);
     return updated;
   }
 
-  markStoryResult(storyId: string, success: boolean, error?: string): RalphState | null {
-    const state = this.load();
+  async markStoryResult(storyId: string, success: boolean, error?: string): Promise<RalphState | null> {
+    const state = await this.load();
     if (!state) return null;
 
     const array = success ? state.completedStories : state.failedStories;
@@ -79,44 +86,45 @@ export class StateManager {
 
     if (!array.includes(storyId)) {
       array.push(storyId);
-      this.logProgress(`${emoji} ${storyId} - ${status}`);
+      await this.logProgress(`${emoji} ${storyId} - ${status}`);
     }
 
     state.currentIteration++;
     state.lastActivity = Date.now();
-    this.save(state);
+    await this.save(state);
 
     return state;
   }
 
-  setInProgress(storyId: string | null): RalphState | null {
-    return this.update({ inProgressStory: storyId });
+  async setInProgress(storyId: string | null): Promise<RalphState | null> {
+    return await this.update({ inProgressStory: storyId });
   }
 
-  setStatus(status: RalphState['status']): RalphState | null {
-    const state = this.update({ status });
+  async setStatus(status: RalphState['status']): Promise<RalphState | null> {
+    const state = await this.update({ status });
     if (state) {
-      this.logProgress(`\n📊 Status changed to: ${status}`);
+      await this.logProgress(`\n📊 Status changed to: ${status}`);
     }
     return state;
   }
 
-  readProgress(): string {
-    if (!fs.existsSync(this.progressPath)) return '';
-
+  async readProgress(): Promise<string> {
     try {
-      return fs.readFileSync(this.progressPath, 'utf-8');
+      await fs.promises.access(this.progressPath, fs.constants.F_OK);
+      return await fs.promises.readFile(this.progressPath, 'utf-8');
     } catch {
       return '';
     }
   }
 
-  clear(): void {
-    [this.statePath, this.progressPath].forEach(filePath => {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+  async clear(): Promise<void> {
+    for (const filePath of [this.statePath, this.progressPath]) {
+      try {
+        await fs.promises.unlink(filePath);
+      } catch {
+        // File doesn't exist, skip
       }
-    });
+    }
   }
 
   getDuration(state: RalphState): string {
@@ -126,36 +134,39 @@ export class StateManager {
     return `${minutes}m ${seconds}s`;
   }
 
-  private logProgress(...messages: string[]): void {
+  private async logProgress(...messages: string[]): Promise<void> {
     const timestamp = new Date().toISOString();
-    fs.appendFileSync(this.progressPath, messages.map(m => `[${timestamp}] ${m}`).join('\n') + '\n');
+    const content = messages.map(m => `[${timestamp}] ${m}`).join('\n') + '\n';
+    await fs.promises.appendFile(this.progressPath, content, 'utf-8');
   }
 
   /**
-   * Validate that the tracked PRD still exists
+   * Validate that the tracked PRD still exists - async
    * Returns true if PRD exists, false otherwise
    */
-  validatePRDExists(): boolean {
-    const state = this.load();
+  async validatePRDExists(): Promise<boolean> {
+    const state = await this.load();
     if (!state) return false;
 
-    const exists = fs.existsSync(state.prdPath);
-    if (!exists) {
-      this.logProgress(`\n⚠️  WARNING: PRD file missing: ${state.prdPath}`);
+    try {
+      await fs.promises.access(state.prdPath, fs.constants.F_OK);
+      return true;
+    } catch {
+      await this.logProgress(`\n⚠️  WARNING: PRD file missing: ${state.prdPath}`);
+      return false;
     }
-    return exists;
   }
 
   /**
-   * Check if PRD has been modified since session started
+   * Check if PRD has been modified since session started - async
    * (Optional feature using hash comparison)
    */
-  hasPRDChanged(): boolean {
-    const state = this.load();
+  async hasPRDChanged(): Promise<boolean> {
+    const state = await this.load();
     if (!state || !state.prdHash) return false;
 
     try {
-      const prd = PRDParser.parseFromFile(state.prdPath);
+      const prd = await PRDParser.parseFromFile(state.prdPath);
       const currentHash = PRDParser.generateHash(prd);
       return currentHash !== state.prdHash;
     } catch {

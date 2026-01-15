@@ -25,9 +25,9 @@ export class TaskOrchestrator {
     const prdPath = PRDParser.getStandardPRDPath();
 
     // Validate PRD exists before starting
-    PRDParser.assertPRDExists();
+    await PRDParser.assertPRDExists();
 
-    const state = this.stateManager.initialize(maxIterations, prdPath);
+    const state = await this.stateManager.initialize(maxIterations, prdPath);
     const batches = this.dependencyGraph.generateBatches();
 
     this.logExecutionStart(batches.length, prdPath);
@@ -37,7 +37,7 @@ export class TaskOrchestrator {
       await this.executeBatch(batch, state);
     }
 
-    this.finalizeExecution(state, maxIterations);
+    await this.finalizeExecution(state, maxIterations);
     return state;
   }
 
@@ -85,15 +85,15 @@ export class TaskOrchestrator {
     }
 
     state.currentBatch = batch.batchNumber;
-    this.stateManager.save(state);
+    await this.stateManager.save(state);
   }
 
-  private finalizeExecution(state: RalphState, maxIterations: number): void {
+  private async finalizeExecution(state: RalphState, maxIterations: number): Promise<void> {
     if (state.status === 'running') {
       state.status = state.failedStories.length === 0 ? 'completed' : 'failed';
     }
 
-    this.stateManager.save(state);
+    await this.stateManager.save(state);
 
     console.log(`\n${state.status === 'completed' ? '✅' : '❌'} Ralph execution ${state.status}`);
     console.log(`   Completed: ${state.completedStories.length}/${this.prd.userStories.length}`);
@@ -122,22 +122,22 @@ export class TaskOrchestrator {
     console.log(`      Agent: ${story.agent}`);
 
     const result = await this.invokeAgent(story);
-    this.processStoryResult(story, state, result);
+    await this.processStoryResult(story, state, result);
 
     state.inProgressStory = null;
     state.currentIteration++;
   }
 
-  private processStoryResult(story: UserStory, state: RalphState, result: TaskResult): void {
+  private async processStoryResult(story: UserStory, state: RalphState, result: TaskResult): Promise<void> {
     if (result.success) {
       state.completedStories.push(story.id);
-      this.updateStoryStatus(story, true, result.output);
+      await this.updateStoryStatus(story, true, result.output);
       console.log('      ✅ PASSED');
       return;
     }
 
     state.failedStories.push(story.id);
-    this.updateStoryStatus(story, false, result.error ?? 'Unknown error');
+    await this.updateStoryStatus(story, false, result.error ?? 'Unknown error');
     console.log(`      ❌ FAILED: ${result.error}`);
   }
 
@@ -145,10 +145,10 @@ export class TaskOrchestrator {
    * Update story status in memory and persist to PRD file
    * Consolidates duplicate PRD update logic
    */
-  private updateStoryStatus(story: UserStory, passes: boolean, notes: string): void {
+  private async updateStoryStatus(story: UserStory, passes: boolean, notes: string): Promise<void> {
     story.passes = passes;
     story.notes = notes;
-    PRDParser.updateStory(story.id, { passes, notes });
+    await PRDParser.updateStory(story.id, { passes, notes });
   }
 
   /**
@@ -192,10 +192,10 @@ export class TaskOrchestrator {
   }
 
   /**
-   * Get execution status
+   * Get execution status (async)
    */
-  getStatus(): string {
-    const state = this.stateManager.load();
+  async getStatus(): Promise<string> {
+    const state = await this.stateManager.load();
     if (!state) return 'Not started';
 
     const summary = this.dependencyGraph.getExecutionSummary();
