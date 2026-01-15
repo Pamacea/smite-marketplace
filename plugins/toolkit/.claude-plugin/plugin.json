@@ -1,0 +1,25 @@
+{
+  "name": "toolkit",
+  "description": "SMITE Toolkit - Unified token optimization layer with RAG (70-85% savings), mgrep semantic search (2x precision), bug detection, and dependency analysis",
+  "version": "1.0.0",
+  "author": {
+    "name": "Pamacea"
+  },
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "hooks": {
+    "PreToolUse": [
+      "./dist/hooks/pre-read.js",
+      "./dist/hooks/pre-search.js"
+    ],
+    "PostToolUse": [
+      "./dist/hooks/post-tool.js"
+    ],
+    "SessionStart": [
+      "./dist/hooks/session-start.js"
+    ],
+    "SessionEnd": [
+      "./dist/hooks/session-end.js"
+    ]
+  }
+}
