@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "postinstall": "node install-hook.js",
+    "install-hook": "node install-hook.js"
   },
   "keywords": [
     "claude-code",

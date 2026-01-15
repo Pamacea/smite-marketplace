@@ -19,6 +19,37 @@ Ralph is an autonomous AI agent orchestrator that coordinates multiple agents to
 /plugin install ralph@smite
 ```
 
+### Automatic Hook Setup
+
+When you install Ralph, it automatically sets up a global hook in your `.claude` directory:
+
+- ✅ **Hook installed to**: `%USERPROFILE%\.claude\plugins\ralph-stop-hook.js`
+- ✅ **Works from any project**: No per-project setup needed
+- ✅ **Auto-installs**: Runs automatically via `postinstall` script
+
+The hook enables the `/loop` command's auto-iteration feature. It's installed once globally and works for all your projects.
+
+### Manual Hook Reinstallation
+
+If you move the plugin or need to reinstall the hook:
+
+```bash
+cd plugins/ralph
+npm run install-hook
+```
+
+### Verification
+
+Check if the hook is properly installed:
+
+```bash
+# Test if hook file exists
+test -f "$USERPROFILE/.claude/plugins/ralph-stop-hook.js" && echo "✅ Hook installed"
+
+# Test hook execution
+node "$USERPROFILE/.claude/plugins/ralph-stop-hook.js" && echo "✅ Hook works"
+```
+
 ## 🎯 Quick Start
 
 ### Mode 1: Auto-Iterating Loop ⚡ RECOMMENDED
@@ -290,6 +321,41 @@ Ralph automatically:
 - Creates parallel batches when possible
 
 ## 🐛 Troubleshooting
+
+### Hook Errors
+
+#### Error: `Cannot find module '...\dist\stop-hook.js'`
+
+**Cause**: Hook not installed or plugin was moved to a different location.
+
+**Solution**:
+```bash
+cd plugins/ralph
+npm run install-hook
+```
+
+#### Error: `'ralph-stop-hook.js' is not recognized`
+
+**Cause**: Global hook file missing or corrupted.
+
+**Solution**:
+```bash
+# Ensure directory exists
+mkdir -p "$USERPROFILE/.claude/plugins"
+
+# Reinstall hook
+cd plugins/ralph
+npm run install-hook
+```
+
+#### `/loop` command not working
+
+**Cause**: Hook not intercepting session exit.
+
+**Solution**:
+1. Verify hook is installed: `test -f "$USERPROFILE/.claude/plugins/ralph-stop-hook.js"`
+2. Check plugin.json references global hook: `grep "ralph-stop-hook.js" plugins/ralph/.claude-plugin/plugin.json`
+3. Reinstall if needed: `cd plugins/ralph && npm run install-hook`
 
 ### Ralph not starting
 
