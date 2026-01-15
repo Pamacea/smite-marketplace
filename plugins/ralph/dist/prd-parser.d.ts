@@ -12,11 +12,11 @@ export declare class PRDParser {
      */
     private static isValidPRDPath;
     /**
-     * Parse PRD from JSON string
+     * Parse PRD from JSON string with enhanced error context
      */
     static parseFromString(json: string): PRD;
     /**
-     * Validate PRD structure
+     * Validate PRD structure with enhanced error messages
      */
     static validate(prd: PRD): void;
     /**

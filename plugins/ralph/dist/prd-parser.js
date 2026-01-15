@@ -40,6 +40,7 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const crypto = __importStar(require("crypto"));
 const path_utils_1 = require("./path-utils");
+const error_utils_1 = require("./error-utils");
 class PRDParser {
     /**
      * Parse PRD from JSON file (async) with caching and path sanitization
@@ -85,7 +86,10 @@ class PRDParser {
             return prd;
         }
         catch (error) {
-            throw new Error(`Failed to read PRD file at ${fullPath}: ${error instanceof Error ? error.message : "Unknown error"}`);
+            throw (0, error_utils_1.wrapError)(error instanceof Error ? error : new Error(String(error)), `Failed to read PRD file`, {
+                operation: "parseFromFile",
+                filePath: fullPath,
+            });
         }
     }
     /**
@@ -97,7 +101,7 @@ class PRDParser {
         return resolved === standard;
     }
     /**
-     * Parse PRD from JSON string
+     * Parse PRD from JSON string with enhanced error context
      */
     static parseFromString(json) {
         try {
@@ -106,24 +110,43 @@ class PRDParser {
             return prd;
         }
         catch (error) {
-            throw new Error(`Failed to parse PRD: ${error instanceof Error ? error.message : "Unknown error"}`);
+            if (error instanceof SyntaxError) {
+                throw (0, error_utils_1.createParseError)("<string>", error);
+            }
+            throw (0, error_utils_1.wrapError)(error instanceof Error ? error : new Error(String(error)), "Failed to parse PRD", {
+                operation: "parseFromString",
+                details: "Attempted to parse PRD from JSON string",
+            });
         }
     }
     /**
-     * Validate PRD structure
+     * Validate PRD structure with enhanced error messages
      */
     static validate(prd) {
-        if (!prd.project)
-            throw new Error("PRD must have a project name");
-        if (!prd.branchName)
-            throw new Error("PRD must have a branch name");
-        if (!prd.description)
-            throw new Error("PRD must have a description");
+        if (!prd.project) {
+            throw (0, error_utils_1.createValidationError)("PRD", "missing project name", {
+                details: "The 'project' field is required",
+            });
+        }
+        if (!prd.branchName) {
+            throw (0, error_utils_1.createValidationError)("PRD", "missing branch name", {
+                details: "The 'branchName' field is required",
+            });
+        }
+        if (!prd.description) {
+            throw (0, error_utils_1.createValidationError)("PRD", "missing description", {
+                details: "The 'description' field is required",
+            });
+        }
         if (!prd.userStories || !Array.isArray(prd.userStories)) {
-            throw new Error("PRD must have userStories array");
+            throw (0, error_utils_1.createValidationError)("PRD", "invalid user stories", {
+                details: "The 'userStories' field must be an array",
+            });
         }
         if (prd.userStories.length === 0) {
-            throw new Error("PRD must have at least one user story");
+            throw (0, error_utils_1.createValidationError)("PRD", "no user stories", {
+                details: "PRD must have at least one user story",
+            });
         }
         // Validate each user story
         prd.userStories.forEach((story, index) => {
@@ -134,7 +157,10 @@ class PRDParser {
         prd.userStories.forEach((story) => {
             story.dependencies.forEach((dep) => {
                 if (!storyIds.has(dep)) {
-                    throw new Error(`Story ${story.id} depends on non-existent story ${dep}`);
+                    throw (0, error_utils_1.createValidationError)("UserStory", `invalid dependency: ${dep}`, {
+                        operation: "validateDependencies",
+                        details: `Story ${story.id} depends on non-existent story ${dep}`,
+                    });
                 }
             });
         });

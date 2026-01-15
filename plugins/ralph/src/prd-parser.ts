@@ -6,6 +6,7 @@ import * as path from "path";
 import * as crypto from "crypto";
 import { PRD, UserStory } from "./types";
 import { sanitizePath } from "./path-utils";
+import { createFileError, createParseError, createValidationError, wrapError } from "./error-utils";
 
 export class PRDParser {
   // Standard PRD location - SINGLE SOURCE OF TRUTH
@@ -63,9 +64,10 @@ export class PRDParser {
 
       return prd;
     } catch (error) {
-      throw new Error(
-        `Failed to read PRD file at ${fullPath}: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
+      throw wrapError(error instanceof Error ? error : new Error(String(error)), `Failed to read PRD file`, {
+        operation: "parseFromFile",
+        filePath: fullPath,
+      });
     }
   }
 
@@ -79,7 +81,7 @@ export class PRDParser {
   }
 
   /**
-   * Parse PRD from JSON string
+   * Parse PRD from JSON string with enhanced error context
    */
   static parseFromString(json: string): PRD {
     try {
@@ -87,24 +89,44 @@ export class PRDParser {
       this.validate(prd);
       return prd;
     } catch (error) {
-      throw new Error(
-        `Failed to parse PRD: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
+      if (error instanceof SyntaxError) {
+        throw createParseError("<string>", error);
+      }
+      throw wrapError(error instanceof Error ? error : new Error(String(error)), "Failed to parse PRD", {
+        operation: "parseFromString",
+        details: "Attempted to parse PRD from JSON string",
+      });
     }
   }
 
   /**
-   * Validate PRD structure
+   * Validate PRD structure with enhanced error messages
    */
   static validate(prd: PRD): void {
-    if (!prd.project) throw new Error("PRD must have a project name");
-    if (!prd.branchName) throw new Error("PRD must have a branch name");
-    if (!prd.description) throw new Error("PRD must have a description");
+    if (!prd.project) {
+      throw createValidationError("PRD", "missing project name", {
+        details: "The 'project' field is required",
+      });
+    }
+    if (!prd.branchName) {
+      throw createValidationError("PRD", "missing branch name", {
+        details: "The 'branchName' field is required",
+      });
+    }
+    if (!prd.description) {
+      throw createValidationError("PRD", "missing description", {
+        details: "The 'description' field is required",
+      });
+    }
     if (!prd.userStories || !Array.isArray(prd.userStories)) {
-      throw new Error("PRD must have userStories array");
+      throw createValidationError("PRD", "invalid user stories", {
+        details: "The 'userStories' field must be an array",
+      });
     }
     if (prd.userStories.length === 0) {
-      throw new Error("PRD must have at least one user story");
+      throw createValidationError("PRD", "no user stories", {
+        details: "PRD must have at least one user story",
+      });
     }
 
     // Validate each user story
@@ -117,7 +139,10 @@ export class PRDParser {
     prd.userStories.forEach((story) => {
       story.dependencies.forEach((dep) => {
         if (!storyIds.has(dep)) {
-          throw new Error(`Story ${story.id} depends on non-existent story ${dep}`);
+          throw createValidationError("UserStory", `invalid dependency: ${dep}`, {
+            operation: "validateDependencies",
+            details: `Story ${story.id} depends on non-existent story ${dep}`,
+          });
         }
       });
     });
