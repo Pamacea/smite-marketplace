@@ -13,7 +13,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-index-hook.js\""
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-index-hook.js\""
           }
         ]
       },
@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-deps-hook.js\""
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-deps-hook.js\""
           }
         ]
       },
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-init-hook.js\""
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-init-hook.js\""
           }
         ]
       }
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-save-hook.js\""
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-save-hook.js\""
           }
         ]
       }
@@ -49,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-stats-hook.js\""
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-stats-hook.js\""
           }
         ]
       }
