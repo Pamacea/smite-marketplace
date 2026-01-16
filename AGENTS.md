@@ -1,77 +1,41 @@
 # 🤖 SMITE Agents Convention
 
-Standardized naming and usage conventions for SMITE agents.
-
-## 📋 Convention Overview
-
-SMITE agents follow a simple, intuitive naming convention:
+## 📋 Convention
 
 ```bash
-# Direct usage (interactive, sequential)
+# Direct usage (interactive)
 /agent-name
 
-# Ralph PRD usage (orchestrated, parallel)
+# Ralph PRD usage (orchestrated)
 agent-name:task
 ```
 
 ## 🎯 Available Agents
 
-### 1. Explorer - `/explorer`
-
-**Role:** Codebase exploration, dependency mapping, and pattern discovery
-
-**Direct Usage:**
+### `/explorer` - Codebase exploration
 ```bash
 /explorer --task=find-function --target="getUserData"
 /explorer --task=map-architecture
+/explorer --task=find-bug --target="memory leak"
 ```
 
-**Ralph PRD Usage:**
-```json
-{
-  "agent": "explorer:task"
-}
-```
-
-**Use when:**
-- Finding functions/components
-- Mapping dependencies
-- Analyzing architecture
-- Investigating bugs
+**Use:** Finding functions, mapping dependencies, analyzing architecture
 
 ---
 
-### 2. Builder - `/builder`
-
-**Role:** Implementation and coding
-
-**Direct Usage:**
+### `/builder` - Implementation
 ```bash
 /builder --tech=nextjs --feature="user authentication"
 /builder --design --component="Button"
 ```
 
-**Ralph PRD Usage:**
-```json
-{
-  "agent": "builder:task",
-  "tech": "nextjs"
-}
-```
+**Tech:** `nextjs`, `rust`, `python`, `go`
 
-**Use when:**
-- Building features
-- Implementing components
-- Writing code
-- Following specs
+**Use:** Building features, implementing components, writing code
 
 ---
 
-### 3. Architect - `/architect`
-
-**Role:** Design, strategy, initialization, and creative thinking
-
-**Direct Usage:**
+### `/architect` - Design & strategy
 ```bash
 /architect --mode=init "Build a SaaS dashboard"
 /architect --mode=strategy "Define pricing strategy"
@@ -79,78 +43,34 @@ agent-name:task
 /architect --mode=brainstorm "Improve user engagement"
 ```
 
-**Ralph PRD Usage:**
-```json
-{
-  "agent": "architect:task",
-  "mode": "init"
-}
-```
-
-**Use when:**
-- Starting new projects
-- Planning strategy
-- Creating design systems
-- Brainstorming solutions
+**Use:** Starting projects, planning strategy, creating design systems
 
 ---
 
-### 4. Finalize - `/finalize`
-
-**Role:** Quality assurance, code review, and documentation
-
-**Direct Usage:**
+### `/finalize` - QA & documentation
 ```bash
-/finalize                           # Full QA + docs
-/finalize --mode=qa                 # QA only
-/finalize --mode=qa --type=test     # Tests only
-/finalize --mode=docs               # Docs only
+/finalify                              # Full QA + docs
+/finalize --mode=qa                    # QA only
+/finalize --mode=qa --type=test        # Tests
+/finalize --mode=docs                  # Docs only
 ```
 
-**Ralph PRD Usage:**
-```json
-{
-  "agent": "finalize:task",
-  "mode": "full"
-}
-```
-
-**Use when:**
-- After development completion
-- Before git commits
-- Need comprehensive QA
-- Updating documentation
+**Use:** Before commits, comprehensive QA, updating documentation
 
 ---
 
-### 5. Simplifier - `/simplifier`
-
-**Role:** Code simplification and refactoring
-
-**Direct Usage:**
+### `/simplifier` - Refactoring
 ```bash
-/simplifier --file="src/components/ComplexComponent.tsx"
+/simplifier --scope=file src/ComplexComponent.tsx
+/simplifier --scope=directory src/components
+/simplifier --scope=all
 ```
 
-**Ralph PRD Usage:**
-```json
-{
-  "agent": "simplifier:task"
-}
-```
-
-**Use when:**
-- Code is too complex
-- Need refactoring
-- Reducing technical debt
+**Use:** Code too complex, need refactoring, reducing technical debt
 
 ---
 
-### 6. Ralph - `/ralph`
-
-**Role:** Multi-agent orchestrator for PRD-driven development
-
-**Direct Usage:**
+### `/ralph` - Multi-agent orchestrator
 ```bash
 /ralph execute .claude/.smite/prd.json
 /ralph "Build a todo app with auth"
@@ -158,171 +78,51 @@ agent-name:task
 /ralph cancel
 ```
 
-**Use when:**
-- Executing full PRD
-- Complex multi-agent workflows
-- Need state persistence
-- Repetitive workflows
+**Use:** Full PRD execution, complex workflows, state persistence
 
 ---
 
-### 7. Statusline - `/statusline`
-
-**Role:** Auto-configuring statusline for Claude Code
-
-**Direct Usage:**
+### `/toolkit` - Code analysis & optimization
 ```bash
-/statusline install               # Install and auto-configure
-/statusline config                # View configuration
-/statusline reset                 # Reset to defaults
-/statusline help                  # Show help
-```
-
-**Use when:**
-- Installing plugin (auto-configures)
-- Viewing current configuration
-- Resetting to defaults
-- Manual configuration needed
-
-**Features:**
-- 🌿 Git branch with changes (+added -deleted ~modified)
-- 💰 Session cost and duration tracking
-- 🧩 Context tokens used with percentage
-- 📊 Visual progress bars
-- ⏱️ Usage limits (5-hour, weekly)
-- 📈 Daily spend tracking
-- 🚀 Zero-configuration setup
-
-**Display Example:**
-```
-main • Sonnet 4.5 • $0.15 • 5m23s • 45.2K/200K ⣿⣿⣧⣀⣀⣀⣀⣀⣀⣀ 23%
-smite-marketplace • /Users/username/Projects/smite
-```
-
-**See:** [plugins/statusline/README.md](plugins/statusline/README.md)
-
----
-
-### 8. Toolkit - `/toolkit`
-
-**Role:** Code analysis, search, optimization, and documentation
-
-**Installation:**
-```bash
-/plugin install toolkit@smite
-```
-
-**Direct Usage:**
-```bash
-# Semantic search
 /toolkit search "authentication flow" --mode=hybrid
-
-# Explore codebase
 /toolkit explore --task=find-function --target="authenticateUser"
-
-# Dependency analysis
 /toolkit graph --target=src/auth/jwt.ts --impact
-
-# Bug detection
 /toolkit detect --scope=src/auth --patterns="security"
-
-# Token budget
 /toolkit budget
 ```
 
-**Use when:**
-- Searching code with semantic understanding
-- Analyzing dependencies and impact
-- Detecting bugs and anti-patterns
-- Optimizing token usage
-- Generating documentation
-- Refactoring code safely
-
-**Features:**
-- 🔍 **Unified Search Router** - Auto-selects best search strategy (semantic, literal, hybrid, RAG)
-- 📊 **Code Search API** - Search with multiple output formats (JSON, table, diff, summary)
-- 🧠 **Semantic Analysis** - Similarity scoring, clustering, pattern detection with transformer embeddings
-- 🐛 **Bug Detection** - 40% more bugs found with semantic pattern matching and severity classification
-- ✨ **Refactoring** - Code simplification, dead code elimination, structure optimization with backup
-- 📝 **Documentation Generation** - Auto-generate JSDoc, README, and API docs in multiple formats
-- 💰 **Token Optimization** - 60-87% savings via RAG and AST-based surgeon mode
-- 🎯 **Type-Safe APIs** - Full TypeScript support with factory functions
-
-**Integration:**
-All agents automatically leverage toolkit when available:
-- **Explorer** - Semantic search (2x precision), dependency graphs, bug detection
-- **Builder** - Context building (70-85% savings), impact analysis, budget enforcement
-- **Architect** - Codebase analysis, dependency analysis, pattern discovery
-- **Finalize** - Bug detection, security patterns, documentation generation
-- **Simplifier** - Bug detection, semantic analysis, safe refactoring
+**Use:** Semantic search, dependency analysis, bug detection, token optimization
 
 ---
 
 ## 📊 Usage Comparison
 
-| Scenario | Recommended Approach | Why |
-|----------|---------------------|-----|
-| Quick task (1-2 agents) | `/agent-name` | Direct, faster |
-| Medium workflow (3 agents) | Native Task tool | Manual orchestration |
-| Complex workflow (4+ agents) | `/ralph` | State tracking |
-| Interactive development | `/agent-name` | Conversational |
-| Automated execution | `agent-name:task` | Ralph PRD |
+| Scenario | Approach |
+|----------|----------|
+| Quick task | `/agent-name` |
+| Medium workflow | Native Task tool |
+| Complex workflow | `/ralph` |
 
 ## 🔄 Typical Workflow
 
-### Complete Project Flow
-
 ```bash
-# 1. Initialize project
+# 1. Initialize
 /architect --mode=init "Build a task management app"
 
-# 2. Define strategy
+# 2. Strategy
 /architect --mode=strategy "Productivity tools market"
 
-# 3. Create design system
+# 3. Design
 /architect --mode=design "Modern minimalist design"
 
-# 4. Explore existing code (if applicable)
+# 4. Explore (if existing code)
 /explorer --task=map-architecture
 
-# 5. Implement features
+# 5. Implement
 /builder --tech=nextjs --feature="task CRUD"
 
 # 6. Finalize
 /finalize
-```
-
-### Ralph PRD Flow
-
-```json
-{
-  "project": "TaskManager",
-  "userStories": [
-    {
-      "id": "US-001",
-      "title": "Initialize project",
-      "agent": "architect:task",
-      "mode": "init"
-    },
-    {
-      "id": "US-002",
-      "title": "Build UI",
-      "agent": "builder:task",
-      "dependencies": ["US-001"]
-    },
-    {
-      "id": "US-003",
-      "title": "QA & Docs",
-      "agent": "finalize:task",
-      "dependencies": ["US-002"]
-    }
-  ]
-}
-```
-
-Execute with:
-```bash
-/ralph execute .claude/.smite/prd.json
 ```
 
 ## 🎓 Best Practices
@@ -330,24 +130,11 @@ Execute with:
 1. **Start with Architect** - Define before building
 2. **Use Explorer** - Understand existing code
 3. **Build with Builder** - Implement following specs
-4. **Finalize with Finalize** - Ensure quality
-5. **Simplify when needed** - Reduce complexity
+4. **Finalize** - Ensure quality before commits
+5. **Simplify** - Reduce complexity incrementally
 6. **Orchestrate with Ralph** - For complex workflows
-7. **Install Statusline** - Track your session metrics
 
-## 📚 Agent Details
+## 📚 Detailed Docs
 
-See individual plugin documentation for detailed usage:
-
-- `plugins/explorer/commands/explore.md`
-- `plugins/builder/commands/build.md`
-- `plugins/architect/commands/design.md`
-- `plugins/finalize/commands/finalize.md`
-- `plugins/simplifier/commands/simplify.md`
-- `plugins/statusline/README.md`
-- `plugins/ralph/README.md`
-
----
-
-**Version:** 1.0.0
-**Updated:** 2025-01-13
+- `plugins/*/commands/*.md` - Individual agent documentation
+- `plugins/ralph/README.md` - Ralph complete guide
