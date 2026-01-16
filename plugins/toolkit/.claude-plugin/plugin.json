@@ -6,5 +6,37 @@
     "name": "Pamacea"
   },
   "commands": "./commands/",
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-init-hook.js\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-save-hook.js\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit\\hooks\\toolkit-stats-hook.js\""
+          }
+        ]
+      }
+    ]
+  }
 }
