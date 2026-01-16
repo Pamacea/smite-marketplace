@@ -6,20 +6,5 @@
     "name": "Pamacea"
   },
   "commands": "./commands/",
-  "skills": "./skills/",
-  "hooks": {
-    "PreToolUse": [
-      "./dist/hooks/pre-read.js",
-      "./dist/hooks/pre-search.js"
-    ],
-    "PostToolUse": [
-      "./dist/hooks/post-tool.js"
-    ],
-    "SessionStart": [
-      "./dist/hooks/session-start.js"
-    ],
-    "SessionEnd": [
-      "./dist/hooks/session-end.js"
-    ]
-  }
+  "skills": "./skills/"
 }
