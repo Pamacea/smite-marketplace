@@ -12,7 +12,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { glob } = require('glob');
 
 // Paths
 const homeDir = process.env.USERPROFILE || process.env.HOME;
@@ -44,29 +43,51 @@ function needsRebuild(indexPath) {
 }
 
 /**
- * Scan project files
+ * Scan project files recursively
  */
-async function scanFiles(projectDir) {
+function scanFiles(projectDir) {
   try {
-    const patterns = [
-      'src/**/*.ts',
-      'src/**/*.tsx',
-      'src/**/*.js',
-      'src/**/*.jsx',
-      'plugins/**/*.ts',
-      'plugins/**/*.js',
-      '!**/node_modules/**',
-      '!**/dist/**',
-      '!**/.next/**',
-      '!**/*.test.ts',
-      '!**/*.test.js',
-    ];
+    const files = [];
+    const extensions = ['.ts', '.tsx', '.js', '.jsx'];
+    const excludeDirs = ['node_modules', 'dist', '.next', 'coverage', 'build'];
 
-    const files = await glob(patterns, {
-      cwd: projectDir,
-      absolute: true,
-      nodir: true,
-    });
+    function scanDir(dir) {
+      try {
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name);
+
+          if (entry.isDirectory()) {
+            // Skip excluded directories
+            if (excludeDirs.includes(entry.name)) {
+              continue;
+            }
+            scanDir(fullPath);
+          } else if (entry.isFile()) {
+            const ext = path.extname(entry.name);
+            // Skip test files
+            if (entry.name.includes('.test.')) {
+              continue;
+            }
+            // Include only target extensions
+            if (extensions.includes(ext)) {
+              files.push(fullPath);
+            }
+          }
+        }
+      } catch (error) {
+        // Skip directories we can't read
+      }
+    }
+
+    // Scan src and plugins directories if they exist
+    if (fs.existsSync(path.join(projectDir, 'src'))) {
+      scanDir(path.join(projectDir, 'src'));
+    }
+    if (fs.existsSync(path.join(projectDir, 'plugins'))) {
+      scanDir(path.join(projectDir, 'plugins'));
+    }
 
     return files;
   } catch (error) {
@@ -105,10 +126,10 @@ function createChunks(filePath, content) {
 /**
  * Build full index
  */
-async function buildFullIndex(projectDir) {
+function buildFullIndex(projectDir) {
   console.log('🔄 Building full toolkit index...');
 
-  const files = await scanFiles(projectDir);
+  const files = scanFiles(projectDir);
   const chunks = [];
 
   for (const file of files) {
@@ -139,10 +160,10 @@ async function buildFullIndex(projectDir) {
 /**
  * Update existing index incrementally
  */
-async function updateIndex(projectDir, oldIndex) {
+function updateIndex(projectDir, oldIndex) {
   console.log('🔄 Updating toolkit index incrementally...');
 
-  const files = await scanFiles(projectDir);
+  const files = scanFiles(projectDir);
   const oldFiles = new Set(oldIndex.chunks.map(c => c.file));
 
   const newFiles = files.filter(f => !oldFiles.has(f));
@@ -180,7 +201,7 @@ async function updateIndex(projectDir, oldIndex) {
 /**
  * Main function
  */
-async function buildIndex() {
+function buildIndex() {
   try {
     const projectDir = process.cwd();
 
@@ -201,16 +222,16 @@ async function buildIndex() {
       // Load existing index for incremental update
       try {
         const oldIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
-        index = await updateIndex(projectDir, oldIndex);
+        index = updateIndex(projectDir, oldIndex);
         console.log(`  Added: ${index.metadata.added} files`);
         console.log(`  Removed: ${index.metadata.removed} files`);
       } catch (error) {
         // If load fails, do full rebuild
-        index = await buildFullIndex(projectDir);
+        index = buildFullIndex(projectDir);
       }
     } else {
       // Full rebuild
-      index = await buildFullIndex(projectDir);
+      index = buildFullIndex(projectDir);
     }
 
     // Save index

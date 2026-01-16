@@ -12,7 +12,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { glob } = require('glob');
 
 // Paths
 const homeDir = process.env.USERPROFILE || process.env.HOME;
@@ -57,29 +56,51 @@ function needsRebuild(depsPath) {
 }
 
 /**
- * Scan project files
+ * Scan project files recursively
  */
-async function scanFiles(projectDir) {
+function scanFiles(projectDir) {
   try {
-    const patterns = [
-      'src/**/*.ts',
-      'src/**/*.tsx',
-      'src/**/*.js',
-      'src/**/*.jsx',
-      'plugins/**/*.ts',
-      'plugins/**/*.js',
-      '!**/node_modules/**',
-      '!**/dist/**',
-      '!**/.next/**',
-      '!**/*.test.ts',
-      '!**/*.test.js',
-    ];
+    const files = [];
+    const extensions = ['.ts', '.tsx', '.js', '.jsx'];
+    const excludeDirs = ['node_modules', 'dist', '.next', 'coverage', 'build'];
 
-    const files = await glob(patterns, {
-      cwd: projectDir,
-      absolute: true,
-      nodir: true,
-    });
+    function scanDir(dir) {
+      try {
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name);
+
+          if (entry.isDirectory()) {
+            // Skip excluded directories
+            if (excludeDirs.includes(entry.name)) {
+              continue;
+            }
+            scanDir(fullPath);
+          } else if (entry.isFile()) {
+            const ext = path.extname(entry.name);
+            // Skip test files
+            if (entry.name.includes('.test.')) {
+              continue;
+            }
+            // Include only target extensions
+            if (extensions.includes(ext)) {
+              files.push(fullPath);
+            }
+          }
+        }
+      } catch (error) {
+        // Skip directories we can't read
+      }
+    }
+
+    // Scan src and plugins directories if they exist
+    if (fs.existsSync(path.join(projectDir, 'src'))) {
+      scanDir(path.join(projectDir, 'src'));
+    }
+    if (fs.existsSync(path.join(projectDir, 'plugins'))) {
+      scanDir(path.join(projectDir, 'plugins'));
+    }
 
     return files;
   } catch (error) {
@@ -283,10 +304,10 @@ function detectDeadCode(graph) {
 /**
  * Build full dependency graph
  */
-async function buildFullDeps(projectDir) {
+function buildFullDeps(projectDir) {
   console.log('🔗 Building full dependency graph...');
 
-  const files = await scanFiles(projectDir);
+  const files = scanFiles(projectDir);
   const graph = buildGraph(files);
   const cycles = detectCircularDeps(graph);
   const deadCode = detectDeadCode(graph);
@@ -314,10 +335,10 @@ async function buildFullDeps(projectDir) {
 /**
  * Update existing deps incrementally
  */
-async function updateDeps(projectDir, oldDeps) {
+function updateDeps(projectDir, oldDeps) {
   console.log('🔗 Updating dependency graph incrementally...');
 
-  const files = await scanFiles(projectDir);
+  const files = scanFiles(projectDir);
   const oldFiles = new Set(Object.keys(oldDeps.graph));
 
   const newFiles = files.filter(f => !oldFiles.has(f));
@@ -390,7 +411,7 @@ async function updateDeps(projectDir, oldDeps) {
 /**
  * Main function
  */
-async function buildDependencyGraph() {
+function buildDependencyGraph() {
   try {
     const projectDir = process.cwd();
 
@@ -411,16 +432,16 @@ async function buildDependencyGraph() {
       // Load existing deps for incremental update
       try {
         const oldDeps = JSON.parse(fs.readFileSync(depsPath, 'utf-8'));
-        deps = await updateDeps(projectDir, oldDeps);
+        deps = updateDeps(projectDir, oldDeps);
         console.log(`  Added: ${deps.metadata.added} files`);
         console.log(`  Removed: ${deps.metadata.removed} files`);
       } catch (error) {
         // If load fails, do full rebuild
-        deps = await buildFullDeps(projectDir);
+        deps = buildFullDeps(projectDir);
       }
     } else {
       // Full rebuild
-      deps = await buildFullDeps(projectDir);
+      deps = buildFullDeps(projectDir);
     }
 
     // Save deps
