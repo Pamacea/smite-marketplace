@@ -14,8 +14,8 @@ const fs = require('fs');
 const path = require('path');
 
 // Paths
-const homeDir = process.env.USERPROFILE || process.env.HOME;
-const smiteDir = path.join(homeDir, '.smite');
+const projectDir = process.cwd();
+const smiteDir = path.join(projectDir, '.claude', '.smite');
 const toolkitDir = path.join(smiteDir, 'toolkit');
 const depsPath = path.join(toolkitDir, 'deps.json');
 
