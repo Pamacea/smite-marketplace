@@ -10,8 +10,12 @@
   "hooks": {
     "SessionStart": [
       {
-        "description": "Detect available vaults",
-        "run": "node scripts/detect-vaults.js"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node plugins/obsidian-note-agent/scripts/detect-vaults.js"
+          }
+        ]
       }
     ]
   }
