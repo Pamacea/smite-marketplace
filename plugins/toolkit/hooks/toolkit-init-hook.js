@@ -18,7 +18,7 @@ const budgetPath = path.join(toolkitDir, 'budget.json');
 const statsPath = path.join(toolkitDir, 'stats.json');
 
 // Default configuration
-const DEFAULT_BUDGET = 100000; // 100k tokens
+const DEFAULT_BUDGET = 50000; // 50k tokens
 const WARN_THRESHOLD = 0.7; // 70%
 const CRITICAL_THRESHOLD = 0.9; // 90%
 
