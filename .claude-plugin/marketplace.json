@@ -96,6 +96,15 @@
         "name": "Melvynx"
       },
       "category": "development"
+    },
+    {
+      "name": "obsidian-note-agent",
+      "source": "./plugins/obsidian-note-agent",
+      "description": "AI-powered note writing and formatting agent for Obsidian vaults with multi-vault support",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "productivity"
     }
   ]
 }

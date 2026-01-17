@@ -1,0 +1,51 @@
+{
+  "templates": {
+    "inbox": {
+      "file": "inbox.md",
+      "folder": "Inbox",
+      "naming": "date-title",
+      "dateFormat": "YYYY-MM-DD"
+    },
+    "project": {
+      "file": "project-brief.md",
+      "folder": "Projects/Clients/{{clientName}}",
+      "naming": "brief.md",
+      "required": ["brief.md", "Notes Techniques.md"]
+    },
+    "technical": {
+      "file": "technical-notes.md",
+      "folder": "Projects/Clients/{{clientName}}",
+      "naming": "Notes Techniques.md",
+      "conflictAction": "append"
+    },
+    "meeting": {
+      "file": "meeting.md",
+      "folder": "Projects/Clients/{{clientName}}",
+      "naming": "date-meeting-{{title}}.md",
+      "dateFormat": "YYYY-MM-DD"
+    },
+    "resource": {
+      "file": "resource.md",
+      "folder": "Ressources/{{category}}",
+      "naming": "slug-title.md"
+    }
+  },
+  "variables": {
+    "date": {
+      "format": "YYYY-MM-DD",
+      "description": "Current date in ISO format"
+    },
+    "datetime": {
+      "format": "YYYY-MM-DD HH:mm",
+      "description": "Current date and time"
+    },
+    "time": {
+      "format": "HH:mm",
+      "description": "Current time"
+    }
+  },
+  "userTemplates": {
+    "enabled": true,
+    "directory": ".obsidian/note-agent/templates"
+  }
+}

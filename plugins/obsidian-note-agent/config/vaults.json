@@ -1,0 +1,10 @@
+{
+  "vaults": [],
+  "currentVault": "auto-detect",
+  "vaultDetection": {
+    "enabled": true,
+    "searchDepth": 2,
+    "indicatorFolder": ".obsidian"
+  },
+  "lastUpdated": "2026-01-17T21:08:00.212Z"
+}

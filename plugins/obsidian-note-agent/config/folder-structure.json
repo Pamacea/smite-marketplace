@@ -1,0 +1,27 @@
+{
+  "default": {
+    "Inbox": {
+      "subfolders": ["Cleaned"],
+      "description": "Quick capture and incoming notes",
+      "conflictAction": "move_to_cleaned"
+    },
+    "Ressources": {
+      "subfolders": ["Cheat Sheets", "Code Snippets"],
+      "description": "Reference materials and resources",
+      "conflictAction": "append"
+    },
+    "Projects": {
+      "subfolders": ["Clients"],
+      "description": "Client projects and briefs",
+      "template": "project-brief",
+      "requiredFiles": ["brief.md", "Notes Techniques.md"],
+      "conflictAction": "ask"
+    },
+    "Domaine": {
+      "subfolders": ["Administratif", "Marketing", "Veille Technique"],
+      "description": "Business operations and knowledge areas",
+      "conflictAction": "append"
+    }
+  },
+  "customStructures": {}
+}
