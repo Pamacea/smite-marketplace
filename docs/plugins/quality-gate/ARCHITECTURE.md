@@ -50,7 +50,7 @@ The Quality Gate is a **PreToolUse hook** that intercepts code editing operation
 │                        Judge Core                                │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │                    ConfigManager                           │  │
-│  │  - Load configuration from .smite/quality.json            │  │
+│  │  - Load configuration from .claude/.smite/quality.json            │  │
 │  │  - Apply per-file overrides                               │  │
 │  │  - Environment variable overrides                         │  │
 │  └───────────────────────────────────────────────────────────┘  │
@@ -147,7 +147,7 @@ class Judge {
 **File:** `src/config.ts`
 
 **Responsibilities:**
-- Load configuration from `.smite/quality.json`
+- Load configuration from `.claude/.smite/quality.json`
 - Validate against JSON Schema
 - Apply per-file overrides
 - Merge environment variables
@@ -156,7 +156,7 @@ class Judge {
 **Configuration Priority (highest to lowest):**
 1. Environment variables (`SMITE_QUALITY_*`)
 2. Per-file overrides (in `overrides` array)
-3. User config file (`.smite/quality.json`)
+3. User config file (`.claude/.smite/quality.json`)
 4. Default configuration (in `DEFAULT_CONFIG`)
 
 **Key Methods:**

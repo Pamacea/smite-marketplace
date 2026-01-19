@@ -63,7 +63,7 @@ async function main() {
     .description('Manage quality gate configuration')
     .option('-i, --init', 'Initialize configuration file')
     .option('-s, --show', 'Show current configuration')
-    .option('-p, --path <path>', 'Configuration file path', '.smite/quality.json')
+    .option('-p, --path <path>', 'Configuration file path', '.claude/.smite/quality.json')
     .option('-f, --format <format>', 'Output format (json|yaml)', 'json')
     .action(async (options) => {
       await qualityConfigCommand(options);
@@ -233,7 +233,7 @@ async function docsSyncCommand(options: {
     console.log(
       chalk.yellow('MCP integration is disabled in configuration.')
     );
-    console.log(chalk.gray('Enable it in .smite/quality.json to use docs-sync.'));
+    console.log(chalk.gray('Enable it in .claude/.smite/quality.json to use docs-sync.'));
     process.exit(0);
   }
 
@@ -360,7 +360,7 @@ async function qualityConfigCommand(options: {
 
   // Initialize configuration
   if (options.init) {
-    const configPath = path.join(cwd, options.path || '.smite/quality.json');
+    const configPath = path.join(cwd, options.path || '.claude/.smite/quality.json');
     const configDir = path.dirname(configPath);
 
     if (!fs.existsSync(configDir)) {
@@ -390,7 +390,7 @@ async function qualityConfigCommand(options: {
 
   // Show configuration
   if (options.show) {
-    const configPath = path.join(cwd, options.path || '.smite/quality.json');
+    const configPath = path.join(cwd, options.path || '.claude/.smite/quality.json');
 
     if (!fs.existsSync(configPath)) {
       console.log(chalk.yellow(`Configuration file not found: ${configPath}`));

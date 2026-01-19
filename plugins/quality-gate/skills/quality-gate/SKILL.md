@@ -28,7 +28,7 @@ Use this skill when:
 
 ## Configuration
 
-Create `.smite/quality.json`:
+Create `.claude/.smite/quality.json`:
 
 ```json
 {

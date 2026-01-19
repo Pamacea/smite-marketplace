@@ -71,7 +71,7 @@ console.log(`  ✓ AJV version: ${pkg.dependencies.ajv}`);
 console.log('\n✓ Test 5: Example configuration file');
 const examplePath = path.join(__dirname, '.smite', 'quality.json');
 if (!fs.existsSync(examplePath)) {
-  console.warn('  ⚠ WARN: .smite/quality.json not found (optional)');
+  console.warn('  ⚠ WARN: .claude/.smite/quality.json not found (optional)');
 } else {
   const example = JSON.parse(fs.readFileSync(examplePath, 'utf-8'));
   console.log(`  ✓ Example config enabled: ${example.enabled}`);

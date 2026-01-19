@@ -1,6 +1,6 @@
 {
   "_comment": "Smite Quality Gate Configuration Example",
-  "_description": "Copy this file to .smite/quality.json and customize for your project",
+  "_description": "Copy this file to .claude/.smite/quality.json and customize for your project",
 
   "enabled": true,
   "_enabled_note": "Master switch for the quality gate. Set to false to disable all validation.",

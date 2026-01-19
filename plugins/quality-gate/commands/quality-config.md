@@ -11,7 +11,7 @@ quality-gate quality-config [action] [options]
 ## Actions
 
 ### `init` - Initialize configuration
-Creates `.smite/quality.json` with default settings.
+Creates `.claude/.smite/quality.json` with default settings.
 
 ```bash
 quality-gate quality-config init
@@ -42,7 +42,7 @@ quality-gate quality-config get security.enabled
 ```
 
 ### `edit` - Open configuration in editor
-Open `.smite/quality.json` in default editor.
+Open `.claude/.smite/quality.json` in default editor.
 
 ```bash
 quality-gate quality-config edit

@@ -42,7 +42,7 @@ quality-gate quality-check --fix
 
 ## Configuration
 
-Configure in `.smite/quality.json`:
+Configure in `.claude/.smite/quality.json`:
 
 ```json
 {

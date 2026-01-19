@@ -124,7 +124,7 @@ Integrated MCP triggering into the main validation orchestrator.
 
 ### Enable MCP Integration
 
-Add to your `.smite/quality.json`:
+Add to your `.claude/.smite/quality.json`:
 
 ```json
 {
@@ -230,7 +230,7 @@ npm run build
 
 ### 3. Configure MCP
 
-Edit `.smite/quality.json` and set `mcp.enabled: true`
+Edit `.claude/.smite/quality.json` and set `mcp.enabled: true`
 
 ### 4. Start Using
 
@@ -329,7 +329,7 @@ try {
 
 1. **Check configuration:**
    ```bash
-   cat .smite/quality.json | grep mcp -A 20
+   cat .claude/.smite/quality.json | grep mcp -A 20
    ```
 
 2. **Verify MCP server installed:**
@@ -376,7 +376,7 @@ npm run typecheck
 
 ### Debugging
 
-Enable debug logging in `.smite/quality.json`:
+Enable debug logging in `.claude/.smite/quality.json`:
 
 ```json
 {

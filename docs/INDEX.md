@@ -97,7 +97,7 @@ docs/
 
 ### Improve Code Quality
 1. Install quality gate: `/plugin install quality-gate@smite`
-2. Configure: `.smite/quality.json`
+2. Configure: `.claude/.smite/quality.json`
 3. Run: `/smite:quality-check`
 
 ## 📝 Conventions

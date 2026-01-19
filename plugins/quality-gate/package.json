@@ -64,7 +64,7 @@
     "type": "hook",
     "hook": "PreToolUse",
     "minVersion": "1.0.0",
-    "configFile": ".smite/quality.json",
+    "configFile": ".claude/.smite/quality.json",
     "categories": [
       "quality",
       "testing",

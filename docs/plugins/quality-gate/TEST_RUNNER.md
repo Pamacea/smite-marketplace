@@ -38,7 +38,7 @@ The Test Runner integration enhances the Quality Gate system with automatic test
 
 ## Configuration
 
-Add test configuration to `.smite/quality.json`:
+Add test configuration to `.claude/.smite/quality.json`:
 
 ```json
 {

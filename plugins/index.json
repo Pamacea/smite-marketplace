@@ -27,7 +27,7 @@
         "type": "hook",
         "hook": "PreToolUse",
         "entryPoint": "./dist/judge-hook.js",
-        "configFile": ".smite/quality.json",
+        "configFile": ".claude/.smite/quality.json",
         "autoInstall": true
       },
       "dependencies": {

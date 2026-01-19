@@ -82,7 +82,7 @@ This interactive CLI will:
 - Detect your project type (Node.js, Python, mixed)
 - Identify frameworks and test frameworks
 - Ask questions about your preferences
-- Generate `.smite/quality.json` with sensible defaults
+- Generate `.claude/.smite/quality.json` with sensible defaults
 
 ### 3. Validate
 
@@ -196,7 +196,7 @@ npm run init-config
 
 ### Manual Configuration
 
-Create `.smite/quality.json`:
+Create `.claude/.smite/quality.json`:
 
 ```json
 {
@@ -623,7 +623,7 @@ Configuration management tool.
 quality-config init
 
 # Validate config
-quality-config validate .smite/quality.json
+quality-config validate .claude/.smite/quality.json
 
 # Show current config
 quality-config show
@@ -644,7 +644,7 @@ quality-config show-defaults
 
 **Solutions:**
 1. Check hook is installed: `judge-hook --version`
-2. Verify config exists: `ls .smite/quality.json`
+2. Verify config exists: `ls .claude/.smite/quality.json`
 3. Check enabled flag: `quality-config show`
 4. Check file patterns: Ensure your files match `include` patterns
 
@@ -653,7 +653,7 @@ quality-config show-defaults
 **Problem:** Valid code is being rejected.
 
 **Solutions:**
-1. Adjust thresholds in `.smite/quality.json`
+1. Adjust thresholds in `.claude/.smite/quality.json`
 2. Use per-file overrides for specific files
 3. Disable specific rules: `{ "id": "rule-name", "enabled": false }`
 4. Use environment variables for temporary overrides

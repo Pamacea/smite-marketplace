@@ -1,6 +1,6 @@
 /**
  * Configuration Management
- * Load and validate judge configuration from .smite/quality.json
+ * Load and validate judge configuration from .claude/.smite/quality.json
  * Uses JSON Schema validation with AJV and supports environment variable overrides
  */
 
@@ -46,7 +46,7 @@ export class ConfigManager {
    *
    * Priority order (highest to lowest):
    * 1. Environment variables (SMITE_QUALITY_*)
-   * 2. User config file (.smite/quality.json)
+   * 2. User config file (.claude/.smite/quality.json)
    * 3. Default configuration
    */
   private loadConfig(): JudgeConfig {

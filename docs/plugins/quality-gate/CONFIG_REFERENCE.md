@@ -26,7 +26,7 @@
 
 ### Location
 
-`.smite/quality.json` (relative to project root)
+`.claude/.smite/quality.json` (relative to project root)
 
 ### JSON Schema
 
@@ -43,7 +43,7 @@ If your configuration is invalid:
 
 ```bash
 # Validate configuration
-quality-config validate .smite/quality.json
+quality-config validate .claude/.smite/quality.json
 
 # Show current configuration
 quality-config show
@@ -1341,7 +1341,7 @@ export SMITE_QUALITY_OUTPUT_FORMAT=json
 ### Validate Configuration
 
 ```bash
-quality-config validate .smite/quality.json
+quality-config validate .claude/.smite/quality.json
 ```
 
 **Output:**
@@ -1393,10 +1393,10 @@ quality-config show-defaults
 **Symptoms:** Default settings are being used
 
 **Solutions:**
-1. Check file exists: `ls .smite/quality.json`
-2. Validate JSON: `cat .smite/quality.json | jq`
-3. Check syntax: `quality-config validate .smite/quality.json`
-4. Check file permissions: `ls -la .smite/quality.json`
+1. Check file exists: `ls .claude/.smite/quality.json`
+2. Validate JSON: `cat .claude/.smite/quality.json | jq`
+3. Check syntax: `quality-config validate .claude/.smite/quality.json`
+4. Check file permissions: `ls -la .claude/.smite/quality.json`
 
 ### Overrides Not Working
 

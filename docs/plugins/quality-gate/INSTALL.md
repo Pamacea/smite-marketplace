@@ -64,7 +64,7 @@ Verify the installation was successful:
 test -f .smite/hooks/pre-tool-use/judge-hook.js && echo "Hook installed"
 
 # Check config exists
-test -f .smite/quality.json && echo "Config exists"
+test -f .claude/.smite/quality.json && echo "Config exists"
 
 # View hook location
 ls -la .smite/hooks/pre-tool-use/
@@ -79,7 +79,7 @@ Config exists
 
 ## Configuration
 
-After installation, create your configuration file at `.smite/quality.json`:
+After installation, create your configuration file at `.claude/.smite/quality.json`:
 
 ```json
 {
@@ -156,7 +156,7 @@ cat .smite/judge-audit.log
 
 ### 3. Customize Rules
 
-Adjust thresholds in `.smite/quality.json` based on your project's needs:
+Adjust thresholds in `.claude/.smite/quality.json` based on your project's needs:
 
 - **Stricter**: Lower complexity thresholds for critical code
 - **Lenient**: Raise thresholds for legacy code or prototypes
@@ -221,13 +221,13 @@ npm list typescript
 **Solution**:
 ```bash
 # Verify config exists
-cat .smite/quality.json
+cat .claude/.smite/quality.json
 
 # Validate JSON syntax
-cat .smite/quality.json | jq .
+cat .claude/.smite/quality.json | jq .
 
 # Check log level
-grep "logLevel" .smite/quality.json
+grep "logLevel" .claude/.smite/quality.json
 ```
 
 ### Permission Errors
@@ -252,7 +252,7 @@ To completely remove the quality gate:
 rm -f .smite/hooks/pre-tool-use/judge-hook.js
 
 # Remove config (optional)
-rm -f .smite/quality.json
+rm -f .claude/.smite/quality.json
 
 # Remove audit logs (optional)
 rm -f .smite/judge-audit.log

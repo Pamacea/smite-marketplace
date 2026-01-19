@@ -1,6 +1,6 @@
 {
   "_comment": "Default Quality Gate Configuration",
-  "_description": "This is the default configuration for the Smite Quality Gate system. Copy this file to .smite/quality.json and customize as needed.",
+  "_description": "This is the default configuration for the Smite Quality Gate system. Copy this file to .claude/.smite/quality.json and customize as needed.",
   "_documentation": "https://github.com/smite-dev/smite/tree/main/plugins/quality-gate",
 
   "enabled": true,

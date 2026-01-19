@@ -214,7 +214,7 @@ echo '{"name": "update_readme_architecture", "arguments": {"projectPath": "."}}'
 
 ### 2. Configure Integration
 
-If using with the Quality Gate, add to `.smite/quality.json`:
+If using with the Quality Gate, add to `.claude/.smite/quality.json`:
 
 ```json
 {

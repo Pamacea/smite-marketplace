@@ -41,7 +41,7 @@ By default, the hook validates:
 
 ### Configuration
 
-Edit `.smite/quality.json` in your project root:
+Edit `.claude/.smite/quality.json` in your project root:
 
 ```json
 {
@@ -121,7 +121,7 @@ Edit `.smite/quality.json` in your project root:
 
 ### Disabling the Hook
 
-Temporarily disable in `.smite/quality.json`:
+Temporarily disable in `.claude/.smite/quality.json`:
 ```json
 {
   "enabled": false
@@ -161,7 +161,7 @@ function complex(x) {
 2. **Adjust thresholds**: Tweak complexity limits based on your codebase
 3. **Review audit logs**: Regularly check `.smite/judge-audit.log` for patterns
 4. **Use with tests**: The hook doesn't run on test files by default
-5. **Team alignment**: Share `.smite/quality.json` across your team
+5. **Team alignment**: Share `.claude/.smite/quality.json` across your team
 
 ## Troubleshooting
 
@@ -171,7 +171,7 @@ function complex(x) {
 - Check log level is set to `debug` in config
 
 **Too many false positives?**
-- Adjust thresholds in `.smite/quality.json`
+- Adjust thresholds in `.claude/.smite/quality.json`
 - Disable specific rules you don't need
 - Add file patterns to `exclude` array
 

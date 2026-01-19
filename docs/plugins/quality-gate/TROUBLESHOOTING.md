@@ -45,9 +45,9 @@ echo
 
 # 2. Check configuration
 echo "2. Checking configuration..."
-if [ -f ".smite/quality.json" ]; then
+if [ -f ".claude/.smite/quality.json" ]; then
   echo "   ✓ Configuration file exists"
-  quality-config validate .smite/quality.json
+  quality-config validate .claude/.smite/quality.json
 else
   echo "   ✗ Configuration file not found"
   echo "   Run: npm run init-config"
@@ -67,7 +67,7 @@ echo
 
 # 4. Check MCP server
 echo "4. Checking MCP integration..."
-MCP_ENABLED=$(grep -o '"enabled"[[:space:]]*:[[:space:]]*true' .smite/quality.json | grep mcp -A 1 | tail -1)
+MCP_ENABLED=$(grep -o '"enabled"[[:space:]]*:[[:space:]]*true' .claude/.smite/quality.json | grep mcp -A 1 | tail -1)
 if [ -n "$MCP_ENABLED" ]; then
   echo "   ✓ MCP is enabled in config"
   MCP_PATH="./node_modules/@smite/docs-editor-mcp/dist/index.js"
@@ -169,7 +169,7 @@ judge-hook --version
 
 2. **Check configuration exists:**
 ```bash
-ls .smite/quality.json
+ls .claude/.smite/quality.json
 ```
 
 3. **Check if enabled:**
@@ -275,7 +275,7 @@ grep "File excluded" .smite/judge-audit.log
 **Diagnosis:**
 
 ```bash
-quality-config validate .smite/quality.json
+quality-config validate .claude/.smite/quality.json
 ```
 
 **Solutions:**
@@ -283,7 +283,7 @@ quality-config validate .smite/quality.json
 1. **Fix JSON syntax:**
 ```bash
 # Validate JSON
-cat .smite/quality.json | jq
+cat .claude/.smite/quality.json | jq
 ```
 
 2. **Check against schema:**
@@ -887,7 +887,7 @@ quality-check --format json src/index.ts | jq
 
 ```bash
 # Validate config
-quality-config validate .smite/quality.json
+quality-config validate .claude/.smite/quality.json
 
 # Show current config
 quality-config show
@@ -973,7 +973,7 @@ npm run install-hook
 
 # Configuration
 npm run init-config
-quality-config validate .smite/quality.json
+quality-config validate .claude/.smite/quality.json
 quality-config show
 
 # Manual validation

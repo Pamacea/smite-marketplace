@@ -68,7 +68,7 @@ Successfully implemented **US-002: Core Critiquer Hook** for the Smite Code Qual
 - Validation result tracking with timestamps
 
 **Configuration Manager** (`src/config.ts`)
-- Loads config from `.smite/quality.json`
+- Loads config from `.claude/.smite/quality.json`
 - Merges user config with sensible defaults
 - File pattern matching (include/exclude glob patterns)
 - Per-rule configuration
@@ -88,7 +88,7 @@ Successfully implemented **US-002: Core Critiquer Hook** for the Smite Code Qual
 
 #### 3. Configuration
 
-**Default Configuration** (`.smite/quality.json`)
+**Default Configuration** (`.claude/.smite/quality.json`)
 ```json
 {
   "enabled": true,
@@ -189,7 +189,7 @@ All validations logged to `.smite/judge-audit.log`:
 | Identifies security vulnerabilities | ✅ | SQL injection, XSS, weak crypto, hardcoded secrets |
 | Reinjects correction prompts | ✅ | Via `permissionDecisionReason` with specific feedback |
 | Logs validation results | ✅ | `.smite/judge-audit.log` with structured JSON |
-| Configuration file support | ✅ | `.smite/quality.json` with full customization |
+| Configuration file support | ✅ | `.claude/.smite/quality.json` with full customization |
 
 ## Technical Highlights
 
@@ -252,7 +252,7 @@ npm run install-hook
 ```
 
 ### Configuration
-Edit `.smite/quality.json` in your project root to customize:
+Edit `.claude/.smite/quality.json` in your project root to customize:
 - Complexity thresholds
 - Security rules
 - File patterns
