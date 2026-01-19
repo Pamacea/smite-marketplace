@@ -79,7 +79,7 @@ const fs = __importStar(require("fs"));
  */
 async function execute(prompt, options) {
     try {
-        const smiteDir = path.join(process.cwd(), ".smite");
+        const smiteDir = path.join(process.cwd(), ".claude", ".smite");
         // Generate PRD from prompt
         const newPrd = prd_generator_2.PRDGenerator.generateFromPrompt(prompt);
         // Merge with existing PRD (preserves completed stories)
@@ -108,7 +108,7 @@ async function execute(prompt, options) {
  * Execute Ralph from existing PRD file
  */
 async function executeFromPRD(prdPath, options) {
-    const smiteDir = path.join(process.cwd(), ".smite");
+    const smiteDir = path.join(process.cwd(), ".claude", ".smite");
     // Validate PRD exists
     try {
         await fs.promises.access(prdPath, fs.constants.F_OK);

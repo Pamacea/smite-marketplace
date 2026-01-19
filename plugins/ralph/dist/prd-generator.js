@@ -42,13 +42,13 @@ class PRDGenerator {
         if (!hasAuth)
             return [];
         return [
-            this.createStory("US-001", "Setup project structure", "architect:task", 10, [
+            this.createStory("US-001", "Setup project structure", "architect:design", 10, [
                 "Project structure follows best practices",
                 "Dependencies installed",
                 "TypeScript configured",
                 "Build system working",
             ], []),
-            this.createStory("US-002", "Implement authentication", "builder:task", 9, [
+            this.createStory("US-002", "Implement authentication", "builder:build", 9, [
                 "Login form working",
                 "Password hashing implemented",
                 "Session management working",
@@ -57,7 +57,7 @@ class PRDGenerator {
         ];
     }
     static createDefaultStory() {
-        return this.createStory("US-001", "Initialize project", "architect:task", 10, [
+        return this.createStory("US-001", "Initialize project", "architect:design", 10, [
             "Project created",
             "Dependencies installed",
             "Basic configuration done",
@@ -66,7 +66,7 @@ class PRDGenerator {
     }
     static createFinalizeStory(dependencies) {
         const id = `US-${String(dependencies.length + 1).padStart(3, "0")}`;
-        return this.createStory(id, "Finalize and document", "finalize:task", 1, ["All tests passing", "No linting errors", "Documentation complete", "Code reviewed"], dependencies.map((s) => s.id));
+        return this.createStory(id, "Finalize and document", "finalize:finalize", 1, ["All tests passing", "No linting errors", "Documentation complete", "Code reviewed"], dependencies.map((s) => s.id));
     }
     static createStory(id, title, agent, priority, acceptanceCriteria, dependencies) {
         // Extract tech from agent (e.g., "builder:task" with tech "typescript")
@@ -87,11 +87,24 @@ class PRDGenerator {
     static extractTechFromAgent(agent) {
         // Default technology mapping based on agent type
         const techMap = {
+            // SMITE skill format (correct)
+            "architect:design": "general",
+            "builder:build": "typescript", // Default to TypeScript for builder
+            "finalize:finalize": "general",
+            "simplifier:simplify": "typescript",
+            "explorer:explore": "general",
+            // Legacy format (for backward compatibility)
             "architect:task": "general",
-            "builder:task": "typescript", // Default to TypeScript for builder
+            "builder:task": "typescript",
             "finalize:task": "general",
             "simplifier:task": "typescript",
             "explorer:task": "general",
+            // Short format
+            "architect": "general",
+            "builder": "typescript",
+            "finalize": "general",
+            "simplifier": "typescript",
+            "explorer": "general",
         };
         return techMap[agent] || "general";
     }

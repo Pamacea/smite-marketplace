@@ -36,7 +36,7 @@ export class ConfigManager {
 
   constructor(cwd: string, logger?: JudgeLogger) {
     this.projectRoot = cwd;
-    this.configPath = path.join(cwd, '.smite', 'quality.json');
+    this.configPath = path.join(cwd, '.claude', '.smite', 'quality.json');
     this.logger = logger || new JudgeLogger(cwd, 'info');
     this.ajv = new Ajv({ allErrors: true, verbose: true });
     this.overrides = [];

@@ -27,7 +27,7 @@ export class ConfigInitCLI {
   private configPath: string;
 
   constructor(cwd: string) {
-    this.configPath = path.join(cwd, '.smite', 'quality.json');
+    this.configPath = path.join(cwd, '.claude', '.smite', 'quality.json');
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,

@@ -73,11 +73,30 @@ export class PRDParser {
 
   /**
    * Validate PRD file path - prevent phantom PRD files
+   * ONLY allows .claude/.smite/prd.json - everything else is rejected
    */
   private static isValidPRDPath(filePath: string): boolean {
     const resolved = path.resolve(filePath);
     const standard = path.resolve(this.STANDARD_PRD_PATH);
-    return resolved === standard;
+
+    // Check if it's the standard PRD path
+    if (resolved === standard) {
+      return true;
+    }
+
+    // Check if it's a phantom PRD (prd-*.json, prd-fix.json, etc.)
+    const basename = path.basename(filePath);
+    if (basename.startsWith('prd') && basename !== 'prd.json') {
+      console.error(`❌ REJECTED: Phantom PRD file detected: ${filePath}`);
+      console.error(`   Ralph ONLY uses: ${this.STANDARD_PRD_PATH}`);
+      console.error(`   Please delete '${basename}' and use the standard PRD file.`);
+      throw new Error(
+        `Invalid PRD path: ${basename}. Ralph only supports .claude/.smite/prd.json. ` +
+        `Do not create alternate PRD files like prd-fix.json or prd-*.json.`
+      );
+    }
+
+    return false;
   }
 
   /**
@@ -339,7 +358,7 @@ export class PRDParser {
   }
 
   /**
-   * Clean up phantom PRD files (prd-*.json in .smite or root) - async
+   * Clean up phantom PRD files (prd-*.json, prd-fix.json, etc. in .smite or root) - async
    * This prevents accumulation of unused PRD files
    */
   private static async cleanupPhantomPRDs(): Promise<void> {
@@ -347,27 +366,34 @@ export class PRDParser {
       const smiteDir = path.join(process.cwd(), ".claude", ".smite");
       const rootDir = process.cwd();
 
-      // Clean .smite directory
+      // Clean .smite directory - delete ALL prd-*.json except prd.json
       try {
         const files = await fs.promises.readdir(smiteDir);
         for (const file of files) {
-          if (file.match(/^prd-.*\.json$/) || file.match(/^prd-\d+\.json$/)) {
+          // Match: prd-fix.json, prd-123.json, prd-backup.json, etc.
+          // BUT NOT: prd.json (the standard file)
+          if (file.startsWith('prd') && file.endsWith('.json') && file !== 'prd.json') {
             const filePath = path.join(smiteDir, file);
             console.log(`🧹 Cleaning up phantom PRD: ${file}`);
-            await fs.promises.unlink(filePath);
+            try {
+              await fs.promises.unlink(filePath);
+            } catch (error) {
+              console.warn(`   Failed to delete ${file}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            }
           }
         }
       } catch {
         // .smite directory doesn't exist yet, skip
       }
 
-      // Clean root directory (warn but don't delete unless it's clearly a phantom)
+      // Clean root directory - warn about phantom PRDs
       try {
         const rootFiles = await fs.promises.readdir(rootDir);
         for (const file of rootFiles) {
-          if (file.match(/^prd-\d+\.json$/)) {
+          if (file.startsWith('prd') && file.endsWith('.json') && file !== 'prd.json') {
             console.warn(`⚠️  Warning: Phantom PRD in root: ${file}`);
-            console.warn(`   Consider moving to .claude/.smite/prd.json or deleting`);
+            console.warn(`   Ralph ONLY uses: .claude/.smite/prd.json`);
+            console.warn(`   Please delete: ${file}`);
           }
         }
       } catch {

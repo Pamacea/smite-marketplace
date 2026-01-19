@@ -154,6 +154,14 @@ export class SpecGenerator {
    */
   private determineApproach(story: UserStory): string {
     const agentApproaches: Record<string, string> = {
+      // SMITE skill format (correct)
+      "builder:build": `Implementation using ${story.tech} stack following project conventions`,
+      "explorer:explore": "Codebase analysis using grep and file search patterns",
+      "architect:design": "Architecture design with technical specifications",
+      "finalize:finalize": "Quality assurance with testing and documentation",
+      "simplifier:simplify": "Code refactoring while preserving functionality",
+
+      // Legacy format (for backward compatibility)
       "builder:task": `Implementation using ${story.tech} stack following project conventions`,
       "explorer:task": "Codebase analysis using grep and file search patterns",
       "architect:task": "Architecture design with technical specifications",

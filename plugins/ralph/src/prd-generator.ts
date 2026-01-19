@@ -63,7 +63,7 @@ export class PRDGenerator {
       this.createStory(
         "US-001",
         "Setup project structure",
-        "architect:task",
+        "architect:design",
         10,
         [
           "Project structure follows best practices",
@@ -76,7 +76,7 @@ export class PRDGenerator {
       this.createStory(
         "US-002",
         "Implement authentication",
-        "builder:task",
+        "builder:build",
         9,
         [
           "Login form working",
@@ -93,7 +93,7 @@ export class PRDGenerator {
     return this.createStory(
       "US-001",
       "Initialize project",
-      "architect:task",
+      "architect:design",
       10,
       [
         "Project created",
@@ -110,7 +110,7 @@ export class PRDGenerator {
     return this.createStory(
       id,
       "Finalize and document",
-      "finalize:task",
+      "finalize:finalize",
       1,
       ["All tests passing", "No linting errors", "Documentation complete", "Code reviewed"],
       dependencies.map((s) => s.id)
@@ -145,11 +145,26 @@ export class PRDGenerator {
   private static extractTechFromAgent(agent: string): string {
     // Default technology mapping based on agent type
     const techMap: Record<string, string> = {
+      // SMITE skill format (correct)
+      "architect:design": "general",
+      "builder:build": "typescript", // Default to TypeScript for builder
+      "finalize:finalize": "general",
+      "simplifier:simplify": "typescript",
+      "explorer:explore": "general",
+
+      // Legacy format (for backward compatibility)
       "architect:task": "general",
-      "builder:task": "typescript", // Default to TypeScript for builder
+      "builder:task": "typescript",
       "finalize:task": "general",
       "simplifier:task": "typescript",
       "explorer:task": "general",
+
+      // Short format
+      "architect": "general",
+      "builder": "typescript",
+      "finalize": "general",
+      "simplifier": "typescript",
+      "explorer": "general",
     };
 
     return techMap[agent] || "general";

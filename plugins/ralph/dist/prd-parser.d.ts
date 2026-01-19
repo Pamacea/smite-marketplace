@@ -9,6 +9,7 @@ export declare class PRDParser {
     static parseFromFile(filePath: string): Promise<PRD>;
     /**
      * Validate PRD file path - prevent phantom PRD files
+     * ONLY allows .claude/.smite/prd.json - everything else is rejected
      */
     private static isValidPRDPath;
     /**
@@ -55,7 +56,7 @@ export declare class PRDParser {
      */
     static generateHash(prd: PRD): string;
     /**
-     * Clean up phantom PRD files (prd-*.json in .smite or root) - async
+     * Clean up phantom PRD files (prd-*.json, prd-fix.json, etc. in .smite or root) - async
      * This prevents accumulation of unused PRD files
      */
     private static cleanupPhantomPRDs;

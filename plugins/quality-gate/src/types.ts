@@ -360,6 +360,10 @@ export const DEFAULT_CONFIG: JudgeConfig = {
   },
   mcp: {
     enabled: false,
+    // Server path can be:
+    // - Absolute path
+    // - Relative to project root (e.g., ./node_modules/@smite/docs-editor-mcp/dist/index.js)
+    // - Relative to global .claude/plugins (e.g., docs-editor-mcp/dist/index.js)
     serverPath: './node_modules/@smite/docs-editor-mcp/dist/index.js',
     triggers: {
       openAPI: {

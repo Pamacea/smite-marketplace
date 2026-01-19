@@ -291,14 +291,34 @@ export class MCPManager {
   // ========================================================================
 
   /**
-   * Resolve server path relative to project root
+   * Resolve server path relative to project root or global .claude plugins
+   * Priority:
+   * 1. Absolute path (return as-is)
+   * 2. Relative to project root
+   * 3. Relative to global .claude/plugins directory
    */
   private resolveServerPath(): string {
     const serverPath = this.config.serverPath;
+
+    // If absolute, return as-is
     if (path.isAbsolute(serverPath)) {
       return serverPath;
     }
-    return path.resolve(this.config.projectRoot, serverPath);
+
+    // Try resolving relative to project root
+    const projectRelativePath = path.resolve(this.config.projectRoot, serverPath);
+    if (fs.existsSync(projectRelativePath)) {
+      return projectRelativePath;
+    }
+
+    // Try resolving relative to global .claude/plugins directory
+    const globalPluginsPath = path.join(os.homedir(), '.claude', 'plugins', serverPath);
+    if (fs.existsSync(globalPluginsPath)) {
+      return globalPluginsPath;
+    }
+
+    // Fallback: return project relative path (will error later if not found)
+    return projectRelativePath;
   }
 
   /**

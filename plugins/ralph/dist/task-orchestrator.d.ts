@@ -25,6 +25,11 @@ export declare class TaskOrchestrator {
      */
     private updateStoryStatus;
     /**
+     * Map legacy agent names to correct SMITE skill format
+     * Converts: builder:task -> builder:build, architect:task -> architect:design, etc.
+     */
+    private mapAgentToSkill;
+    /**
      * Invoke Claude Code agent for story execution
      * In real implementation, this uses the Task tool
      */

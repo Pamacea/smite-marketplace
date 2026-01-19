@@ -175,13 +175,63 @@ export class TaskOrchestrator {
   }
 
   /**
+   * Map legacy agent names to correct SMITE skill format
+   * Converts: builder:task -> builder:build, architect:task -> architect:design, etc.
+   */
+  private mapAgentToSkill(agent: string): string {
+    // Remove any whitespace
+    const cleanAgent = agent.trim();
+
+    // Mapping of legacy agent names to correct SMITE skills
+    const skillMapping: Record<string, string> = {
+      // Builder agent mappings
+      "builder:task": "builder:build",
+      "builder:builder": "builder:build",
+      "builder:constructor": "builder:build",
+      "builder:smite-constructor": "builder:build",
+      "builder": "builder:build",
+
+      // Architect agent mappings
+      "architect:task": "architect:design",
+      "architect:architect": "architect:design",
+      "architect:strategist": "architect:design",
+      "architect": "architect:design",
+
+      // Explorer agent mappings
+      "explorer:task": "explorer:explore",
+      "explorer:explorer": "explorer:explore",
+      "explorer": "explorer:explore",
+
+      // Finalize agent mappings
+      "finalize:task": "finalize:finalize",
+      "finalize:finalize": "finalize:finalize",
+      "finalize:gatekeeper": "finalize:finalize",
+      "finalize": "finalize:finalize",
+
+      // Simplifier agent mappings
+      "simplifier:task": "simplifier:simplify",
+      "simplifier:simplifier": "simplifier:simplify",
+      "simplifier:surgeon": "simplifier:simplify",
+      "simplifier": "simplifier:simplify",
+    };
+
+    // Return mapped skill or original if no mapping found
+    return skillMapping[cleanAgent] || cleanAgent;
+  }
+
+  /**
    * Invoke Claude Code agent for story execution
    * In real implementation, this uses the Task tool
    */
   private async invokeAgent(story: UserStory, specPath?: string): Promise<TaskResult> {
+    // Map agent to correct SMITE skill format
+    const skill = this.mapAgentToSkill(story.agent);
+
+    console.log(`      🎯 Using skill: ${skill}`);
+
     // This is a placeholder for the actual Task tool invocation
     // In production, this would call Claude Code's Task tool like:
-    // Task(subagent_type=story.agent, prompt=this.buildPrompt(story, specPath))
+    // Task(subagent_type=skill, prompt=this.buildPrompt(story, specPath))
 
     const prompt = this.buildPrompt(story, specPath);
 
@@ -189,7 +239,7 @@ export class TaskOrchestrator {
     return {
       storyId: story.id,
       success: true,
-      output: `Executed: ${story.title}${specPath ? ` with spec: ${specPath}` : ""}`,
+      output: `Executed: ${story.title} with skill: ${skill}${specPath ? ` and spec: ${specPath}` : ""}`,
       timestamp: Date.now(),
     };
   }
