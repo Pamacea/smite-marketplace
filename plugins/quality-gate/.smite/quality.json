@@ -40,6 +40,11 @@
       { "id": "hardcoded-secret", "enabled": true }
     ]
   },
+  "tests": {
+    "enabled": false,
+    "timeoutMs": 60000,
+    "failOnTestFailure": true
+  },
   "output": {
     "format": "text",
     "includeCodeSnippets": true,

@@ -47,6 +47,37 @@ export type Severity = 'critical' | 'error' | 'warning';
 
 export type IssueCategory = 'complexity' | 'semantic' | 'security' | 'test';
 
+export interface TestFailure {
+  testFile: string;
+  testName: string;
+  message: string;
+  stackTrace?: string;
+  line: number;
+  column: number;
+}
+
+export interface TestResults {
+  passed: boolean;
+  skipped: boolean;
+  framework: 'jest' | 'vitest' | 'mocha' | 'pytest' | 'none';
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  skippedTests: number;
+  failures: TestFailure[];
+  executionTimeMs: number;
+}
+
+export type FrameworkDetection = 'jest' | 'vitest' | 'mocha' | 'pytest' | 'none';
+
+export interface TestConfig {
+  enabled: boolean;
+  command?: string;
+  framework?: FrameworkDetection;
+  timeoutMs: number;
+  failOnTestFailure: boolean;
+}
+
 export interface ValidationIssue {
   type: IssueCategory;
   severity: Severity;
@@ -91,10 +122,19 @@ export interface SemanticMetrics {
   duplicateCodeInstances: number;
 }
 
+export interface TestMetrics {
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  skippedTests: number;
+  failures: TestFailure[];
+}
+
 export interface ValidationMetrics {
   complexity: ComplexityMetrics;
   security: SecurityMetrics;
   semantics: SemanticMetrics;
+  tests?: TestMetrics;
 }
 
 export interface ValidationResults {
@@ -158,6 +198,9 @@ export interface JudgeConfig {
     enabled: boolean;
     rules: SecurityRuleConfig[];
   };
+
+  // Test execution
+  tests: TestConfig;
 
   // Output formatting
   output: {
@@ -258,6 +301,11 @@ export const DEFAULT_CONFIG: JudgeConfig = {
       { id: 'weak-crypto', enabled: true },
       { id: 'hardcoded-secret', enabled: true },
     ],
+  },
+  tests: {
+    enabled: false,
+    timeoutMs: 60000,
+    failOnTestFailure: true,
   },
   output: {
     format: 'text',

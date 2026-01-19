@@ -11,6 +11,7 @@ import { SemanticChecker } from './analyzers/semantic';
 import { FeedbackGenerator } from './feedback';
 import { ConfigManager } from './config';
 import { JudgeLogger } from './logger';
+import { TestRunner } from './test-runner';
 import {
   JudgeHookInput,
   JudgeHookOutput,
@@ -18,6 +19,7 @@ import {
   Decision,
   ValidationIssue,
   ASTAnalysisContext,
+  TestMetrics,
 } from './types';
 
 export class Judge {
@@ -25,6 +27,7 @@ export class Judge {
   private logger: JudgeLogger;
   private parser: TypeScriptParser;
   private feedbackGenerator: FeedbackGenerator;
+  private testRunner: TestRunner;
   private startTime: number = 0;
 
   constructor(cwd: string) {
@@ -34,10 +37,12 @@ export class Judge {
     this.logger = new JudgeLogger(cwd, config.logLevel);
     this.parser = new TypeScriptParser(this.logger);
     this.feedbackGenerator = new FeedbackGenerator(this.logger, cwd);
+    this.testRunner = new TestRunner(this.logger, cwd);
 
     this.logger.info('judge', 'Judge initialized', {
       enabled: config.enabled,
       logLevel: config.logLevel,
+      testsEnabled: config.tests.enabled,
     });
   }
 
@@ -130,6 +135,41 @@ export class Judge {
         semanticChecker.check(sourceFile, context);
       }
 
+      // Run tests if enabled
+      let testMetrics: TestMetrics | undefined;
+      if (config.tests.enabled) {
+        const testResults = await this.testRunner.runTests(config.tests);
+
+        // Add test failures as validation issues
+        if (!testResults.skipped && testResults.failures.length > 0) {
+          for (const failure of testResults.failures) {
+            context.issues.push({
+              type: 'test',
+              severity: config.tests.failOnTestFailure ? 'error' : 'warning',
+              location: {
+                file: failure.testFile,
+                line: failure.line,
+                column: failure.column,
+              },
+              message: `Test failure: ${failure.testName}`,
+              rule: 'test-failure',
+              suggestion: failure.message,
+            });
+          }
+        }
+
+        // Store test metrics
+        testMetrics = {
+          totalTests: testResults.totalTests,
+          passedTests: testResults.passedTests,
+          failedTests: testResults.failedTests,
+          skippedTests: testResults.skippedTests,
+          failures: testResults.failures,
+        };
+
+        context.metrics.tests = testMetrics;
+      }
+
       // Calculate analysis time
       const analysisTimeMs = Date.now() - this.startTime;
 
@@ -211,6 +251,14 @@ export class Judge {
     // Security issues always deny
     if (metrics.security.criticalIssues > 0 || metrics.security.errorIssues > 0) {
       return 'deny';
+    }
+
+    // Test failures deny if configured to do so
+    if (metrics.tests && metrics.tests.failedTests > 0) {
+      const config = this.configManager.getConfig();
+      if (config.tests.failOnTestFailure) {
+        return 'deny';
+      }
     }
 
     // Allow if no issues or only warnings

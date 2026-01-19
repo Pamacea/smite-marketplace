@@ -50,6 +50,10 @@ export class ConfigManager {
         ...defaults.security,
         rules: user.security?.rules || defaults.security.rules,
       },
+      tests: {
+        ...defaults.tests,
+        ...user.tests,
+      },
       output: { ...defaults.output, ...user.output },
     };
   }

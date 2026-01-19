@@ -9,7 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { ValidationResults, ValidationIssue, RetryState, CodeChangeAttempt } from './types';
+import { ValidationResults, ValidationIssue, RetryState, CodeChangeAttempt, TestFailure } from './types';
 import { JudgeLogger } from './logger';
 
 export class FeedbackGenerator {
@@ -86,6 +86,19 @@ export class FeedbackGenerator {
       prompt += '\n';
     }
 
+    // Test failures section
+    if (results.metrics.tests && results.metrics.tests.failedTests > 0) {
+      prompt += '## Test Failures\n\n';
+      for (const failure of results.metrics.tests.failures.slice(0, 5)) {
+        // Limit to 5 test failures
+        prompt += this.formatTestFailure(failure);
+      }
+      if (results.metrics.tests.failures.length > 5) {
+        prompt += `... and ${results.metrics.tests.failures.length - 5} more test failure(s)\n\n`;
+      }
+      prompt += '\n';
+    }
+
     // Suggestions section
     const suggestions = this.generateSuggestions(results);
     if (suggestions) {
@@ -143,6 +156,13 @@ export class FeedbackGenerator {
       lines.push(`- Semantics: ${results.metrics.semantics.typeInconsistencies} type inconsistency(ies)`);
     }
 
+    // Test summary
+    if (results.metrics.tests && results.metrics.tests.failedTests > 0) {
+      lines.push(
+        `- Tests: ${results.metrics.tests.failedTests}/${results.metrics.tests.totalTests} test(s) failed`
+      );
+    }
+
     return lines.length > 0 ? lines.join('\n') : 'No specific issues detected.';
   }
 
@@ -166,6 +186,23 @@ export class FeedbackGenerator {
       // Clean up snippet
       const snippet = issue.codeSnippet.trim().substring(0, 200);
       text += `   \`\`\`\n${snippet}\n   \`\`\`\n`;
+    }
+
+    text += '\n';
+    return text;
+  }
+
+  /**
+   * Format a single test failure for display
+   */
+  private formatTestFailure(failure: TestFailure): string {
+    let text = `- **${failure.testName}**\n`;
+    text += `   File: \`${failure.testFile}:${failure.line}:${failure.column}\`\n`;
+
+    if (failure.message) {
+      // Show first few lines of error message
+      const messageLines = failure.message.split('\n').slice(0, 3).join('\n');
+      text += `   Error: ${messageLines}\n`;
     }
 
     text += '\n';
