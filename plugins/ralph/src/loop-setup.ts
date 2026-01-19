@@ -161,7 +161,7 @@ function generateLoopFileContent(config: LoopConfig, prd: PRD): string {
     "",
     "- This prompt will be repeated until completion or max iterations",
     "- Previous work is preserved in files and git history",
-    "- Check `.smite/prd.json` for current story status",
+    "- Check `.claude/.smite/prd.json` for current story status",
     "- Use `/ralph status` to see progress",
     "",
   ].join("\n");

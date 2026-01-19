@@ -248,12 +248,28 @@ smite/
 │   ├── finalize/                   # QA + docs
 │   ├── statusline/                 # Statusline
 │   ├── toolkit/                    # 🆕 Code analysis & optimization
-│   └── smite/                      # Essential commands
-└── docs/
-    ├── RALPH_GUIDE.md
-    ├── WEB_SEARCH_FORCE_GUIDE.md   # 🆕 Complete guide
-    ├── IMPLEMENTATION_SUMMARY.md    # 🆕 Implementation summary
-    └── SMITE_COMPLETE_GUIDE.md
+│   ├── smite/                      # Essential commands
+│   ├── quality-gate/               # 🆕 Code quality validation
+│   └── docs-editor-mcp/            # 🆕 Documentation automation
+└── docs/                           # 📖 Central documentation
+    ├── INDEX.md                    # Documentation hub
+    ├── plugins/                    # Plugin documentation
+    │   ├── ralph/
+    │   ├── explorer/
+    │   ├── architect/
+    │   ├── builder/
+    │   ├── finalize/
+    │   ├── simplifier/
+    │   ├── smite/
+    │   ├── toolkit/
+    │   ├── statusline/
+    │   ├── quality-gate/
+    │   └── docs-editor-mcp/
+    ├── architecture/               # System architecture
+    │   ├── architecture-code-critiquer.md
+    │   └── architecture-docs-editor-mcp.md
+    ├── DECISION_TREE.md            # Tool selection guide
+    └── RALPH_GUIDE.md              # Ralph orchestrator guide
 ```
 
 ---
@@ -271,9 +287,12 @@ smite/
 
 ## 📚 Documentation
 
+**📖 [Documentation Hub](docs/INDEX.md)** - Complete documentation index
+
 | Document | Description |
 |----------|-------------|
 | **[AGENTS.md](AGENTS.md)** | Complete agent reference |
+| **[docs/INDEX.md](docs/INDEX.md)** | All documentation organized by topic |
 
 ---
 
@@ -289,4 +308,3 @@ smite/
 **SMITE v3.0**
 
 _11 core plugins • 🛠️ Toolkit with 6 powerful APIs • 🌐 Mandatory web search • Spec-first workflow • Multi-agent parallel orchestration • 2-3x faster • Zero-debt engineering_
-

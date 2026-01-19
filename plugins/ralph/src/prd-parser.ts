@@ -367,7 +367,7 @@ export class PRDParser {
         for (const file of rootFiles) {
           if (file.match(/^prd-\d+\.json$/)) {
             console.warn(`⚠️  Warning: Phantom PRD in root: ${file}`);
-            console.warn(`   Consider moving to .smite/prd.json or deleting`);
+            console.warn(`   Consider moving to .claude/.smite/prd.json or deleting`);
           }
         }
       } catch {

@@ -178,7 +178,7 @@ Execute a PRD once with parallel optimization (no looping).
 
 ```bash
 # From PRD file
-/ralph execute .smite/prd.json
+/ralph execute .claude/.smite/prd.json
 
 # Auto-generate PRD from prompt
 /ralph "Build a REST API"
@@ -229,10 +229,10 @@ Execute with automatic looping using hook-based iteration (inspired by Ralph Wig
 ## 📁 File Structure
 
 ```
-.smite/
-├── prd.json              # Current PRD
-├── ralph-state.json      # Execution state
-└── progress.txt          # Activity log
+.claude/.smite/
+  ├── prd.json              # Current PRD
+  ├── ralph-state.json      # Execution state
+  └── progress.txt          # Activity log
 ```
 
 ## 🎯 Agents Used
