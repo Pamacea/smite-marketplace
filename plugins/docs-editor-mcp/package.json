@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "start": "node dist/index.js",
-    "dev": "tsc && node dist/index.js"
+    "dev": "tsc && node dist/index.js",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
@@ -16,10 +17,36 @@
     "documentation",
     "openapi",
     "swagger",
-    "jsdoc"
+    "jsdoc",
+    "smite",
+    "smite-plugin",
+    "readme",
+    "automation",
+    "markdown",
+    "typescript"
   ],
-  "author": "Smite",
+  "author": {
+    "name": "Smite",
+    "email": "contact@smite.dev",
+    "url": "https://github.com/pamacea/smite"
+  },
   "license": "MIT",
+  "homepage": "https://github.com/pamacea/smite/tree/main/plugins/docs-editor-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pamacea/smite.git",
+    "directory": "plugins/docs-editor-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/pamacea/smite/issues"
+  },
+  "smite": {
+    "type": "mcp-server",
+    "protocol": "stdio",
+    "minVersion": "1.0.0",
+    "configFile": ".smite/docs-config.json",
+    "categories": ["documentation", "automation"]
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "@types/glob": "^8.1.0",

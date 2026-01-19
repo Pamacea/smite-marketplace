@@ -229,6 +229,23 @@ export interface JudgeConfig {
     includeCodeSnippets: boolean;
     maxSuggestions: number;
   };
+
+  // Per-file/directory overrides
+  overrides?: ConfigOverrideItem[];
+}
+
+export interface ConfigOverrideItem {
+  files: string;
+  complexity?: Partial<ComplexityThresholds>;
+  security?: {
+    enabled?: boolean;
+    rules?: SecurityRuleConfig[];
+  };
+  semantics?: {
+    enabled?: boolean;
+    checks?: SemanticCheckConfig[];
+  };
+  tests?: Partial<TestConfig>;
 }
 
 export interface SecurityRuleConfig {

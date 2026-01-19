@@ -12,5 +12,7 @@ export { SecurityScanner } from './analyzers/security';
 export { SemanticChecker } from './analyzers/semantic';
 export { MCPClient } from './mcp-client';
 export { DocTrigger, createDefaultDocTriggerConfig } from './doc-trigger';
+export { OverrideManager, OverridePresets, loadOverrides } from './config-overrides';
+export { ConfigInitCLI, generateConfig, initConfig } from './config-init';
 
 export * from './types';

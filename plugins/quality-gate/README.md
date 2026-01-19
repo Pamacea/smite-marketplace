@@ -21,6 +21,22 @@ npm run install-hook
 
 ## Configuration
 
+### Quick Start
+
+Run the interactive configuration CLI to generate a customized config:
+
+```bash
+npm run init-config
+```
+
+This will:
+- Detect your project type (Node.js, Python, mixed)
+- Identify frameworks and test frameworks
+- Ask questions about your preferences
+- Generate `.smite/quality.json` with sensible defaults
+
+### Manual Configuration
+
 Create or edit `.smite/quality.json` in your project root:
 
 ```json
@@ -43,6 +59,206 @@ Create or edit `.smite/quality.json` in your project root:
       { "id": "sql-injection", "enabled": true },
       { "id": "xss-vulnerability", "enabled": true }
     ]
+  }
+}
+```
+
+### Configuration Options
+
+#### Master Settings
+
+- **enabled** (boolean): Master toggle for the quality gate system
+- **logLevel** ('debug' | 'info' | 'warn' | 'error'): Logging verbosity
+- **maxRetries** (number): Maximum retry attempts when validation fails
+
+#### File Filtering
+
+- **include** (string[]): Glob patterns for files to validate
+- **exclude** (string[]): Glob patterns for files to exclude
+
+#### Complexity Thresholds
+
+- **complexity.maxCyclomaticComplexity** (number): Maximum cyclomatic complexity (default: 10)
+- **complexity.maxCognitiveComplexity** (number): Maximum cognitive complexity (default: 15)
+- **complexity.maxNestingDepth** (number): Maximum nesting depth (default: 4)
+- **complexity.maxFunctionLength** (number): Maximum function length in lines (default: 50)
+- **complexity.maxParameterCount** (number): Maximum parameter count (default: 5)
+
+#### Semantic Checks
+
+- **semantics.enabled** (boolean): Enable semantic analysis
+- **semantics.checks** (array): Individual check configurations
+  - **type** ('api-contract' | 'type-consistency' | 'naming' | 'duplicate-code'): Check type
+  - **enabled** (boolean): Enable this check
+  - **severity** ('error' | 'warning'): Violation severity
+
+#### Security Rules
+
+- **security.enabled** (boolean): Enable security scanning
+- **security.rules** (array): Security rule configurations
+  - **id** ('sql-injection' | 'xss-vulnerability' | 'weak-crypto' | 'hardcoded-secret'): Rule ID
+  - **enabled** (boolean): Enable this rule
+  - **severity** ('critical' | 'error' | 'warning'): Override severity
+  - **customPattern** (string): Custom regex pattern
+
+#### Test Execution
+
+- **tests.enabled** (boolean): Enable automated test execution
+- **tests.command** (string): Custom test command (overrides auto-detection)
+- **tests.framework** ('jest' | 'vitest' | 'mocha' | 'pytest'): Test framework
+- **tests.timeoutMs** (number): Test execution timeout (default: 60000)
+- **tests.failOnTestFailure** (boolean): Deny changes on test failure
+
+#### MCP Integration
+
+- **mcp.enabled** (boolean): Enable documentation MCP triggers
+- **mcp.serverPath** (string): Path to MCP server
+- **mcp.triggers.openAPI**: OpenAPI documentation settings
+- **mcp.triggers.readme**: README documentation settings
+- **mcp.triggers.jsdoc**: JSDoc documentation settings
+
+### Per-File Configuration Overrides
+
+Apply different rules to specific files or directories:
+
+```json
+{
+  "overrides": [
+    {
+      "files": "**/core/**/*.ts",
+      "complexity": {
+        "maxCyclomaticComplexity": 5,
+        "maxCognitiveComplexity": 8
+      }
+    },
+    {
+      "files": "**/*.test.ts",
+      "complexity": {
+        "maxCyclomaticComplexity": 15
+      },
+      "semantics": {
+        "enabled": false
+      }
+    }
+  ]
+}
+```
+
+Override patterns are evaluated from most specific to least specific. Later overrides in the array take precedence.
+
+### Environment Variables
+
+Override configuration using environment variables (prefix: `SMITE_QUALITY_`):
+
+```bash
+# Disable quality gate
+export SMITE_QUALITY_ENABLED=false
+
+# Set debug logging
+export SMITE_QUALITY_LOG_LEVEL=debug
+
+# Adjust complexity threshold
+export SMITE_QUALITY_COMPLEXITY_MAX_CYCLOMATIC_COMPLEXITY=15
+
+# Enable tests
+export SMITE_QUALITY_TESTS_ENABLED=true
+
+# Custom test command
+export SMITE_QUALITY_TESTS_COMMAND="npm run test:fast"
+```
+
+Environment variables take precedence over file-based configuration.
+
+### JSON Schema Validation
+
+The configuration file is validated against a JSON Schema. If your configuration is invalid, the quality gate will:
+
+1. Log detailed validation errors
+2. Show the exact path and issue for each error
+3. Fall back to default configuration
+4. Continue operation (failsafe behavior)
+
+View the schema: `plugins/quality-gate/config-schema.json`
+
+### Example Configurations
+
+#### Strict Configuration for Core Libraries
+
+```json
+{
+  "enabled": true,
+  "complexity": {
+    "maxCyclomaticComplexity": 5,
+    "maxCognitiveComplexity": 8,
+    "maxNestingDepth": 3
+  },
+  "security": {
+    "enabled": true,
+    "rules": [
+      { "id": "sql-injection", "enabled": true },
+      { "id": "xss-vulnerability", "enabled": true },
+      { "id": "weak-crypto", "enabled": true },
+      { "id": "hardcoded-secret", "enabled": true }
+    ]
+  },
+  "tests": {
+    "enabled": true,
+    "failOnTestFailure": true
+  }
+}
+```
+
+#### Lenient Configuration for Legacy Code
+
+```json
+{
+  "enabled": true,
+  "complexity": {
+    "maxCyclomaticComplexity": 20,
+    "maxCognitiveComplexity": 30,
+    "maxNestingDepth": 6
+  },
+  "semantics": {
+    "enabled": false
+  },
+  "security": {
+    "enabled": true,
+    "rules": [
+      { "id": "sql-injection", "enabled": true },
+      { "id": "hardcoded-secret", "enabled": true }
+    ]
+  }
+}
+```
+
+#### Next.js API Routes Configuration
+
+```json
+{
+  "enabled": true,
+  "include": [
+    "**/pages/api/**/*.ts",
+    "**/app/api/**/*.ts",
+    "**/src/**/*.ts"
+  ],
+  "complexity": {
+    "maxCyclomaticComplexity": 8
+  },
+  "security": {
+    "enabled": true,
+    "rules": [
+      { "id": "sql-injection", "enabled": true },
+      { "id": "xss-vulnerability", "enabled": true }
+    ]
+  },
+  "mcp": {
+    "enabled": true,
+    "triggers": {
+      "openAPI": {
+        "enabled": true,
+        "frameworks": ["nextjs"]
+      }
+    }
   }
 }
 ```

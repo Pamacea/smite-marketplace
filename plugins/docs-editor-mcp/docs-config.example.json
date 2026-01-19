@@ -1,0 +1,220 @@
+{
+  "_comment": "Smite Docs Editor MCP Configuration Example",
+  "_description": "Copy this file to .smite/docs-config.json and customize for your project",
+
+  "enabled": true,
+  "_enabled_note": "Master switch for the docs editor. Set to false to disable automatic documentation updates.",
+
+  "logLevel": "info",
+  "_logLevel_note": "Logging level: 'error', 'warn', 'info', 'debug'. Debug shows detailed parsing steps.",
+
+  "readme": {
+    "_section_note": "README.md automatic maintenance settings.",
+    "autoUpdate": true,
+    "_autoUpdate_note": "Automatically update README when code changes are detected.",
+
+    "preserveManualEdits": true,
+    "_preserveManualEdits_note": "Preserve sections marked with <!-- SMITE:MANUAL:START --> and <!-- SMITE:MANUAL:END -->",
+
+    "generateDiff": true,
+    "_generateDiff_note": "Generate a markdown diff showing changes before applying them.",
+
+    "readmePath": "README.md",
+    "_readmePath_note": "Path to README file relative to project root.",
+
+    "sections": {
+      "_note": "Control which sections are automatically updated.",
+      "installation": {
+        "enabled": true,
+        "_enabled_note": "Update Installation section based on package.json dependencies.",
+        "includeDevDependencies": false,
+        "_includeDevDependencies_note": "Include devDependencies in the installation section."
+      },
+      "architecture": {
+        "enabled": true,
+        "_enabled_note": "Update Architecture section with project overview.",
+        "includeTechStack": true,
+        "_includeTechStack_note": "List main technologies and frameworks used."
+      },
+      "structure": {
+        "enabled": true,
+        "_enabled_note": "Update Project Structure section by scanning directories.",
+        "maxDepth": 3,
+        "_maxDepth_note": "Directory depth to scan for structure section.",
+        "excludePatterns": [
+          "node_modules",
+          "dist",
+          "build",
+          ".next",
+          "coverage"
+        ],
+        "_excludePatterns_note": "Directory patterns to exclude from structure scan."
+      }
+    }
+  },
+
+  "openapi": {
+    "_section_note": "OpenAPI/Swagger specification synchronization (Coming Soon).",
+    "enabled": false,
+    "_enabled_note": "Enable OpenAPI spec generation and updates.",
+
+    "path": "docs/openapi.json",
+    "_path_note": "Path to OpenAPI specification file.",
+
+    "version": "3.0.0",
+    "_version_note": "OpenAPI version to use.",
+
+    "scan": {
+      "_note": "Control how API routes are scanned.",
+      "patterns": [
+        "src/api/**/*.ts",
+        "src/routes/**/*.ts",
+        "src/controllers/**/*.ts"
+      ],
+      "_patterns_note": "Glob patterns for files containing API route definitions.",
+
+      "framework": "express",
+      "_framework_note": "Framework to scan: 'express', 'fastify', 'next', 'nestjs', or 'generic'."
+    }
+  },
+
+  "jsdoc": {
+    "_section_note": "JSDoc comment generation (Coming Soon).",
+    "enabled": false,
+    "_enabled_note": "Enable automatic JSDoc generation.",
+
+    "outputPath": "docs/jsdoc/",
+    "_outputPath_note": "Directory where JSDoc HTML output will be generated.",
+
+    "scan": {
+      "_note": "Control which files are scanned for JSDoc generation.",
+      "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx"
+      ],
+      "_include_note": "Glob patterns for files to document.",
+
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/node_modules/**"
+      ],
+      "_exclude_note": "Glob patterns for files to exclude."
+    },
+
+    "templates": {
+      "_note": "JSDoc template customization.",
+      "style": "default",
+      "_style_note": "Template style: 'default', 'minimal', or 'detailed'."
+    }
+  },
+
+  "markdown": {
+    "_section_note": "Markdown processing and formatting settings.",
+    "format": true,
+    "_format_note": "Auto-format markdown sections (consistent spacing, headers, etc.).",
+
+    "toc": {
+      "enabled": false,
+      "_enabled_note": "Auto-generate table of contents in README.",
+
+      "maxLevel": 3,
+      "_maxLevel_note": "Maximum heading level to include in TOC (1-6).",
+
+      "position": "after-title",
+      "_position_note": "Where to insert TOC: 'after-title', 'before-first-heading', or 'custom'."
+    }
+  },
+
+  "integration": {
+    "_section_note": "Integration with other Smite plugins.",
+    "qualityGate": {
+      "enabled": true,
+      "_enabled_note": "Trigger documentation updates after quality gate validation passes.",
+
+      "waitForValidation": true,
+      "_waitForValidation_note": "Only update docs if code passes quality validation."
+    },
+
+    "git": {
+      "enabled": false,
+      "_enabled_note": "Commit documentation changes automatically.",
+
+      "commitMessage": "docs: automatic documentation update",
+      "_commitMessage_note": "Commit message template for documentation updates.",
+
+      "createBranch": false,
+      "_createBranch_note": "Create a new branch for documentation updates."
+    }
+  },
+
+  "_project_examples": {
+    "minimal_setup": {
+      "enabled": true,
+      "readme": {
+        "autoUpdate": true,
+        "preserveManualEdits": true,
+        "generateDiff": true,
+        "sections": {
+          "installation": { "enabled": true },
+          "architecture": { "enabled": false },
+          "structure": { "enabled": true }
+        }
+      }
+    },
+    "full_documentation": {
+      "enabled": true,
+      "readme": {
+        "autoUpdate": true,
+        "preserveManualEdits": true,
+        "generateDiff": true,
+        "sections": {
+          "installation": { "enabled": true, "includeDevDependencies": true },
+          "architecture": { "enabled": true, "includeTechStack": true },
+          "structure": {
+            "enabled": true,
+            "maxDepth": 4
+          }
+        }
+      },
+      "openapi": {
+        "enabled": true,
+        "path": "docs/openapi.json",
+        "scan": {
+          "patterns": ["src/api/**/*.ts"],
+          "framework": "express"
+        }
+      },
+      "jsdoc": {
+        "enabled": true,
+        "outputPath": "docs/jsdoc/"
+      },
+      "markdown": {
+        "format": true,
+        "toc": {
+          "enabled": true,
+          "maxLevel": 3
+        }
+      }
+    },
+    "quality_gated": {
+      "enabled": true,
+      "readme": {
+        "autoUpdate": true,
+        "preserveManualEdits": true,
+        "generateDiff": true,
+        "sections": {
+          "installation": { "enabled": true },
+          "architecture": { "enabled": true },
+          "structure": { "enabled": true }
+        }
+      },
+      "integration": {
+        "qualityGate": {
+          "enabled": true,
+          "waitForValidation": true
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@
  * Determines which documentation tools to call based on file changes
  */
 
-import type { Issue } from "./types.js";
+import type { ValidationIssue } from "./types.js";
 import type { MCPClient } from "./mcp-client.js";
 
 export interface DocTriggerConfig {
@@ -30,7 +30,7 @@ export interface TriggerContext {
   projectPath: string;
   changedFiles: string[];
   validatedFiles: string[];
-  issues: Issue[];
+  issues: ValidationIssue[];
 }
 
 export interface DocumentationAction {

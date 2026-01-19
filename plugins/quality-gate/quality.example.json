@@ -1,0 +1,210 @@
+{
+  "_comment": "Smite Quality Gate Configuration Example",
+  "_description": "Copy this file to .smite/quality.json and customize for your project",
+
+  "enabled": true,
+  "_enabled_note": "Master switch for the quality gate. Set to false to disable all validation.",
+
+  "logLevel": "info",
+  "_logLevel_note": "Logging level: 'error', 'warn', 'info', 'debug'. Debug shows detailed AST analysis.",
+
+  "maxRetries": 3,
+  "_maxRetries_note": "Maximum number of retries when validation fails. Each retry provides more specific feedback.",
+
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "_include_note": "Glob patterns for files to validate. Adjust based on your project structure.",
+
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**",
+    "**/*.d.ts"
+  ],
+  "_exclude_note": "Glob patterns for files to skip. Test files and build artifacts are excluded by default.",
+
+  "complexity": {
+    "_section_note": "Complexity analysis thresholds. Adjust based on your team's standards.",
+    "maxCyclomaticComplexity": 10,
+    "_maxCyclomaticComplexity_note": "Maximum cyclomatic complexity per function. Higher = more decision points. Recommended: 10-15.",
+
+    "maxCognitiveComplexity": 15,
+    "_maxCognitiveComplexity_note": "Maximum cognitive complexity (accounts for nesting). Recommended: 15-20.",
+
+    "maxNestingDepth": 4,
+    "_maxNestingDepth_note": "Maximum nesting depth (if/for/while blocks). Recommended: 3-5.",
+
+    "maxFunctionLength": 50,
+    "_maxFunctionLength_note": "Maximum lines per function. Longer functions are harder to test. Recommended: 30-50.",
+
+    "maxParameterCount": 5,
+    "_maxParameterCount_note": "Maximum parameters per function. More params = higher complexity. Recommended: 3-5."
+  },
+
+  "security": {
+    "_section_note": "Security vulnerability detection. All rules are CRITICAL severity by default.",
+    "enabled": true,
+    "_enabled_note": "Master switch for security scanning.",
+
+    "rules": [
+      {
+        "id": "sql-injection",
+        "enabled": true,
+        "_note": "Detects SQL injection vulnerabilities in string concatenation and template literals."
+      },
+      {
+        "id": "xss-vulnerability",
+        "enabled": true,
+        "_note": "Detects XSS vulnerabilities in innerHTML assignments and dangerous DOM APIs."
+      },
+      {
+        "id": "weak-crypto",
+        "enabled": true,
+        "_note": "Detects weak cryptographic algorithms (md5, sha1, des, etc.)."
+      },
+      {
+        "id": "hardcoded-secret",
+        "enabled": true,
+        "_note": "Detects hardcoded API keys, passwords, and tokens based on regex patterns."
+      },
+      {
+        "id": "eval-usage",
+        "enabled": true,
+        "_note": "Detects usage of eval() and similar dynamic code execution."
+      },
+      {
+        "id": "unsafe-regex",
+        "enabled": true,
+        "_note": "Detects regular expressions vulnerable to ReDoS attacks."
+      }
+    ]
+  },
+
+  "semantic": {
+    "_section_note": "Semantic analysis for code quality and maintainability.",
+    "enabled": true,
+    "_enabled_note": "Master switch for semantic checks.",
+
+    "rules": [
+      {
+        "id": "naming-convention",
+        "enabled": true,
+        "_note": "Enforces camelCase for functions/variables, PascalCase for classes/types."
+      },
+      {
+        "id": "no-any",
+        "enabled": true,
+        "_note": "Flags usage of 'any' type. Consider 'unknown' or specific types."
+      },
+      {
+        "id": "no-type-assertion",
+        "enabled": true,
+        "_note": "Flags type assertions (as Type). Consider type guards instead."
+      },
+      {
+        "id": "prefer-const",
+        "enabled": true,
+        "_note": "Suggests using 'const' instead of 'let' when variable is not reassigned."
+      },
+      {
+        "id": "no-console",
+        "enabled": false,
+        "_note": "Flags console.log statements. Useful for production code enforcement."
+      }
+    ]
+  },
+
+  "feedback": {
+    "_section_note": "Feedback generation when validation fails.",
+    "style": "constructive",
+    "_style_note": "Feedback style: 'strict' (enforce rules), 'constructive' (explain why), 'lenient' (warnings only).",
+
+    "includeExamples": true,
+    "_includeExamples_note": "Include code examples in feedback messages showing how to fix issues.",
+
+    "maxSuggestions": 5,
+    "_maxSuggestions_note": "Maximum number of suggestions to provide per validation failure."
+  },
+
+  "audit": {
+    "_section_note": "Audit logging configuration.",
+    "enabled": true,
+    "_enabled_note": "Log all validation results to .smite/judge-audit.log",
+
+    "includePasses": true,
+    "_includePasses_note": "Log successful validations, not just failures.",
+
+    "includeAST": false,
+    "_includeAST_note": "Include AST dump in logs (very verbose, only for debugging)."
+  },
+
+  "_project_examples": {
+    "strict_critical_systems": {
+      "complexity": {
+        "maxCyclomaticComplexity": 5,
+        "maxCognitiveComplexity": 8,
+        "maxNestingDepth": 3,
+        "maxFunctionLength": 30,
+        "maxParameterCount": 3
+      },
+      "security": {
+        "enabled": true
+      },
+      "semantic": {
+        "enabled": true,
+        "rules": [
+          { "id": "no-any", "enabled": true },
+          { "id": "no-console", "enabled": true }
+        ]
+      }
+    },
+    "moderate_web_app": {
+      "complexity": {
+        "maxCyclomaticComplexity": 10,
+        "maxCognitiveComplexity": 15,
+        "maxNestingDepth": 4,
+        "maxFunctionLength": 50,
+        "maxParameterCount": 5
+      },
+      "security": {
+        "enabled": true
+      },
+      "semantic": {
+        "enabled": true,
+        "rules": [
+          { "id": "no-any", "enabled": true },
+          { "id": "no-console", "enabled": false }
+        ]
+      }
+    },
+    "lenient_prototype": {
+      "complexity": {
+        "maxCyclomaticComplexity": 20,
+        "maxCognitiveComplexity": 25,
+        "maxNestingDepth": 6,
+        "maxFunctionLength": 100,
+        "maxParameterCount": 8
+      },
+      "security": {
+        "enabled": true,
+        "rules": [
+          { "id": "sql-injection", "enabled": true },
+          { "id": "xss-vulnerability", "enabled": true }
+        ]
+      },
+      "semantic": {
+        "enabled": false
+      }
+    }
+  }
+}
