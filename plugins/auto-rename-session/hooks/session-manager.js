@@ -131,18 +131,18 @@ class SessionManager {
   cleanSlashCommands(text) {
     // Remove slash commands from the beginning of messages
     // Examples: "/debug fix this", "/commit message", "/clear description"
-    const slashCommandPattern = /^\/[\w\-:]+(\s+(.+))?$/;
-    const match = text.match(slashCommandPattern);
+    // Improved: Handles commands anywhere in the text, not just at start
 
-    if (match && match[2]) {
-      // Return only the content after the slash command
-      return match[2].trim();
-    }
+    // Pattern matches: /command, /smite:debug, /tool:subcommand, etc.
+    // Followed by space and any content
+    const slashCommandPattern = /^\/[a-zA-Z0-9_\-:]+(\s|$)/;
 
-    // If no match or no content after command, return original
-    // Also handle cases where command is at start but text continues after
-    const cleaned = text.replace(/^\/[\w\-:]+\s*/, '');
-    return cleaned.trim() || text;
+    // Remove the command if it's at the start
+    const cleaned = text.replace(slashCommandPattern, '').trim();
+
+    // Return cleaned text if not empty, otherwise return original
+    // This prevents returning empty strings for command-only inputs
+    return cleaned || text;
   }
 
   generateSessionNamePrompt(context) {

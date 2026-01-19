@@ -6,8 +6,8 @@ class RenameScript {
     this.lastRename = null;
     this.lastRenameTime = 0;
     this.renameCount = 0;
-    this.maxRenamesPerSession = 10;
-    this.minRenameInterval = 30000; // Minimum 30 seconds between renames
+    this.maxRenamesPerSession = 15; // Increased for more dynamic updates
+    this.minRenameInterval = 15000; // Reduced to 15 seconds for more frequent updates
   }
 
   async run() {
@@ -35,17 +35,39 @@ class RenameScript {
 
   readStdin() {
     try {
-      // Read from stdin (file descriptor 0) - NOT from INPUT_DATA environment variable
-      // See: https://code.claude.com/docs/en/hooks - "Hooks receive JSON data via stdin"
-      const inputData = require('fs').readFileSync(0, 'utf-8');
+      // Check if stdin is available (file descriptor 0)
+      const fs = require('fs');
+      const stdinFd = 0;
 
-      if (inputData.trim()) {
-        return JSON.parse(inputData);
+      // Try to read with a small timeout
+      // Use synchronous read but handle the case where no data is available
+      try {
+        const inputData = fs.readFileSync(stdinFd, 'utf-8');
+
+        if (inputData && inputData.trim()) {
+          const parsed = JSON.parse(inputData);
+
+          // Log successful input for debugging
+          if (parsed && (parsed.tool_name || parsed.content)) {
+            console.error('[AutoRename] Input received:', JSON.stringify(parsed).substring(0, 100));
+          }
+
+          return parsed;
+        }
+
+        console.error('[AutoRename] No stdin data available');
+        return null;
+      } catch (readError) {
+        // EAGAIN or EWOULDBLOCK means no data available on non-blocking stdin
+        // Other errors might be actual problems
+        if (readError.code !== 'EAGAIN' && readError.code !== 'EWOULDBLOCK') {
+          console.error('[AutoRename] stdin read error:', readError.message);
+        }
+        return null;
       }
-
-      return null;
     } catch (error) {
       // No stdin data or invalid JSON - return null for hooks that don't require input
+      console.error('[AutoRename] stdin parse error:', error.message);
       return null;
     }
   }
@@ -57,17 +79,16 @@ class RenameScript {
       return;
     }
 
-    // Wait longer at session start to gather more initial context
-    await this.delay(3000);
+    // Wait to gather initial context
+    await this.delay(5000);
 
     const entries = this.manager.readSession(sessionPath);
 
-    // If we still don't have much context, wait a bit more
+    // If we still don't have much context, wait a bit more and retry
     if (entries.length < 3) {
-      setTimeout(() => {
-        const updatedEntries = this.manager.readSession(sessionPath);
-        this.attemptRename(sessionPath, updatedEntries, 'session-start');
-      }, 5000);
+      await this.delay(7000);
+      const updatedEntries = this.manager.readSession(sessionPath);
+      await this.attemptRename(sessionPath, updatedEntries, 'session-start');
       return;
     }
 
@@ -75,20 +96,25 @@ class RenameScript {
   }
 
   async handlePostToolUse(input) {
+    console.error('[AutoRename] PostToolUse triggered');
+
     if (!this.shouldTriggerRename(input)) {
+      console.error('[AutoRename] PostToolUse: not a significant tool');
       return;
     }
 
     const sessionPath = this.manager.findCurrentSession();
     if (!sessionPath) {
+      console.error('[AutoRename] PostToolUse: no session found');
       return;
     }
 
     const entries = this.manager.getSessionHistory(sessionPath);
+    console.error(`[AutoRename] PostToolUse: session has ${entries.length} entries`);
 
-    // Only rename every 5 significant tool uses to avoid too many renames
-    // Check if we've done at least 5 actions since the last rename
-    if (entries.length < 5) {
+    // Rename periodically - every 3-5 significant tool uses
+    if (entries.length < 3) {
+      console.error('[AutoRename] PostToolUse: not enough entries yet');
       return;
     }
 
@@ -96,15 +122,20 @@ class RenameScript {
   }
 
   async handleUserPromptSubmit(input) {
+    console.error('[AutoRename] UserPromptSubmit triggered');
+
     const sessionPath = this.manager.findCurrentSession();
     if (!sessionPath) {
+      console.error('[AutoRename] UserPromptSubmit: no session found');
       return;
     }
 
     const entries = this.manager.getSessionHistory(sessionPath);
+    console.error(`[AutoRename] UserPromptSubmit: session has ${entries.length} entries`);
 
-    // Only rename after we have some context, but don't require exact multiples
-    if (entries.length < 5) {
+    // Rename after every few user prompts to capture conversation evolution
+    if (entries.length < 3) {
+      console.error('[AutoRename] UserPromptSubmit: not enough entries yet');
       return;
     }
 
@@ -133,6 +164,7 @@ class RenameScript {
     // PostToolUse hook provides: tool_name, tool_input, tool_response
     // See: https://code.claude.com/docs/en/hooks#PostToolUse Input
     if (!input || !input.tool_name) {
+      console.error('[AutoRename] shouldTriggerRename: no tool_name in input');
       return false;
     }
 
@@ -141,54 +173,77 @@ class RenameScript {
       'Bash', 'Skill'
     ];
 
+    console.error(`[AutoRename] Checking tool: ${input.tool_name}`);
+
     if (significantTools.includes(input.tool_name)) {
       // For Bash, check if it's a significant command
       if (input.tool_name === 'Bash' && input.tool_input) {
         const command = input.tool_input.command || '';
-        const significantCommands = ['git commit', 'npm ', 'yarn ', 'pnpm ', 'bun '];
-        return significantCommands.some(cmd => command.includes(cmd));
+        const significantCommands = ['git commit', 'npm ', 'yarn ', 'pnpm ', 'bun ', 'git add', 'git push'];
+        const isSignificant = significantCommands.some(cmd => command.includes(cmd));
+
+        console.error(`[AutoRename] Bash command: "${command}", significant: ${isSignificant}`);
+        return isSignificant;
       }
+
+      console.error(`[AutoRename] Tool ${input.tool_name} is significant`);
       return true;
     }
 
+    console.error(`[AutoRename] Tool ${input.tool_name} is not significant`);
     return false;
   }
 
   async attemptRename(sessionPath, entries, trigger) {
+    console.error(`[AutoRename] attemptRename called (trigger: ${trigger})`);
+
     if (this.renameCount >= this.maxRenamesPerSession) {
+      console.error(`[AutoRename] Max renames reached (${this.renameCount}/${this.maxRenamesPerSession})`);
       return;
     }
 
     // Debounce: Don't rename if we've renamed recently (within minRenameInterval)
     const now = Date.now();
-    if (now - this.lastRenameTime < this.minRenameInterval) {
+    const timeSinceLastRename = now - this.lastRenameTime;
+
+    if (timeSinceLastRename < this.minRenameInterval) {
+      console.error(`[AutoRename] Too soon since last rename (${timeSinceLastRename}ms < ${this.minRenameInterval}ms)`);
       return;
     }
 
     const context = this.manager.extractContext(entries);
+    console.error(`[AutoRename] Context extracted: firstUserMessage="${context.firstUserMessage?.substring(0, 50)}..."`);
 
     if (!context.firstUserMessage && entries.length < 5) {
+      console.error('[AutoRename] Not enough context to rename');
       return;
     }
 
     const prompt = this.manager.generateSessionNamePrompt(context);
+    console.error('[AutoRename] Generating name with LLM...');
+
     const newName = await this.generateNameWithLLM(prompt);
 
     if (!newName) {
+      console.error('[AutoRename] Failed to generate name');
       return;
     }
 
     if (this.lastRename === newName) {
+      console.error(`[AutoRename] Name unchanged: "${newName}"`);
       return;
     }
 
+    console.error(`[AutoRename] Writing rename: "${newName}"`);
     const success = this.manager.writeSessionRename(sessionPath, newName);
 
     if (success) {
       this.lastRename = newName;
       this.lastRenameTime = now;
       this.renameCount++;
-      console.error(`[AutoRename] Session renamed to: "${newName}" (trigger: ${trigger})`);
+      console.error(`[AutoRename] ✅ Session renamed to: "${newName}" (trigger: ${trigger}, count: ${this.renameCount})`);
+    } else {
+      console.error('[AutoRename] ❌ Failed to write rename');
     }
   }
 
