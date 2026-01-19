@@ -30,7 +30,9 @@
   "author": "Pamacea",
   "license": "MIT",
   "dependencies": {
-    "typescript": "^5.3.0"
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "typescript": "^5.3.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

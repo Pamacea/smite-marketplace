@@ -202,6 +202,27 @@ export interface JudgeConfig {
   // Test execution
   tests: TestConfig;
 
+  // Documentation MCP integration
+  mcp: {
+    enabled: boolean;
+    serverPath: string;
+    triggers: {
+      openAPI: {
+        enabled: boolean;
+        filePatterns: string[];
+        frameworks: string[];
+      };
+      readme: {
+        enabled: boolean;
+        filePatterns: string[];
+      };
+      jsdoc: {
+        enabled: boolean;
+        filePatterns: string[];
+      };
+    };
+  };
+
   // Output formatting
   output: {
     format: 'json' | 'text';
@@ -306,6 +327,35 @@ export const DEFAULT_CONFIG: JudgeConfig = {
     enabled: false,
     timeoutMs: 60000,
     failOnTestFailure: true,
+  },
+  mcp: {
+    enabled: false,
+    serverPath: './node_modules/@smite/docs-editor-mcp/dist/index.js',
+    triggers: {
+      openAPI: {
+        enabled: true,
+        filePatterns: [
+          '**/routes/**/*.ts',
+          '**/api/**/*.ts',
+          '**/controllers/**/*.ts',
+          '**/pages/api/**/*.ts',
+        ],
+        frameworks: ['express', 'nextjs'],
+      },
+      readme: {
+        enabled: true,
+        filePatterns: [
+          '**/src/**/*.ts',
+          '**/lib/**/*.ts',
+          '**/core/**/*.ts',
+          'package.json',
+        ],
+      },
+      jsdoc: {
+        enabled: true,
+        filePatterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      },
+    },
   },
   output: {
     format: 'text',

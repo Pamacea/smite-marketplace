@@ -10,5 +10,7 @@ export { FeedbackGenerator } from './feedback';
 export { ComplexityAnalyzer } from './analyzers/complexity';
 export { SecurityScanner } from './analyzers/security';
 export { SemanticChecker } from './analyzers/semantic';
+export { MCPClient } from './mcp-client';
+export { DocTrigger, createDefaultDocTriggerConfig } from './doc-trigger';
 
 export * from './types';

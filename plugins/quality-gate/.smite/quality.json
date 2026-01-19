@@ -45,6 +45,40 @@
     "timeoutMs": 60000,
     "failOnTestFailure": true
   },
+  "mcp": {
+    "enabled": false,
+    "serverPath": "./node_modules/@smite/docs-editor-mcp/dist/index.js",
+    "triggers": {
+      "openAPI": {
+        "enabled": true,
+        "filePatterns": [
+          "**/routes/**/*.ts",
+          "**/api/**/*.ts",
+          "**/controllers/**/*.ts",
+          "**/pages/api/**/*.ts"
+        ],
+        "frameworks": ["express", "nextjs"]
+      },
+      "readme": {
+        "enabled": true,
+        "filePatterns": [
+          "**/src/**/*.ts",
+          "**/lib/**/*.ts",
+          "**/core/**/*.ts",
+          "package.json"
+        ]
+      },
+      "jsdoc": {
+        "enabled": true,
+        "filePatterns": [
+          "**/*.ts",
+          "**/*.tsx",
+          "**/*.js",
+          "**/*.jsx"
+        ]
+      }
+    }
+  },
   "output": {
     "format": "text",
     "includeCodeSnippets": true,

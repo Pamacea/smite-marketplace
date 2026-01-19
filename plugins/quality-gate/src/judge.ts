@@ -12,6 +12,8 @@ import { FeedbackGenerator } from './feedback';
 import { ConfigManager } from './config';
 import { JudgeLogger } from './logger';
 import { TestRunner } from './test-runner';
+import { MCPClient } from './mcp-client';
+import { DocTrigger } from './doc-trigger';
 import {
   JudgeHookInput,
   JudgeHookOutput,
@@ -28,6 +30,9 @@ export class Judge {
   private parser: TypeScriptParser;
   private feedbackGenerator: FeedbackGenerator;
   private testRunner: TestRunner;
+  private mcpClient: MCPClient | null = null;
+  private docTrigger: DocTrigger | null = null;
+  private changedFiles: Set<string> = new Set();
   private startTime: number = 0;
 
   constructor(cwd: string) {
@@ -43,7 +48,53 @@ export class Judge {
       enabled: config.enabled,
       logLevel: config.logLevel,
       testsEnabled: config.tests.enabled,
+      mcpEnabled: config.mcp.enabled,
     });
+  }
+
+  /**
+   * Initialize MCP client and documentation trigger
+   * Called on first validation to avoid blocking constructor
+   */
+  private async initializeMCPIntegrationIfNeeded(): Promise<void> {
+    // Skip if already initialized or not enabled
+    if (this.mcpClient !== null || this.docTrigger !== null) {
+      return;
+    }
+
+    const config = this.configManager.getConfig();
+    if (!config.mcp.enabled) {
+      return;
+    }
+
+    try {
+      this.logger.info('judge', 'Initializing MCP integration');
+
+      // Create MCP client
+      this.mcpClient = new MCPClient({
+        serverPath: config.mcp.serverPath,
+      });
+
+      // Connect to MCP server
+      await this.mcpClient.connect();
+
+      // Create documentation trigger
+      this.docTrigger = new DocTrigger({
+        enabled: true,
+        serverPath: config.mcp.serverPath,
+        triggers: config.mcp.triggers,
+      });
+
+      // Set MCP client on trigger
+      this.docTrigger.setMCPClient(this.mcpClient);
+
+      this.logger.info('judge', 'MCP integration initialized successfully');
+    } catch (error) {
+      this.logger.warn('judge', `Failed to initialize MCP integration: ${error}`);
+      // Non-blocking: continue without MCP
+      this.mcpClient = null;
+      this.docTrigger = null;
+    }
   }
 
   /**
@@ -58,6 +109,9 @@ export class Judge {
     if (!config.enabled) {
       return this.allow('Quality gate is disabled in configuration');
     }
+
+    // Initialize MCP integration on first validation if enabled
+    await this.initializeMCPIntegrationIfNeeded();
 
     // Extract file path and content
     const filePath = input.tool_input.file_path;
@@ -74,6 +128,9 @@ export class Judge {
       this.logger.debug('judge', `File excluded from validation: ${filePath}`);
       return this.allow(`File excluded from validation: ${filePath}`);
     }
+
+    // Track changed file for MCP documentation
+    this.changedFiles.add(filePath);
 
     // Parse code
     const sourceFile = this.parser.parseCode(filePath, content);
@@ -189,6 +246,10 @@ export class Judge {
       if (results.decision === 'allow') {
         this.logger.info('judge', `Validation passed for ${filePath}`);
         this.feedbackGenerator.clearRetryState();
+
+        // Trigger MCP documentation updates after successful validation
+        await this.triggerDocumentationUpdates(input.cwd, filePath, results);
+
         return this.allow('Code quality validation passed');
       } else {
         this.logger.warn('judge', `Validation failed for ${filePath}`, {
@@ -229,6 +290,47 @@ export class Judge {
     } catch (error) {
       this.logger.error('judge', 'Validation error', error);
       return this.ask(`Validation error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  /**
+   * Trigger documentation updates via MCP
+   */
+  private async triggerDocumentationUpdates(
+    projectPath: string,
+    currentFile: string,
+    results: ValidationResults
+  ): Promise<void> {
+    if (!this.docTrigger || !this.mcpClient) {
+      return;
+    }
+
+    try {
+      this.logger.info('judge', 'Triggering documentation updates', {
+        changedFiles: this.changedFiles.size,
+        currentFile,
+      });
+
+      // Analyze triggers and execute actions
+      const actions = await this.docTrigger.analyzeTriggers({
+        projectPath,
+        changedFiles: Array.from(this.changedFiles),
+        validatedFiles: [currentFile],
+        issues: results.issues,
+      });
+
+      if (actions.length > 0) {
+        this.logger.info('judge', `Executing ${actions.length} documentation action(s)`);
+        await this.docTrigger.executeActions(actions);
+
+        // Clear changed files after processing
+        this.changedFiles.clear();
+      } else {
+        this.logger.debug('judge', 'No documentation triggers matched');
+      }
+    } catch (error) {
+      // Non-blocking: log error but don't fail validation
+      this.logger.warn('judge', `Documentation update failed: ${error}`);
     }
   }
 
