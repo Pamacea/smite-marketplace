@@ -32,8 +32,10 @@ export class ConfigManager {
   private overrides: ConfigOverride[];
   private logger: JudgeLogger;
   private ajv; // eslint-disable-line @typescript-eslint/no-explicit-any
+  public projectRoot: string
 
   constructor(cwd: string, logger?: JudgeLogger) {
+    this.projectRoot = cwd;
     this.configPath = path.join(cwd, '.smite', 'quality.json');
     this.logger = logger || new JudgeLogger(cwd, 'info');
     this.ajv = new Ajv({ allErrors: true, verbose: true });

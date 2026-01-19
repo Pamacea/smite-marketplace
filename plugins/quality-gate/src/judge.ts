@@ -14,6 +14,7 @@ import { JudgeLogger } from './logger';
 import { TestRunner } from './test-runner';
 import { MCPClient } from './mcp-client';
 import { DocTrigger } from './doc-trigger';
+import { MCPManager, cleanupStalePids } from './mcp-manager';
 import {
   JudgeHookInput,
   JudgeHookOutput,
@@ -33,6 +34,7 @@ export class Judge {
   private testRunner: TestRunner;
   private mcpClient: MCPClient | null = null;
   private docTrigger: DocTrigger | null = null;
+  private mcpManager: MCPManager | null = null;
   private changedFiles: Set<string> = new Set();
   private startTime: number = 0;
 
@@ -58,7 +60,7 @@ export class Judge {
    * Called on first validation to avoid blocking constructor
    */
   private async initializeMCPIntegrationIfNeeded(): Promise<void> {
-    // Skip if already initialized or not enabled
+    // Skip if already initialized
     if (this.mcpClient !== null || this.docTrigger !== null) {
       return;
     }
@@ -70,6 +72,35 @@ export class Judge {
 
     try {
       this.logger.info('judge', 'Initializing MCP integration');
+
+      // Auto-start MCP server if configured
+      if (config.mcp.autoStart) {
+        this.logger.info('judge', 'Auto-starting MCP server');
+
+        // Clean up stale PIDs first
+        cleanupStalePids(this.configManager.projectRoot);
+
+        // Create MCP manager
+        this.mcpManager = new MCPManager({
+          enabled: config.mcp.enabled,
+          autoStart: config.mcp.autoStart || false,
+          serverPath: config.mcp.serverPath,
+          projectRoot: this.configManager.projectRoot,
+          healthCheck: config.mcp.healthCheck,
+          retry: config.mcp.retry,
+        });
+
+        // Ensure server is running (with retry and backoff)
+        const startResult = await this.mcpManager.ensureRunning();
+
+        if (startResult.success) {
+          this.logger.info('judge', `MCP server started successfully (PID: ${startResult.pid}, attempt: ${startResult.attempt})`);
+        } else {
+          this.logger.warn('judge', `Failed to start MCP server: ${startResult.error}`);
+          // Continue without MCP - non-blocking
+          return;
+        }
+      }
 
       // Create MCP client
       this.mcpClient = new MCPClient({
@@ -95,6 +126,7 @@ export class Judge {
       // Non-blocking: continue without MCP
       this.mcpClient = null;
       this.docTrigger = null;
+      this.mcpManager = null;
     }
   }
 

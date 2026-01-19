@@ -204,21 +204,9 @@ export interface JudgeConfig {
 
   // Documentation MCP integration
   mcp: {
-    enabled: boolean;
     autoStart?: boolean;
+    enabled: boolean;
     serverPath: string;
-    healthCheck?: {
-      enabled: boolean;
-      intervalMs: number;
-      timeoutMs: number;
-      maxRetries: number;
-    };
-    retry?: {
-      maxAttempts: number;
-      initialDelayMs: number;
-      maxDelayMs: number;
-      backoffMultiplier: number;
-    };
     triggers: {
       openAPI: {
         enabled: boolean;
