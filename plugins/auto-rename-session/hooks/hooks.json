@@ -1,0 +1,39 @@
+{
+  "description": "Auto-rename session hooks configuration",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/rename-script.js session-start",
+            "description": "Rename session at start based on initial context"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash|Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/rename-script.js post-tool",
+            "description": "Rename session after significant tool usage"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/rename-script.js user-prompt",
+            "description": "Rename session after user submits new prompt"
+          }
+        ]
+      }
+    ]
+  }
+}

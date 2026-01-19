@@ -1,0 +1,40 @@
+{
+  "name": "auto-rename-session",
+  "version": "1.0.0",
+  "description": "Automatically rename Claude Code sessions based on their content using LLM analysis",
+  "author": {
+    "name": "SMITE"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/rename-script.js session-start"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/rename-script.js post-tool"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/rename-script.js user-prompt"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "maxSessionNameLength": 50,
+  "maxRenamesPerSession": 10,
+  "renameTriggers": {
+    "sessionStart": true,
+    "postToolUse": true,
+    "userPromptSubmit": true
+  },
+  "renameFrequency": {
+    "postToolUse": "every_10_actions",
+    "userPromptSubmit": "every_8_prompts"
+  },
+  "actionPrefixes": [
+    "Fix",
+    "Add",
+    "Update",
+    "Delete",
+    "Refactor",
+    "Debug",
+    "Test",
+    "Docs",
+    "Config"
+  ],
+  "fallbackNames": [
+    "Working on code",
+    "Fixing bugs",
+    "Building features",
+    "Debugging code"
+  ],
+  "significantTools": [
+    "Write",
+    "Edit",
+    "MultiEdit",
+    "Bash(npm)",
+    "Bash(git)",
+    "Bash(yarn)",
+    "Bash(pnpm)",
+    "Skill"
+  ],
+  "significantCommands": [
+    "git commit",
+    "npm ",
+    "yarn ",
+    "pnpm ",
+    "bun "
+  ]
+}
