@@ -4,8 +4,10 @@ class RenameScript {
   constructor() {
     this.manager = new SessionManager();
     this.lastRename = null;
+    this.lastRenameTime = 0;
     this.renameCount = 0;
     this.maxRenamesPerSession = 10;
+    this.minRenameInterval = 30000; // Minimum 30 seconds between renames
   }
 
   async run() {
@@ -33,15 +35,17 @@ class RenameScript {
 
   readStdin() {
     try {
-      const buffer = [];
-      const chunk = Buffer.from(process.env.INPUT_DATA || '', 'utf-8');
+      // Read from stdin (file descriptor 0) - NOT from INPUT_DATA environment variable
+      // See: https://code.claude.com/docs/en/hooks - "Hooks receive JSON data via stdin"
+      const inputData = require('fs').readFileSync(0, 'utf-8');
 
-      if (chunk.length > 0) {
-        return JSON.parse(chunk.toString());
+      if (inputData.trim()) {
+        return JSON.parse(inputData);
       }
 
       return null;
     } catch (error) {
+      // No stdin data or invalid JSON - return null for hooks that don't require input
       return null;
     }
   }
@@ -77,7 +81,9 @@ class RenameScript {
 
     const entries = this.manager.getSessionHistory(sessionPath);
 
-    if (entries.length % 10 !== 0) {
+    // Only rename every 5 significant tool uses to avoid too many renames
+    // Check if we've done at least 5 actions since the last rename
+    if (entries.length < 5) {
       return;
     }
 
@@ -92,11 +98,8 @@ class RenameScript {
 
     const entries = this.manager.getSessionHistory(sessionPath);
 
+    // Only rename after we have some context, but don't require exact multiples
     if (entries.length < 5) {
-      return;
-    }
-
-    if (entries.length % 8 !== 0) {
       return;
     }
 
@@ -122,24 +125,25 @@ class RenameScript {
   }
 
   shouldTriggerRename(input) {
+    // PostToolUse hook provides: tool_name, tool_input, tool_response
+    // See: https://code.claude.com/docs/en/hooks#PostToolUse Input
     if (!input || !input.tool_name) {
       return false;
     }
 
     const significantTools = [
       'Write', 'Edit', 'MultiEdit',
-      'Bash(npm)', 'Bash(git)', 'Bash(yarn)', 'Bash(pnpm)',
-      'Skill'
+      'Bash', 'Skill'
     ];
 
     if (significantTools.includes(input.tool_name)) {
+      // For Bash, check if it's a significant command
+      if (input.tool_name === 'Bash' && input.tool_input) {
+        const command = input.tool_input.command || '';
+        const significantCommands = ['git commit', 'npm ', 'yarn ', 'pnpm ', 'bun '];
+        return significantCommands.some(cmd => command.includes(cmd));
+      }
       return true;
-    }
-
-    if (input.tool_name === 'Bash' && input.tool_input) {
-      const command = input.tool_input.command || '';
-      const significantCommands = ['git commit', 'npm ', 'yarn ', 'pnpm ', 'bun '];
-      return significantCommands.some(cmd => command.includes(cmd));
     }
 
     return false;
@@ -147,6 +151,12 @@ class RenameScript {
 
   async attemptRename(sessionPath, entries, trigger) {
     if (this.renameCount >= this.maxRenamesPerSession) {
+      return;
+    }
+
+    // Debounce: Don't rename if we've renamed recently (within minRenameInterval)
+    const now = Date.now();
+    if (now - this.lastRenameTime < this.minRenameInterval) {
       return;
     }
 
@@ -171,6 +181,7 @@ class RenameScript {
 
     if (success) {
       this.lastRename = newName;
+      this.lastRenameTime = now;
       this.renameCount++;
       console.error(`[AutoRename] Session renamed to: "${newName}" (trigger: ${trigger})`);
     }
