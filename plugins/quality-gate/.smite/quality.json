@@ -1,0 +1,48 @@
+{
+  "enabled": true,
+  "logLevel": "info",
+  "maxRetries": 3,
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**"
+  ],
+  "complexity": {
+    "maxCyclomaticComplexity": 10,
+    "maxCognitiveComplexity": 15,
+    "maxNestingDepth": 4,
+    "maxFunctionLength": 50,
+    "maxParameterCount": 5
+  },
+  "semantics": {
+    "enabled": true,
+    "checks": [
+      { "type": "api-contract", "enabled": true, "severity": "error" },
+      { "type": "type-consistency", "enabled": true, "severity": "error" },
+      { "type": "naming", "enabled": false, "severity": "warning" },
+      { "type": "duplicate-code", "enabled": false, "severity": "warning" }
+    ]
+  },
+  "security": {
+    "enabled": true,
+    "rules": [
+      { "id": "sql-injection", "enabled": true },
+      { "id": "xss-vulnerability", "enabled": true },
+      { "id": "weak-crypto", "enabled": true },
+      { "id": "hardcoded-secret", "enabled": true }
+    ]
+  },
+  "output": {
+    "format": "text",
+    "includeCodeSnippets": true,
+    "maxSuggestions": 5
+  }
+}

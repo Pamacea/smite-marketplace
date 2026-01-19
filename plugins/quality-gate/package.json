@@ -1,0 +1,44 @@
+{
+  "name": "@smite/quality-gate",
+  "version": "1.0.0",
+  "description": "Code quality gate system with complexity, semantic, and security validation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "judge-hook": "./dist/judge-hook.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "node install-hook.js",
+    "install-hook": "node install-hook.js"
+  },
+  "keywords": [
+    "claude-code",
+    "quality-gate",
+    "code-review",
+    "static-analysis",
+    "security",
+    "complexity"
+  ],
+  "author": "Pamacea",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/parser": "^8.53.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.0"
+  }
+}
