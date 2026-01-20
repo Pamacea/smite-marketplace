@@ -1,14 +1,3 @@
 {
-  "hooks": {
-    "PostPluginInstall": [
-      {
-        "description": "Auto-configure statusline after installation",
-        "matcher": "statusline@smite",
-        "hook": {
-          "type": "command",
-          "command": "node plugins/statusline/dist/install.js"
-        }
-      }
-    ]
-  }
+  "hooks": {}
 }
