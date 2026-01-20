@@ -6,7 +6,7 @@
         "matcher": "statusline@smite",
         "hook": {
           "type": "command",
-          "command": "node plugins/statusline/dist/install.js"
+          "command": "node plugins/statusline/scripts/dist/install.js"
         }
       }
     ]
