@@ -68,13 +68,22 @@ function getTrackerState(currentTotalTokens) {
 
   if (tokenState.lastTotalTokens !== null) {
     // Calculate what this request cost
-    requestCost = currentTotalTokens - tokenState.lastTotalTokens;
+    const calculatedCost = currentTotalTokens - tokenState.lastTotalTokens;
 
-    // Save this as the "last request cost" for next time
-    tokenState.lastRequestCost = requestCost;
+    // ONLY update if tokens increased (ignore session resets/compactions)
+    // If totalTokens decreased, it means the session was reset or compacted
+    if (calculatedCost > 0) {
+      requestCost = calculatedCost;
+      // Save this as the "last request cost" for next time
+      tokenState.lastRequestCost = requestCost;
+    } else {
+      // Tokens decreased - use previous cost or 0 if first time
+      requestCost = 0;
+      // Don't update lastRequestCost - keep showing previous valid value
+    }
   }
 
-  // Update state for next time
+  // Always update the baseline to current, even if it decreased
   tokenState.lastTotalTokens = currentTotalTokens;
   saveTokenTracker(tokenState);
 
