@@ -1,0 +1,57 @@
+{
+  "name": "@smite/browser-automation",
+  "version": "1.0.0",
+  "description": "Browser automation plugin for SMITE using Playwright - Automate web browsing, search, screenshots, and more",
+  "author": {
+    "name": "Pamacea",
+    "email": "contact@pamacea.com",
+    "url": "https://github.com/pamacea"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/pamacea/smite#browser-automation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pamacea/smite.git",
+    "directory": "plugins/browser-automation"
+  },
+  "bugs": {
+    "url": "https://github.com/pamacea/smite/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "smite-browse": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "node dist/post-install.js",
+    "dev": "tsc --watch",
+    "install-playwright": "npx playwright install chromium"
+  },
+  "smite": {
+    "type": "tool",
+    "minVersion": "1.0.0",
+    "configFile": ".claude/.smite/browser.json",
+    "autoInstall": true
+  },
+  "keywords": [
+    "smite",
+    "smite-plugin",
+    "browser",
+    "automation",
+    "playwright",
+    "web-scraping",
+    "testing"
+  ],
+  "dependencies": {
+    "playwright": "^1.49.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "eslint": "^9.39.2"
+  }
+}
