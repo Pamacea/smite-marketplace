@@ -374,10 +374,10 @@ rm -rf .claude/.smite/
 
 ```bash
 # Check progress log
-cat .smite/progress.txt
+cat .claude/.smite/progress.txt
 
 # See which stories failed
-cat .smite/ralph-state.json | grep failedStories
+cat .claude/.smite/ralph-state.json | grep failedStories
 ```
 
 ### Dependencies not resolving

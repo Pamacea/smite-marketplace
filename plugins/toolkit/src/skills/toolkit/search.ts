@@ -33,7 +33,7 @@ interface Index {
 }
 
 /**
- * Load index from .smite/toolkit/index.json
+ * Load index from .claude/.smite/toolkit/index.json
  */
 function loadIndex(): Index | null {
   const homeDir = process.env.USERPROFILE || process.env.HOME || '';

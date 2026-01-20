@@ -139,7 +139,7 @@
   "audit": {
     "_section_note": "Audit logging configuration.",
     "enabled": true,
-    "_enabled_note": "Log all validation results to .smite/judge-audit.log",
+    "_enabled_note": "Log all validation results to .claude/.smite/judge-audit.log",
 
     "includePasses": true,
     "_includePasses_note": "Log successful validations, not just failures.",

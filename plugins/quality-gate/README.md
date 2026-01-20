@@ -590,7 +590,7 @@ Manual validation tool.
 quality-check src/index.ts
 
 # Validate with custom config
-quality-check --config .smite/quality-custom.json src/index.ts
+quality-check --config .claude/.smite/quality-custom.json src/index.ts
 
 # Output format
 quality-check --format json src/index.ts > report.json
@@ -700,18 +700,18 @@ View validation history:
 
 ```bash
 # View audit log
-cat .smite/judge-audit.log
+cat .claude/.smite/judge-audit.log
 
 # Filter by session
-grep "session-123" .smite/judge-audit.log
+grep "session-123" .claude/.smite/judge-audit.log
 
 # View only denials
-grep '"decision": "deny"' .smite/judge-audit.log
+grep '"decision": "deny"' .claude/.smite/judge-audit.log
 ```
 
 ### Getting Help
 
-1. Check logs: `.smite/judge-audit.log`
+1. Check logs: `.claude/.smite/judge-audit.log`
 2. Enable debug mode: `logLevel: "debug"`
 3. Validate config: `quality-config validate`
 4. Review [CONFIG_REFERENCE.md](CONFIG_REFERENCE.md)

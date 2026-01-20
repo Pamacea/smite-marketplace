@@ -91,16 +91,16 @@ Edit `.claude/.smite/quality.json` in your project root:
 
 - **Max Retries**: 3 (configurable)
 - After max retries: Code is allowed with a warning
-- Retry state tracked in: `.smite/judge-retry-state.json`
+- Retry state tracked in: `.claude/.smite/judge-retry-state.json`
 
 ### Viewing Logs
 
-**Debug Log**: `.smite/judge-debug.log`
+**Debug Log**: `.claude/.smite/judge-debug.log`
 ```
 {"timestamp":"2025-01-19T10:30:00.000Z","level":"info","category":"judge","message":"Validation passed"}
 ```
 
-**Audit Log**: `.smite/judge-audit.log`
+**Audit Log**: `.claude/.smite/judge-audit.log`
 ```json
 {
   "timestamp": "2025-01-19T10:30:00.000Z",
@@ -159,7 +159,7 @@ function complex(x) {
 
 1. **Start with strict settings**: Enable all checks to catch issues early
 2. **Adjust thresholds**: Tweak complexity limits based on your codebase
-3. **Review audit logs**: Regularly check `.smite/judge-audit.log` for patterns
+3. **Review audit logs**: Regularly check `.claude/.smite/judge-audit.log` for patterns
 4. **Use with tests**: The hook doesn't run on test files by default
 5. **Team alignment**: Share `.claude/.smite/quality.json` across your team
 
@@ -183,6 +183,6 @@ function complex(x) {
 ## Support
 
 For issues or questions:
-1. Check `.smite/judge-debug.log`
+1. Check `.claude/.smite/judge-debug.log`
 2. Review the [README.md](README.md)
 3. See [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)

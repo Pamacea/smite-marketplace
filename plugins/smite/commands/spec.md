@@ -12,7 +12,7 @@ This workflow decouples thinking from action by creating a technical specificati
 <process>
 1. **SPEC GENERATION** (THINKING PHASE):
    - Read .claudesrules to understand spec-first protocol
-   - Create .smite/current_spec.md with:
+   - Create .claude/.smite/current_spec.md with:
      * Objective: Clear statement of what needs to be achieved
      * Approach: Technical approach and architectural decisions
      * Implementation Steps: Breakdown with file paths, function signatures, dependencies
@@ -43,7 +43,7 @@ This workflow decouples thinking from action by creating a technical specificati
    - Run lint and typecheck
    - Verify against acceptance criteria from spec
    - Update spec with actual implementation details
-   - Archive spec to .smite/specs/[story-id]-spec.md
+   - Archive spec to .claude/.smite/specs/[story-id]-spec.md
 </process>
 
 <rules>
@@ -54,7 +54,7 @@ This workflow decouples thinking from action by creating a technical specificati
 - STOP immediately if logic gap found - update spec first
 - FOLLOW spec exactly - no deviation without spec update
 - VALIDATE spec coherence before coding (check all fields are complete)
-- ARCHIVE spec after implementation to .smite/specs/
+- ARCHIVE spec after implementation to .claude/.smite/specs/
 
 **Spec Template:**
 ```markdown
@@ -86,11 +86,11 @@ This workflow decouples thinking from action by creating a technical specificati
 </rules>
 
 <success_criteria>
-- .smite/current_spec.md created with all required sections
+- .claude/.smite/current_spec.md created with all required sections
 - Spec validated for coherence before coding
 - Implementation follows spec exactly
 - Code passes linting and type checking
-- Spec archived to .smite/specs/
+- Spec archived to .claude/.smite/specs/
 - No logic gaps or deviations from spec
 </success_criteria>
 
@@ -100,7 +100,7 @@ Autonomous spec-first workflow that decouples thinking from action.
 
 ## How It Works
 
-1. **Analysis Phase**: Creates `.smite/current_spec.md` with technical specification
+1. **Analysis Phase**: Creates `.claude/.smite/current_spec.md` with technical specification
 2. **Review Phase**: Validates spec for coherence and completeness
 3. **Execution Phase**: Implements based on approved spec
 4. **Lock Mechanism**: Pauses if logic gaps detected, waits for spec update
@@ -200,13 +200,13 @@ When an agent encounters a logic gap:
 - **Less Rework**: Gaps found before coding begins
 - **Clearer Execution**: Step-by-step plan to follow
 - **Pause on Issues**: Automatic detection of logical problems
-- **Traceable**: Full specification history in `.smite/specs/`
+- **Traceable**: Full specification history in `.claude/.smite/specs/`
 
 ## Output Files
 
-- `.smite/current_spec.md` - Active specification
-- `.smite/specs/[story-id]-spec.md` - Archived specifications
-- `.smite/spec-lock.json` - Lock state (if active)
+- `.claude/.smite/current_spec.md` - Active specification
+- `.claude/.smite/specs/[story-id]-spec.md` - Archived specifications
+- `.claude/.smite/spec-lock.json` - Lock state (if active)
 
 ## Integration with Ralph
 

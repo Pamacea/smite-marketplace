@@ -88,7 +88,7 @@ Create `.claude/.smite/browser.json`:
   },
   "timeout": 30000,
   "screenshots": {
-    "dir": ".smite/screenshots",
+    "dir": ".claude/.smite/screenshots",
     "format": "png"
   }
 }
@@ -102,7 +102,7 @@ Create `.claude/.smite/browser.json`:
 | `headless` | boolean | `false` | Run without UI |
 | `viewport` | object | `{width: 1280, height: 720}` | Page viewport size |
 | `timeout` | number | `30000` | Default timeout in ms |
-| `screenshots.dir` | string | `".smite/screenshots"` | Screenshot output directory |
+| `screenshots.dir` | string | `".claude/.smite/screenshots"` | Screenshot output directory |
 | `screenshots.format` | string | `"png"` | Screenshot format (png/jpeg) |
 
 ## 📖 API Reference

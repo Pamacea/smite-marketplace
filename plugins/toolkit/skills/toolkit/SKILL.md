@@ -165,7 +165,7 @@ const signatures = await ToolkitAPI.Surgeon.extract({
 **Duration:** Instant
 **Output:** Token budget statistics
 **Process:**
-1. Read current budget from ~/.smite/toolkit/budget.json
+1. Read current budget from ~/.claude/.smite/toolkit/budget.json
 2. Calculate usage percentage
 3. Display warnings at thresholds
 4. Show lifetime savings

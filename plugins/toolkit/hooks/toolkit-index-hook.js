@@ -7,7 +7,7 @@
  * - Check if index.json exists and is fresh (<24h)
  * - If fresh: incremental update (only changed files)
  * - If stale or missing: full rebuild
- * - Save to .smite/toolkit/index.json
+ * - Save to .claude/.smite/toolkit/index.json
  */
 
 const fs = require('fs');

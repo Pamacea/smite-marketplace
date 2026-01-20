@@ -170,7 +170,7 @@ plugins/quality-gate/
 │   ├── logger.ts            # Audit logger
 │   └── types.ts             # TypeScript definitions and Zod schemas
 ├── dist/                    # Compiled output (generated)
-├── .smite/                  # Quality gate config (for testing)
+├── .claude/.smite/                  # Quality gate config (for testing)
 ├── README.md                # User documentation
 ├── INSTALL.md               # Installation guide
 ├── CONTRIBUTING.md          # This file

@@ -5,6 +5,6 @@ dist/
 *.tsbuildinfo
 coverage/
 .nyc_output/
-.smite/screenshots/
+.claude/.smite/screenshots/
 .env
 .env.local

@@ -56,7 +56,7 @@ export class SpecGenerator {
   }
 
   /**
-   * Write specification to .smite/current_spec.md
+   * Write specification to .claude/.smite/current_spec.md
    */
   async writeSpec(spec: TechnicalSpec): Promise<string> {
     await this.ensureDirectories();

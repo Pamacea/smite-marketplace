@@ -111,7 +111,7 @@ All plugins must include:
   "smite": {
     "type": "hook|mcp-server|tool",
     "minVersion": "1.0.0",
-    "configFile": ".smite/[config].json"
+    "configFile": ".claude/.smite/[config].json"
   },
   "keywords": [
     "smite",

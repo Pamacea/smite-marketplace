@@ -711,7 +711,7 @@ class MCPClient {
     ↓
 16. Log Validation Results
     - JudgeLogger.logValidation()
-    - Write to .smite/judge-audit.log
+    - Write to .claude/.smite/judge-audit.log
     - Include: decision, issues, metrics, time
     ↓
 17. Handle Decision
@@ -726,7 +726,7 @@ class MCPClient {
     │                 ├── Update retry state
     │                 │   ├── Increment retry count
     │                 │   ├── Save attempt history
-    │                 │   └── Write to .smite/judge-feedback-state.json
+    │                 │   └── Write to .claude/.smite/judge-feedback-state.json
     │                 │
     │                 ├── Generate correction prompt
     │                 │   ├── Group issues by severity
@@ -736,7 +736,7 @@ class MCPClient {
     │                 └── Return DENY with prompt
     │
     ├── Clear retry state
-    │   └── Delete .smite/judge-feedback-state.json
+    │   └── Delete .claude/.smite/judge-feedback-state.json
     │
     ├── Trigger documentation updates
     │   ├── DocTrigger.analyzeTriggers()
@@ -1064,7 +1064,7 @@ interface JudgeHookOutput {
 
 **Feedback State:**
 ```typescript
-// Location: .smite/judge-feedback-state.json
+// Location: .claude/.smite/judge-feedback-state.json
 interface RetryState {
   sessionId: string;
   retryCount: number;
@@ -1077,7 +1077,7 @@ interface RetryState {
 
 **Audit Log:**
 ```typescript
-// Location: .smite/judge-audit.log
+// Location: .claude/.smite/judge-audit.log
 interface AuditLogEntry {
   timestamp: string;
   sessionId: string;

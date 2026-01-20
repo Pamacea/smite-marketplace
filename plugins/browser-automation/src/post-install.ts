@@ -58,7 +58,7 @@ async function createConfigFile(): Promise<void> {
         },
         timeout: 30000,
         screenshots: {
-          dir: '.smite/screenshots',
+          dir: '.claude/.smite/screenshots',
           format: 'png'
         }
       };

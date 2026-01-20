@@ -26,7 +26,7 @@ export class PlaywrightManager {
       viewport: config.viewport || { width: 1280, height: 720 },
       timeout: config.timeout || 30000,
       screenshots: config.screenshots || {
-        dir: '.smite/screenshots',
+        dir: '.claude/.smite/screenshots',
         format: 'png'
       }
     };

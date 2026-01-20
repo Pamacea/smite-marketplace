@@ -56,10 +56,10 @@ echo
 
 # 3. Check log file
 echo "3. Checking logs..."
-if [ -f ".smite/judge-audit.log" ]; then
+if [ -f ".claude/.smite/judge-audit.log" ]; then
   echo "   ✓ Audit log exists"
   echo "   Last 5 entries:"
-  tail -5 .smite/judge-audit.log | grep '"decision"'
+  tail -5 .claude/.smite/judge-audit.log | grep '"decision"'
 else
   echo "   ℹ No audit log yet (no validations run)"
 fi
@@ -259,7 +259,7 @@ console.log(testPattern('src/api/users.test.ts', ['**/*.test.ts'])); // true
 
 Check logs for file filtering decisions:
 ```bash
-grep "File excluded" .smite/judge-audit.log
+grep "File excluded" .claude/.smite/judge-audit.log
 ```
 
 ---
@@ -585,7 +585,7 @@ Fix issues incrementally rather than all at once.
 
 1. **Check analysis time:**
 ```bash
-grep "analysisTimeMs" .smite/judge-audit.log | tail -10
+grep "analysisTimeMs" .claude/.smite/judge-audit.log | tail -10
 ```
 
 2. **Profile with debug mode:**
@@ -650,7 +650,7 @@ watch -n 1 'ps aux | grep judge-hook'
 1. **Clear audit log:**
 ```bash
 # Archive old logs
-mv .smite/judge-audit.log .smite/judge-audit.log.old
+mv .claude/.smite/judge-audit.log .claude/.smite/judge-audit.log.old
 ```
 
 2. **Disable verbose logging:**
@@ -726,7 +726,7 @@ quality-config show | grep -A 20 triggers
 
 2. **Check audit log for MCP activity:**
 ```bash
-grep "Triggering documentation" .smite/judge-audit.log
+grep "Triggering documentation" .claude/.smite/judge-audit.log
 ```
 
 **Solutions:**
@@ -858,16 +858,16 @@ Or in config:
 
 ```bash
 # View recent validations
-tail -20 .smite/judge-audit.log | jq
+tail -20 .claude/.smite/judge-audit.log | jq
 
 # View only denials
-grep '"decision": "deny"' .smite/judge-audit.log | tail -10
+grep '"decision": "deny"' .claude/.smite/judge-audit.log | tail -10
 
 # View specific session
-grep "session-123" .smite/judge-audit.log
+grep "session-123" .claude/.smite/judge-audit.log
 
 # View issues
-grep '"issuesCount"' .smite/judge-audit.log
+grep '"issuesCount"' .claude/.smite/judge-audit.log
 ```
 
 ### Manual Validation
@@ -877,7 +877,7 @@ grep '"issuesCount"' .smite/judge-audit.log
 quality-check src/index.ts
 
 # With custom config
-quality-check --config .smite/quality-dev.json src/index.ts
+quality-check --config .claude/.smite/quality-dev.json src/index.ts
 
 # Output JSON
 quality-check --format json src/index.ts | jq
@@ -935,7 +935,7 @@ judge-hook --version
 quality-config show
 
 # Recent logs
-tail -50 .smite/judge-audit.log
+tail -50 .claude/.smite/judge-audit.log
 ```
 
 3. **Create minimal reproduction:**
@@ -984,8 +984,8 @@ docs-sync openapi --project-path .
 docs-sync readme --project-path .
 
 # Logs
-tail -f .smite/judge-audit.log
-grep "deny" .smite/judge-audit.log
+tail -f .claude/.smite/judge-audit.log
+grep "deny" .claude/.smite/judge-audit.log
 ```
 
 ### Environment Variables

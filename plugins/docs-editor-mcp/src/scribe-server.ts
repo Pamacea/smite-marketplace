@@ -42,9 +42,9 @@ export class ScribeMCPServer {
         configPath: z
           .string()
           .optional()
-          .default(".smite/scribe-config.json")
+          .default(".claude/.smite/scribe-config.json")
           .describe(
-            "Path to scribe config file (default: .smite/scribe-config.json)"
+            "Path to scribe config file (default: .claude/.smite/scribe-config.json)"
           ),
         outputFormat: z
           .enum(["json", "yaml"])

@@ -62,8 +62,8 @@ Successfully implemented **US-002: Core Critiquer Hook** for the Smite Code Qual
 - Previous attempt tracking
 
 **Logger & Audit Trail** (`src/logger.ts`)
-- Structured logging to `.smite/judge-debug.log`
-- Audit trail to `.smite/judge-audit.log`
+- Structured logging to `.claude/.smite/judge-debug.log`
+- Audit trail to `.claude/.smite/judge-audit.log`
 - Log level filtering (debug, info, warn, error)
 - Validation result tracking with timestamps
 
@@ -160,7 +160,7 @@ When code is rejected:
 5. After max retries, allow with warning
 
 ### 3. Audit Trail
-All validations logged to `.smite/judge-audit.log`:
+All validations logged to `.claude/.smite/judge-audit.log`:
 ```json
 {
   "timestamp": "2025-01-19T10:30:00.000Z",
@@ -188,7 +188,7 @@ All validations logged to `.smite/judge-audit.log`:
 | Detects semantic inconsistencies | ✅ | Basic version (naming, types) - Phase 2 will add API contracts |
 | Identifies security vulnerabilities | ✅ | SQL injection, XSS, weak crypto, hardcoded secrets |
 | Reinjects correction prompts | ✅ | Via `permissionDecisionReason` with specific feedback |
-| Logs validation results | ✅ | `.smite/judge-audit.log` with structured JSON |
+| Logs validation results | ✅ | `.claude/.smite/judge-audit.log` with structured JSON |
 | Configuration file support | ✅ | `.claude/.smite/quality.json` with full customization |
 
 ## Technical Highlights
@@ -232,7 +232,7 @@ plugins/quality-gate/
 │   ├── parser.ts               # TypeScript AST parser
 │   ├── types.ts                # Type definitions
 │   └── index.ts                # Public exports
-├── .smite/
+├── .claude/.smite/
 │   └── quality.json            # Default configuration
 ├── dist/                       # Compiled JavaScript
 ├── package.json

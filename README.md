@@ -65,7 +65,7 @@ mgrep "votre recherche"              # 2e choix : Alternative sémantique
 Agents think before coding - generate spec → validate logic → execute.
 
 **Workflow:**
-1. 📋 Generate `.smite/current_spec.md`
+1. 📋 Generate `.claude/.smite/current_spec.md`
 2. ✅ Validate coherence
 3. 🔨 Execute with approved spec
 4. 🔒 Lock on logic gaps
@@ -275,7 +275,7 @@ smite/
 │   ├── rules/
 │   │   └── knowledge-verification.md  # 🆕 Mandatory search protocol
 │   └── settings.global.json           # 🆕 System hooks
-├── .smite/
+├── .claude/.smite/
 │   ├── prd.json                    # Current PRD
 │   ├── current_spec.md             # Active spec ⭐
 │   ├── spec-lock.json              # Lock state ⭐

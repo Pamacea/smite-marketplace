@@ -49,7 +49,7 @@ Automatically detects API endpoints from route definitions and generates or upda
 ```typescript
 {
   projectPath: string;                    // Required
-  configPath?: string;                    // Optional, default: ".smite/scribe-config.json"
+  configPath?: string;                    // Optional, default: ".claude/.smite/scribe-config.json"
   outputFormat?: 'json' | 'yaml';         // Optional, default: "json"
   outputPath?: string;                    // Optional, default: "openapi.json"
   generateDiff?: boolean;                 // Optional, default: false
@@ -72,7 +72,7 @@ Automatically detects API endpoints from route definitions and generates or upda
 #### configPath (Optional)
 
 **Type:** `string`
-**Default:** `.smite/scribe-config.json`
+**Default:** `.claude/.smite/scribe-config.json`
 **Description:** Path to scribe configuration file
 
 #### outputFormat (Optional)
@@ -313,7 +313,7 @@ await mcpClient.callTool({
   name: 'sync_openapi_spec',
   arguments: {
     projectPath: '/path/to/project',
-    configPath: '.smite/custom-scribe-config.json'
+    configPath: '.claude/.smite/custom-scribe-config.json'
   }
 });
 ```

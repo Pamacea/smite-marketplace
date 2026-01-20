@@ -494,7 +494,7 @@ const readFileAsync = promisify(readFile);
 
 app.get('/metrics/quality-gate', async (req, res) => {
   try {
-    const auditLog = await readFileAsync('.smite/judge-audit.log', 'utf8');
+    const auditLog = await readFileAsync('.claude/.smite/judge-audit.log', 'utf8');
     const entries = auditLog.split('\n').filter(Boolean).map(JSON.parse);
 
     // Calculate metrics

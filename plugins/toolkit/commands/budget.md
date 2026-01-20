@@ -283,8 +283,8 @@ TOOLKIT_CRITICAL_THRESHOLD=0.85
 
 ## Notes
 
-- Budget stored in `~/.smite/toolkit/budget.json`
-- Statistics stored in `~/.smite/toolkit/stats.json`
+- Budget stored in `~/.claude/.smite/toolkit/budget.json`
+- Statistics stored in `~/.claude/.smite/toolkit/stats.json`
 - Automatic tracking via shell hooks
 - 75% average savings across all operations
 - Best for: monitoring usage, cost management, optimization tracking

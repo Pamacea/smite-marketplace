@@ -61,20 +61,20 @@ Verify the installation was successful:
 
 ```bash
 # Check hook is installed
-test -f .smite/hooks/pre-tool-use/judge-hook.js && echo "Hook installed"
+test -f .claude/.smite/hooks/pre-tool-use/judge-hook.js && echo "Hook installed"
 
 # Check config exists
 test -f .claude/.smite/quality.json && echo "Config exists"
 
 # View hook location
-ls -la .smite/hooks/pre-tool-use/
+ls -la .claude/.smite/hooks/pre-tool-use/
 ```
 
 Expected output:
 ```
 Hook installed
 Config exists
-.smite/hooks/pre-tool-use/judge-hook.js
+.claude/.smite/hooks/pre-tool-use/judge-hook.js
 ```
 
 ## Configuration
@@ -151,7 +151,7 @@ Try to write this file using Claude Code - the quality gate should flag it for:
 Check the audit log after validation:
 
 ```bash
-cat .smite/judge-audit.log
+cat .claude/.smite/judge-audit.log
 ```
 
 ### 3. Customize Rules
@@ -197,7 +197,7 @@ npm link
 npm run install-hook
 
 # Verify hook exists
-ls -la .smite/hooks/pre-tool-use/judge-hook.js
+ls -la .claude/.smite/hooks/pre-tool-use/judge-hook.js
 ```
 
 ### TypeScript Compilation Errors
@@ -237,10 +237,10 @@ grep "logLevel" .claude/.smite/quality.json
 **Solution**:
 ```bash
 # Create directory manually
-mkdir -p .smite/hooks/pre-tool-use
+mkdir -p .claude/.smite/hooks/pre-tool-use
 
 # Set permissions
-chmod 755 .smite/hooks/pre-tool-use
+chmod 755 .claude/.smite/hooks/pre-tool-use
 ```
 
 ## Uninstallation
@@ -249,13 +249,13 @@ To completely remove the quality gate:
 
 ```bash
 # Remove the hook
-rm -f .smite/hooks/pre-tool-use/judge-hook.js
+rm -f .claude/.smite/hooks/pre-tool-use/judge-hook.js
 
 # Remove config (optional)
 rm -f .claude/.smite/quality.json
 
 # Remove audit logs (optional)
-rm -f .smite/judge-audit.log
+rm -f .claude/.smite/judge-audit.log
 
 # Uninstall dependencies
 cd plugins/quality-gate

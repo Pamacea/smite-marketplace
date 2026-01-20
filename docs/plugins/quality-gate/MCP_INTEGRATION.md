@@ -340,7 +340,7 @@ try {
 3. **Check logs:**
    ```bash
    # Look for MCP initialization logs
-   tail -f ~/.smite/logs/quality-gate.log | grep -i mcp
+   tail -f ~/.claude/.smite/logs/quality-gate.log | grep -i mcp
    ```
 
 ### Documentation Not Updating

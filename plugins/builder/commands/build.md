@@ -33,7 +33,7 @@ Convert Figma designs and SVG to code components
 
 When executing with a spec file (provided in prompt):
 
-1. **Read the spec completely** - Read `.smite/current_spec.md` before writing any code
+1. **Read the spec completely** - Read `.claude/.smite/current_spec.md` before writing any code
 2. **Follow steps EXACTLY** - Implement in the order defined in the spec
 3. **DO NOT deviate** - If you need to do something different, you must update the spec first
 4. **Stop on logic gaps** - If you find a logical inconsistency or missing piece:

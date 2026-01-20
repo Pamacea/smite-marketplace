@@ -58,7 +58,7 @@
           "npm run build",
           "npm run install-hook"
         ],
-        "verification": "test -f .smite/hooks/pre-tool-use/judge-hook.js"
+        "verification": "test -f .claude/.smite/hooks/pre-tool-use/judge-hook.js"
       },
       "compatibility": {
         "node": ">=18.0.0",

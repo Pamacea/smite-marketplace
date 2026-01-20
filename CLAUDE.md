@@ -27,7 +27,7 @@ Fichier: `.claude/.smite/quality.json`
     "**/dist/**",
     "**/.claude/**",
     "**/.git/**",
-    "**/.smite/**",
+    "**/.claude/.smite/**",
     "**/plugins/quality-gate/**"
   ],
   "complexity": {

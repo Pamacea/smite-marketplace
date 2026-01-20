@@ -37,7 +37,7 @@ interface Deps {
 }
 
 /**
- * Load deps from .smite/toolkit/deps.json
+ * Load deps from .claude/.smite/toolkit/deps.json
  */
 function loadDeps(): Deps | null {
   const homeDir = process.env.USERPROFILE || process.env.HOME || '';

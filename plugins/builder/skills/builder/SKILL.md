@@ -9,7 +9,7 @@ hooks:
       matcher: "Edit|Write"
   PostSubagentStop:
     - type: prompt
-      prompt: "After implementation completes, check:\n1. Did we create any new files? Track them in .smite/orchestrator-state.json\n2. Should we create a handover document?\n3. Any technical debt that needs Surgeon attention?\n\nSuggest next actions accordingly."
+      prompt: "After implementation completes, check:\n1. Did we create any new files? Track them in .claude/.smite/orchestrator-state.json\n2. Should we create a handover document?\n3. Any technical debt that needs Surgeon attention?\n\nSuggest next actions accordingly."
 ---
 
 # 👷 CONSTRUCTOR AGENT
