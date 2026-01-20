@@ -15,12 +15,12 @@ export class JudgeLogger {
   private logLevel: LogLevel;
 
   constructor(cwd: string, logLevel: LogLevel = 'info') {
-    const smiteDir = path.join(cwd, '.smite');
+    const smiteDir = path.join(cwd, '.claude', '.smite');
     this.logFile = path.join(smiteDir, 'judge-debug.log');
     this.auditFile = path.join(smiteDir, 'judge-audit.log');
     this.logLevel = logLevel;
 
-    // Ensure .smite directory exists
+    // Ensure .claude/.smite directory exists
     if (!fs.existsSync(smiteDir)) {
       fs.mkdirSync(smiteDir, { recursive: true });
     }
