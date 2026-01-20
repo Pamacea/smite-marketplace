@@ -1,4 +1,5 @@
 import { PRD, UserStory } from "./types";
+import * as crypto from "crypto";
 
 export class PRDGenerator {
   private static readonly PROJECT_PATTERNS = [
@@ -10,6 +11,16 @@ export class PRDGenerator {
   private static readonly ACTION_WORDS =
     /^(build|create|develop|make|implement|construct)\s+(?:a\s+)?(?:the\s+)?/i;
   private static readonly DEFAULT_STORY_COUNT = 3;
+
+  /**
+   * Generate unique story ID based on title and timestamp
+   * Same title = same ID (for deduplication)
+   * Different title = different ID
+   */
+  private static generateStoryId(title: string): string {
+    const hash = crypto.createHash("md5").update(title).digest("hex");
+    return `US-${hash.substring(0, 8).toUpperCase()}`;
+  }
 
   static generateFromPrompt(prompt: string, projectName?: string): PRD {
     return {
@@ -59,9 +70,12 @@ export class PRDGenerator {
 
     if (!hasAuth) return [];
 
+    const setupId = this.generateStoryId("Setup project structure");
+    const authId = this.generateStoryId("Implement authentication");
+
     return [
       this.createStory(
-        "US-001",
+        setupId,
         "Setup project structure",
         "architect:design",
         10,
@@ -74,7 +88,7 @@ export class PRDGenerator {
         []
       ),
       this.createStory(
-        "US-002",
+        authId,
         "Implement authentication",
         "builder:build",
         9,
@@ -84,14 +98,14 @@ export class PRDGenerator {
           "Session management working",
           "Protected routes functional",
         ],
-        ["US-001"]
+        [setupId]  // Auth depends on setup
       ),
     ];
   }
 
   private static createDefaultStory(): UserStory {
     return this.createStory(
-      "US-001",
+      this.generateStoryId("Initialize project"),
       "Initialize project",
       "architect:design",
       10,
@@ -106,9 +120,8 @@ export class PRDGenerator {
   }
 
   private static createFinalizeStory(dependencies: UserStory[]): UserStory {
-    const id = `US-${String(dependencies.length + 1).padStart(3, "0")}`;
     return this.createStory(
-      id,
+      this.generateStoryId("Finalize and document"),
       "Finalize and document",
       "finalize:finalize",
       1,

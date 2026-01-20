@@ -120,11 +120,18 @@ function mergeVaults(existing, detected) {
 }
 
 /**
+ * Check if current directory looks like it might be a vault
+ */
+function looksLikeVault(dir) {
+  const suspiciousNames = ['vault', 'notes', 'brain', 'second-brain', 'obsidian', 'knowledge'];
+  const dirName = path.basename(dir).toLowerCase();
+  return suspiciousNames.some(name => dirName.includes(name));
+}
+
+/**
  * Main execution
  */
 function main() {
-  console.log('🔍 Detecting Obsidian vaults...');
-
   // Get current working directory
   const currentDir = process.cwd();
 
@@ -137,18 +144,22 @@ function main() {
   // Merge vaults
   config.vaults = mergeVaults(config, detectedVaults);
 
-  // Save config
-  if (saveConfig(config)) {
-    console.log(`\n✅ Found ${detectedVaults.length} vault(s):`);
-    detectedVaults.forEach(vault => {
-      console.log(`   - ${vault.name} (${vault.path})`);
-    });
-    console.log(`\n📝 Total vaults in config: ${config.vaults.length}`);
-    console.log(`📄 Config saved to: ${CONFIG_PATH}`);
-  } else {
+  // Save config silently
+  if (!saveConfig(config)) {
     console.error('❌ Failed to save vault configuration');
     process.exit(1);
   }
+
+  // Only show output if vaults were detected OR directory looks suspicious
+  if (detectedVaults.length > 0) {
+    console.log(`\n✅ Obsidian: Found ${detectedVaults.length} vault(s)`);
+    detectedVaults.forEach(vault => {
+      console.log(`   - ${vault.name} (${vault.path})`);
+    });
+  } else if (looksLikeVault(currentDir)) {
+    console.warn(`⚠️  Obsidian: Directory "${path.basename(currentDir)}" looks like a vault but .obsidian folder not found`);
+  }
+  // Otherwise: silent (no vaults found, not suspicious)
 }
 
 // Run main function

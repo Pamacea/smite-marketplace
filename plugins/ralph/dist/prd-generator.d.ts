@@ -3,6 +3,12 @@ export declare class PRDGenerator {
     private static readonly PROJECT_PATTERNS;
     private static readonly ACTION_WORDS;
     private static readonly DEFAULT_STORY_COUNT;
+    /**
+     * Generate unique story ID based on title and timestamp
+     * Same title = same ID (for deduplication)
+     * Different title = different ID
+     */
+    private static generateStoryId;
     static generateFromPrompt(prompt: string, projectName?: string): PRD;
     private static generateBranchName;
     private static extractProjectName;

@@ -1,10 +1,17 @@
 {
-  "vaults": [],
+  "vaults": [
+    {
+      "name": "test-vault",
+      "path": "C:\\Users\\Yanis\\AppData\\Local\\Temp\\test-vault",
+      "isVault": true,
+      "lastDetected": "2026-01-20T08:01:57.249Z"
+    }
+  ],
   "currentVault": "auto-detect",
   "vaultDetection": {
     "enabled": true,
     "searchDepth": 2,
     "indicatorFolder": ".obsidian"
   },
-  "lastUpdated": "2026-01-20T07:39:12.500Z"
+  "lastUpdated": "2026-01-20T08:02:43.349Z"
 }

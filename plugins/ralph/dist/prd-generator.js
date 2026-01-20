@@ -1,7 +1,50 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PRDGenerator = void 0;
+const crypto = __importStar(require("crypto"));
 class PRDGenerator {
+    /**
+     * Generate unique story ID based on title and timestamp
+     * Same title = same ID (for deduplication)
+     * Different title = different ID
+     */
+    static generateStoryId(title) {
+        const hash = crypto.createHash("md5").update(title).digest("hex");
+        return `US-${hash.substring(0, 8).toUpperCase()}`;
+    }
     static generateFromPrompt(prompt, projectName) {
         return {
             project: projectName ?? this.extractProjectName(prompt),
@@ -41,23 +84,26 @@ class PRDGenerator {
         const hasAuth = lowerPrompt.includes("auth") || lowerPrompt.includes("login");
         if (!hasAuth)
             return [];
+        const setupId = this.generateStoryId("Setup project structure");
+        const authId = this.generateStoryId("Implement authentication");
         return [
-            this.createStory("US-001", "Setup project structure", "architect:design", 10, [
+            this.createStory(setupId, "Setup project structure", "architect:design", 10, [
                 "Project structure follows best practices",
                 "Dependencies installed",
                 "TypeScript configured",
                 "Build system working",
             ], []),
-            this.createStory("US-002", "Implement authentication", "builder:build", 9, [
+            this.createStory(authId, "Implement authentication", "builder:build", 9, [
                 "Login form working",
                 "Password hashing implemented",
                 "Session management working",
                 "Protected routes functional",
-            ], ["US-001"]),
+            ], [setupId] // Auth depends on setup
+            ),
         ];
     }
     static createDefaultStory() {
-        return this.createStory("US-001", "Initialize project", "architect:design", 10, [
+        return this.createStory(this.generateStoryId("Initialize project"), "Initialize project", "architect:design", 10, [
             "Project created",
             "Dependencies installed",
             "Basic configuration done",
@@ -65,8 +111,7 @@ class PRDGenerator {
         ], []);
     }
     static createFinalizeStory(dependencies) {
-        const id = `US-${String(dependencies.length + 1).padStart(3, "0")}`;
-        return this.createStory(id, "Finalize and document", "finalize:finalize", 1, ["All tests passing", "No linting errors", "Documentation complete", "Code reviewed"], dependencies.map((s) => s.id));
+        return this.createStory(this.generateStoryId("Finalize and document"), "Finalize and document", "finalize:finalize", 1, ["All tests passing", "No linting errors", "Documentation complete", "Code reviewed"], dependencies.map((s) => s.id));
     }
     static createStory(id, title, agent, priority, acceptanceCriteria, dependencies) {
         // Extract tech from agent (e.g., "builder:task" with tech "typescript")
