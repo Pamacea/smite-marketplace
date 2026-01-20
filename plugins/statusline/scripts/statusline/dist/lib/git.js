@@ -26,6 +26,9 @@ export async function getGitStatus() {
         staged: 0,
         unstaged: 0,
         isDirty: false,
+        additions: 0,
+        deletions: 0,
+        modifications: 0,
     };
     try {
         // Get branch name with timeout
@@ -47,10 +50,25 @@ export async function getGitStatus() {
                 // Count unstaged changes (second character not space)
                 if (workTree !== " ") {
                     result.unstaged++;
+                    result.modifications++;
                 }
                 result.changes++;
             }
             result.isDirty = result.changes > 0;
+        }
+        // Get line additions/deletions with numstat (unstaged changes only)
+        const diffOutput = await execGit("git diff --numstat");
+        if (diffOutput) {
+            const lines = diffOutput.split("\n").filter(Boolean);
+            for (const line of lines) {
+                const parts = line.split("\t");
+                if (parts.length >= 2) {
+                    const additions = parseInt(parts[0], 10) || 0;
+                    const deletions = parseInt(parts[1], 10) || 0;
+                    result.additions += additions;
+                    result.deletions += deletions;
+                }
+            }
         }
     }
     catch {

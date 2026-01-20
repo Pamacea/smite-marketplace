@@ -6,7 +6,7 @@ function renderPathAndModel(data, config) {
     const modelDisplay = config.showSonnetModel || !data.modelName.includes("Sonnet")
         ? data.modelName
         : "Sonnet";
-    return `${data.dirPath} ${colors.gray}${config.separator}${colors.reset} ${modelDisplay}`;
+    return `${data.dirPath} ${colors.gray}${config.separator}${colors.reset} ${colors.orange}${modelDisplay}${colors.reset}`;
 }
 /**
  * Render session information
@@ -33,7 +33,7 @@ function renderSessionInfo(data, config) {
             sessionParts.push(bar);
         }
         if (showValue) {
-            sessionParts.push(`${data.contextPercentage}%`);
+            sessionParts.push(`${colors.green}${data.contextPercentage}%${colors.reset}`);
         }
     }
     if (sessionParts.length === 0) {
@@ -83,7 +83,7 @@ export function renderStatusline(data, config) {
     parts.push(renderPathAndModel(data, config));
     // Git branch
     if (config.git.enabled && data.branch) {
-        parts.push(`${colors.cyan}${data.branch}${colors.reset}`);
+        parts.push(`${colors.white}${data.branch}${colors.reset}`);
     }
     // Session info
     const sessionInfo = renderSessionInfo(data, config);

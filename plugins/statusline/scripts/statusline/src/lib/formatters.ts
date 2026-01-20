@@ -32,8 +32,21 @@ export function formatBranch(git: GitStatus, config: GitConfig): string {
     output += " *";
   }
 
-  if (config.showChanges && git.changes > 0) {
-    output += ` +${git.changes}`;
+  // Afficher les lignes ajoutées/supprimées au lieu du nombre de fichiers
+  if (config.showChanges && git.isDirty) {
+    const parts: string[] = [];
+    if (git.additions > 0) {
+      parts.push(`${colors.green}+${git.additions}${colors.reset}`);
+    }
+    if (git.deletions > 0) {
+      parts.push(`${colors.red}-${git.deletions}${colors.reset}`);
+    }
+    if (git.modifications > 0 && git.additions === 0 && git.deletions === 0) {
+      parts.push(`${colors.yellow}*${git.modifications}${colors.reset}`);
+    }
+    if (parts.length > 0) {
+      output += ` ${parts.join(" ")}`;
+    }
   }
 
   if (config.showStaged && git.staged > 0) {

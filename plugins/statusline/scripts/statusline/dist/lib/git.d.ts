@@ -4,6 +4,9 @@ export interface GitStatus {
     staged: number;
     unstaged: number;
     isDirty: boolean;
+    additions: number;
+    deletions: number;
+    modifications: number;
 }
 /**
  * Get git status information

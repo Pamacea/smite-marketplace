@@ -13,7 +13,7 @@ export const defaultConfigJson = {
     enabled: true,
     showBranch: true,
     showDirtyIndicator: true,
-    showChanges: false,
+    showChanges: true,
     showStaged: true,
     showUnstaged: true,
   },

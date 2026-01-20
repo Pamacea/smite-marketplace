@@ -13,6 +13,8 @@ export declare const colors: {
     blue: string;
     cyan: string;
     gray: string;
+    orange: string;
+    white: string;
 };
 /**
  * Format git branch status

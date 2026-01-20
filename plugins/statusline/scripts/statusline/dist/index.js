@@ -2,6 +2,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { mkdir } from "node:fs/promises";
 // Import core modules
 import { defaultConfig } from "./lib/config.js";
 import { getContextData } from "./lib/context.js";
@@ -35,6 +36,69 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const CONFIG_FILE_PATH = join(__dirname, "..", "statusline.config.json");
 const LAST_PAYLOAD_PATH = join(__dirname, "..", "data", "last_payload.txt");
+const CACHE_FILE_PATH = join(__dirname, "..", "data", "context_cache.json");
+let contextCache = null;
+const CACHE_TTL = 2000; // 2 secondes - éviter les flickers
+// Tracking du répertoire de travail dynamique
+let currentWorkingDir = null;
+/**
+ * Parse le transcript pour détecter les changements de répertoire (cd)
+ * et retourne le répertoire de travail actuel
+ */
+async function trackWorkingDirectory(transcriptPath, initialDir) {
+    // Si c'est la première fois, initialiser avec le répertoire initial
+    if (!currentWorkingDir) {
+        currentWorkingDir = initialDir;
+    }
+    try {
+        const content = await readFile(transcriptPath, "utf-8");
+        const transcript = JSON.parse(content);
+        // Chercher les dernières commandes cd dans le transcript
+        // On regarde seulement les 20 dernières entrées pour éviter de tout parser
+        const recentEntries = transcript.slice(-20);
+        for (const entry of recentEntries) {
+            // Si c'est une commande de l'utilisateur ou de l'IA
+            if (entry.type === "user" || entry.type === "assistant") {
+                const content = entry.content || "";
+                // Extraire les commandes bash/cd
+                // Format: {"command": "cd plugins"} ou <command>cd plugins</command>
+                const cdMatch = content.match(/(?:cd\s+)([^\s\n]+)/);
+                if (cdMatch) {
+                    const targetDir = cdMatch[1];
+                    // Résoudre le chemin relatif ou absolu
+                    if (targetDir.startsWith("/") || targetDir.match(/^[A-Za-z]:\\/)) {
+                        // Chemin absolu
+                        currentWorkingDir = targetDir;
+                    }
+                    else if (targetDir === "..") {
+                        // Remonter d'un niveau
+                        const parts = (currentWorkingDir || initialDir).split(/[/\\]/);
+                        parts.pop();
+                        currentWorkingDir = parts.join("/");
+                    }
+                    else if (targetDir === "~") {
+                        // Home directory
+                        currentWorkingDir = initialDir.split(/[/\\]/).slice(0, 2).join("/");
+                    }
+                    else {
+                        // Chemin relatif
+                        const separator = (currentWorkingDir || initialDir).includes("/") ? "/" : "\\";
+                        currentWorkingDir = (currentWorkingDir || initialDir) + separator + targetDir;
+                    }
+                    // Normaliser le chemin
+                    if (currentWorkingDir) {
+                        currentWorkingDir = currentWorkingDir.replace(/\\/g, "/");
+                    }
+                }
+            }
+        }
+        return currentWorkingDir || initialDir;
+    }
+    catch {
+        // En cas d'erreur, retourner le répertoire initial
+        return initialDir;
+    }
+}
 async function loadConfig() {
     try {
         const content = await readFile(CONFIG_FILE_PATH, "utf-8");
@@ -46,6 +110,13 @@ async function loadConfig() {
     }
 }
 async function getContextInfo(input, config) {
+    const now = Date.now();
+    // Vérifier le cache pour éviter les flickers
+    if (contextCache && (now - contextCache.timestamp) < CACHE_TTL) {
+        return contextCache.data;
+    }
+    let result;
+    // Priorité absolue au payload si disponible (plus précis)
     const usePayloadContext = config.context.usePayloadContextWindow && input.context_window;
     if (usePayloadContext) {
         const current = input.context_window?.current_usage;
@@ -56,9 +127,19 @@ async function getContextInfo(input, config) {
             const maxTokens = input.context_window?.context_window_size ||
                 config.context.maxContextTokens;
             const percentage = Math.min(100, Math.round((tokens / maxTokens) * 100));
-            return { tokens, percentage };
+            result = { tokens, percentage };
+            // Mettre en cache uniquement si on a des données valides
+            if (tokens > 0) {
+                contextCache = { timestamp: now, data: result };
+            }
+            return result;
         }
-        return { tokens: null, percentage: null };
+    }
+    // Fallback sur le transcript SEULEMENT si le payload n'est pas disponible
+    // et qu'on n'a pas de cache récent (éviter les sauts 36% → 0%)
+    if (contextCache && (now - contextCache.timestamp) < (CACHE_TTL * 3)) {
+        // Garder la valeur cached pendant 6 secondes de plus pour éviter les sauts
+        return contextCache.data;
     }
     const contextData = await getContextData({
         transcriptPath: input.transcript_path,
@@ -67,10 +148,15 @@ async function getContextInfo(input, config) {
         useUsableContextOnly: config.context.useUsableContextOnly,
         overheadTokens: config.context.overheadTokens,
     });
-    return {
+    result = {
         tokens: contextData.tokens,
         percentage: contextData.percentage,
     };
+    // Mettre en cache
+    if (contextData.tokens !== null && contextData.percentage !== null) {
+        contextCache = { timestamp: now, data: result };
+    }
+    return result;
 }
 async function getSpendInfo(currentResetsAt) {
     if (!getPeriodCost || !getTodayCostV2) {
@@ -84,6 +170,14 @@ async function getSpendInfo(currentResetsAt) {
 async function main() {
     try {
         const input = await Bun.stdin.json();
+        // Ensure data directory exists
+        const dataDir = dirname(LAST_PAYLOAD_PATH);
+        try {
+            await mkdir(dataDir, { recursive: true });
+        }
+        catch {
+            // Directory might already exist, that's fine
+        }
         // Save last payload for debugging
         await writeFile(LAST_PAYLOAD_PATH, JSON.stringify(input, null, 2));
         const config = await loadConfig();
@@ -99,9 +193,11 @@ async function main() {
         const git = await getGitStatus();
         const contextInfo = await getContextInfo(input, config);
         const spendInfo = await getSpendInfo(currentResetsAt);
+        // Tracker le répertoire de travail dynamique
+        const workingDir = await trackWorkingDirectory(input.transcript_path, input.workspace.current_dir);
         const data = {
             branch: formatBranch(git, config.git),
-            dirPath: formatPath(input.workspace.current_dir, config.pathDisplayMode),
+            dirPath: formatPath(workingDir, config.pathDisplayMode),
             modelName: input.model.display_name,
             sessionCost: formatCost(input.cost.total_cost_usd, config.session.cost.format),
             sessionDuration: formatDuration(input.cost.total_duration_ms),

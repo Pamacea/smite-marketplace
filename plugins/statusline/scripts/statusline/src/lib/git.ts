@@ -9,6 +9,9 @@ export interface GitStatus {
   staged: number;
   unstaged: number;
   isDirty: boolean;
+  additions: number;    // Lignes ajoutées (unstage)
+  deletions: number;    // Lignes supprimées (unstage)
+  modifications: number; // Fichiers modifiés (unstage)
 }
 
 /**
@@ -36,6 +39,9 @@ export async function getGitStatus(): Promise<GitStatus> {
     staged: 0,
     unstaged: 0,
     isDirty: false,
+    additions: 0,
+    deletions: 0,
+    modifications: 0,
   };
 
   try {
@@ -62,12 +68,30 @@ export async function getGitStatus(): Promise<GitStatus> {
         // Count unstaged changes (second character not space)
         if (workTree !== " ") {
           result.unstaged++;
+          result.modifications++;
         }
 
         result.changes++;
       }
 
       result.isDirty = result.changes > 0;
+    }
+
+    // Get line additions/deletions with numstat (unstaged changes only)
+    const diffOutput = await execGit("git diff --numstat");
+    if (diffOutput) {
+      const lines = diffOutput.split("\n").filter(Boolean);
+
+      for (const line of lines) {
+        const parts = line.split("\t");
+        if (parts.length >= 2) {
+          const additions = parseInt(parts[0], 10) || 0;
+          const deletions = parseInt(parts[1], 10) || 0;
+
+          result.additions += additions;
+          result.deletions += deletions;
+        }
+      }
     }
   } catch {
     // Not in git repo or git not available

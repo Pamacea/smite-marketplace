@@ -11,6 +11,8 @@ export const colors = {
     blue: "\x1b[34m",
     cyan: "\x1b[36m",
     gray: "\x1b[90m",
+    orange: "\x1b[38;5;208m",
+    white: "\x1b[97m",
 };
 /**
  * Format git branch status
@@ -23,8 +25,21 @@ export function formatBranch(git, config) {
     if (config.showDirtyIndicator && git.isDirty) {
         output += " *";
     }
-    if (config.showChanges && git.changes > 0) {
-        output += ` +${git.changes}`;
+    // Afficher les lignes ajoutées/supprimées au lieu du nombre de fichiers
+    if (config.showChanges && git.isDirty) {
+        const parts = [];
+        if (git.additions > 0) {
+            parts.push(`${colors.green}+${git.additions}${colors.reset}`);
+        }
+        if (git.deletions > 0) {
+            parts.push(`${colors.red}-${git.deletions}${colors.reset}`);
+        }
+        if (git.modifications > 0 && git.additions === 0 && git.deletions === 0) {
+            parts.push(`${colors.yellow}*${git.modifications}${colors.reset}`);
+        }
+        if (parts.length > 0) {
+            output += ` ${parts.join(" ")}`;
+        }
     }
     if (config.showStaged && git.staged > 0) {
         output += ` ${colors.green}S${git.staged}${colors.reset}`;
@@ -87,10 +102,11 @@ export function formatTokens(tokens, showDecimals) {
         return tokens.toString();
     }
     const k = tokens / 1000;
-    if (showDecimals) {
+    const roundedK = Math.round(k);
+    if (showDecimals && roundedK >= 100) {
         return `${k.toFixed(1)}K`;
     }
-    return `${Math.round(k)}K`;
+    return `${roundedK}K`;
 }
 /**
  * Format percentage
