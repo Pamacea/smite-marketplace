@@ -335,7 +335,30 @@ async function main() {
         const updatedTracker = updateTracker(tokenTracker, currentUsage);
         await saveTokenTracker(updatedTracker);
         // Tracker le répertoire de travail dynamique
-        const workingDir = await trackWorkingDirectory(input.transcript_path, input.workspace.current_dir);
+        let workingDir = await trackWorkingDirectory(input.transcript_path, input.workspace.current_dir);
+        // Try to get more accurate current directory from transcript
+        // Look for the last bash command with a cwd parameter
+        try {
+            if (input.transcript_path) {
+                const transcriptContent = await readFile(input.transcript_path, "utf-8");
+                const transcript = JSON.parse(transcriptContent);
+                // Search backwards for the most recent bash tool use with cwd
+                for (let i = transcript.length - 1; i >= 0; i--) {
+                    const entry = transcript[i];
+                    if (entry.type === "assistant" && entry.content) {
+                        // Look for "cwd": "path" in tool uses
+                        const cwdMatch = entry.content.match(/"cwd"\s*:\s*"([^"]+)"/);
+                        if (cwdMatch && cwdMatch[1]) {
+                            workingDir = cwdMatch[1];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch (e) {
+            // Use tracked directory if transcript can't be read
+        }
         const data = {
             branch: formatBranch(git, config.git),
             dirPath: formatPath(workingDir, config.pathDisplayMode),
