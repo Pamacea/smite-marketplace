@@ -105,7 +105,8 @@ async function writeSettings(settingsPath, settings, options) {
 function createStatuslineCommand(platform) {
     // Use simplified statusline script (cross-platform, reliable)
     // Normalize path separators to forward slashes for cross-platform compatibility
-    const statuslineScript = path.join(platform.home, '.claude', 'statusline.js').replace(/\\/g, '/');
+    // NEW: Use organized structure in scripts/statusline/
+    const statuslineScript = path.join(platform.home, '.claude', 'scripts', 'statusline', 'index.js').replace(/\\/g, '/');
     const runtime = platform.runtime === 'bun' ? 'bun' : 'node';
     return `${runtime} ${statuslineScript}`;
 }
@@ -132,7 +133,8 @@ async function createDefaultConfig(platform, options) {
     const scriptPath = fileURLToPath(import.meta.url);
     const scriptDir = path.dirname(scriptPath);
     const defaultsPath = path.join(scriptDir, 'statusline', 'data', 'defaults.json');
-    const configPath = path.join(platform.home, '.claude', 'statusline.config.json');
+    // NEW: Use organized structure for config file
+    const configPath = path.join(platform.home, '.claude', 'scripts', 'statusline', 'config', 'config.json');
     if (options.verbose) {
         log.info(`Script directory: ${scriptDir}`);
         log.info(`Defaults path: ${defaultsPath}`);
@@ -142,6 +144,8 @@ async function createDefaultConfig(platform, options) {
         return;
     }
     try {
+        // Ensure config directory exists
+        await fs.mkdir(path.dirname(configPath), { recursive: true });
         // Check if defaults.json exists
         if (!existsSync(defaultsPath)) {
             // Try alternative location (when installed)
@@ -220,7 +224,8 @@ async function installStatuslineScript(platform, options) {
     const scriptDir = fileURLToPath(import.meta.url);
     const scriptsDir = path.dirname(path.dirname(scriptDir)); // Go up from dist/ to scripts/
     const sourceScript = path.join(scriptsDir, 'statusline-simple.js');
-    const targetScript = path.join(platform.home, '.claude', 'statusline.js');
+    // NEW: Use organized structure for target script
+    const targetScript = path.join(platform.home, '.claude', 'scripts', 'statusline', 'index.js');
     if (options.verbose) {
         log.info(`Copying statusline script:`);
         log.info(`  Script dir: ${scriptDir}`);
@@ -237,6 +242,8 @@ async function installStatuslineScript(platform, options) {
         if (!existsSync(sourceScript)) {
             throw new Error(`Source script not found: ${sourceScript}`);
         }
+        // NEW: Ensure target directory exists before copying
+        await fs.mkdir(path.dirname(targetScript), { recursive: true });
         await fs.copyFile(sourceScript, targetScript);
         log.success('Installed statusline script');
     }
