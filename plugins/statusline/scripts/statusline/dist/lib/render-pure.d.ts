@@ -15,6 +15,7 @@ export interface StatuslineData {
     tokenDiff?: number;
     baseContext?: number;
     transcriptContext?: number;
+    userTokens?: number;
     usageLimits?: {
         five_hour: UsageLimit | null;
         seven_day: UsageLimit | null;

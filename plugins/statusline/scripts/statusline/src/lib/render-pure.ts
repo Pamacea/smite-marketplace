@@ -45,6 +45,7 @@ export interface StatuslineData {
   tokenDiff?: number; // Optional: tokens added since last update
   baseContext?: number; // Base context tokens (system messages + config files)
   transcriptContext?: number; // Transcript context tokens (user/assistant messages)
+  userTokens?: number; // User tokens only (excludes system/base context)
   usageLimits?: {
     five_hour: UsageLimit | null;
     seven_day: UsageLimit | null;
@@ -98,7 +99,16 @@ function renderSessionInfo(data: StatuslineData, config: StatuslineConfig): stri
 
   if (config.session.tokens.enabled && data.contextTokens !== null) {
     const maxTokens = config.context.maxContextTokens;
-    let tokensStr = formatTokens(data.contextTokens, config.session.tokens.showDecimals);
+    const userTokens = data.userTokens ?? data.contextTokens;
+    const totalTokens = data.contextTokens;
+
+    // Display format: userTokens(totalTokens) if different, otherwise just userTokens
+    let tokensStr: string;
+    if (userTokens !== totalTokens) {
+      tokensStr = `${formatTokens(userTokens, config.session.tokens.showDecimals)}${colors.dim}(${formatTokens(totalTokens, false)})${colors.reset}`;
+    } else {
+      tokensStr = formatTokens(userTokens, config.session.tokens.showDecimals);
+    }
 
     // Add token diff if available and recent (shows tokens added since last update)
     if (data.tokenDiff && data.tokenDiff > 0) {
@@ -120,23 +130,35 @@ function renderSessionInfo(data: StatuslineData, config: StatuslineConfig): stri
     sessionParts.push(tokensStr);
   }
 
-  if (config.session.percentage.enabled && data.contextPercentage !== null) {
+  if (config.session.percentage.enabled) {
     const { progressBar, showValue } = config.session.percentage;
 
-    if (progressBar.enabled) {
-      const bar = formatProgressBar(
-        data.contextPercentage,
-        progressBar.length,
-        progressBar.style,
-        progressBar.color,
-        progressBar.background
-      );
-      sessionParts.push(bar);
-    }
+    // Calculate user percentage based on user tokens (excludes system context)
+    const maxTokens = config.context.maxContextTokens || 200000; // Default to 200K if not set
+    const userTokens = data.userTokens ?? data.contextTokens ?? 0;
 
-    if (showValue) {
-      const percentColor = getPercentageColor(data.contextPercentage, progressBar.color);
-      sessionParts.push(`${percentColor}${data.contextPercentage}%${colors.reset}`);
+    // Protect against division by zero
+    const userPercentage = maxTokens > 0 && userTokens > 0
+      ? Math.min(100, Math.round((userTokens / maxTokens) * 100))
+      : 0;
+
+    // Only show progress bar if we have some tokens
+    if (userTokens > 0 && maxTokens > 0) {
+      if (progressBar.enabled) {
+        const bar = formatProgressBar(
+          userPercentage,
+          progressBar.length,
+          progressBar.style,
+          progressBar.color,
+          progressBar.background
+        );
+        sessionParts.push(bar);
+      }
+
+      if (showValue) {
+        const percentColor = getPercentageColor(userPercentage, progressBar.color);
+        sessionParts.push(`${percentColor}${userPercentage}%${colors.reset}`);
+      }
     }
   }
 

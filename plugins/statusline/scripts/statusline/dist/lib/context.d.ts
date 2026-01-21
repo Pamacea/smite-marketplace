@@ -4,6 +4,7 @@ export interface ContextData {
     lastOutputTokens: number | null;
     baseContext?: number;
     transcriptContext?: number;
+    userTokens?: number;
 }
 export interface ContextOptions {
     transcriptPath: string;

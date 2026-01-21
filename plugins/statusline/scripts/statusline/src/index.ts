@@ -7,7 +7,7 @@ import { mkdir } from "node:fs/promises";
 import { homedir } from "node:os";
 
 // Import core modules
-import { defaultConfig, type StatuslineConfig } from "./lib/config.js";
+import { defaultConfig, mergeConfig, type StatuslineConfig } from "./lib/config.js";
 import { getContextData } from "./lib/context.js";
 import {
   colors,
@@ -339,7 +339,7 @@ async function loadConfig(): Promise<StatuslineConfig> {
   try {
     const content = await readFile(CONFIG_FILE_PATH, "utf-8");
     const userConfig = JSON.parse(content);
-    return { ...defaultConfig, ...userConfig };
+    return mergeConfig(userConfig);
   } catch {
     return defaultConfig;
   }
@@ -351,6 +351,7 @@ interface ContextInfo {
   lastOutputTokens: number | null;
   baseContext?: number;
   transcriptContext?: number;
+  userTokens?: number;
 }
 
 async function getContextInfo(
@@ -426,7 +427,8 @@ async function getContextInfo(
         percentage,
         lastOutputTokens: null,
         baseContext: baseContextTokens,
-        transcriptContext: transcriptTokens
+        transcriptContext: transcriptTokens,
+        userTokens: transcriptTokens // User tokens exclude system/base context
       };
 
       // Mettre en cache uniquement si on a des données valides
@@ -471,6 +473,7 @@ async function getContextInfo(
     lastOutputTokens: contextData.lastOutputTokens,
     baseContext: contextData.baseContext,
     transcriptContext: contextData.transcriptContext,
+    userTokens: contextData.userTokens,
   };
 
   // Mettre en cache
@@ -611,6 +614,7 @@ async function main() {
       tokenDiff: showTokenDiff ? tokenDiff : undefined,
       baseContext: contextInfo.baseContext,
       transcriptContext: contextInfo.transcriptContext,
+      userTokens: contextInfo.userTokens,
       ...(getUsageLimits && {
         usageLimits: {
           five_hour: usageLimits.five_hour

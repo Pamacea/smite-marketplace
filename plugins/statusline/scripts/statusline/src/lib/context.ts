@@ -11,6 +11,7 @@ export interface ContextData {
   lastOutputTokens: number | null;
   baseContext?: number;
   transcriptContext?: number;
+  userTokens?: number; // User tokens only (excludes system/base context)
 }
 
 export interface ContextOptions {
@@ -284,6 +285,7 @@ export async function getContextData(
       lastOutputTokens,
       baseContext: baseContextTokens, // included in total
       transcriptContext: transcriptTokens, // messages + tools
+      userTokens: transcriptTokens, // user tokens only (excludes system)
     };
   } catch (error) {
     // Log error for debugging

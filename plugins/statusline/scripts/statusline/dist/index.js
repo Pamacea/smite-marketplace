@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { mkdir } from "node:fs/promises";
 import { homedir } from "node:os";
 // Import core modules
-import { defaultConfig } from "./lib/config.js";
+import { defaultConfig, mergeConfig } from "./lib/config.js";
 import { getContextData } from "./lib/context.js";
 import { colors, formatBranch, formatCost, formatDuration, formatPath, } from "./lib/formatters.js";
 import { getGitStatus } from "./lib/git.js";
@@ -261,7 +261,7 @@ async function loadConfig() {
     try {
         const content = await readFile(CONFIG_FILE_PATH, "utf-8");
         const userConfig = JSON.parse(content);
-        return { ...defaultConfig, ...userConfig };
+        return mergeConfig(userConfig);
     }
     catch {
         return defaultConfig;
@@ -321,7 +321,8 @@ async function getContextInfo(input, config) {
                 percentage,
                 lastOutputTokens: null,
                 baseContext: baseContextTokens,
-                transcriptContext: transcriptTokens
+                transcriptContext: transcriptTokens,
+                userTokens: transcriptTokens // User tokens exclude system/base context
             };
             // Mettre en cache uniquement si on a des données valides
             contextCache = { timestamp: now, data: result };
@@ -360,6 +361,7 @@ async function getContextInfo(input, config) {
         lastOutputTokens: contextData.lastOutputTokens,
         baseContext: contextData.baseContext,
         transcriptContext: contextData.transcriptContext,
+        userTokens: contextData.userTokens,
     };
     // Mettre en cache
     if (contextData.tokens !== null && contextData.percentage !== null) {
@@ -470,6 +472,7 @@ async function main() {
             tokenDiff: showTokenDiff ? tokenDiff : undefined,
             baseContext: contextInfo.baseContext,
             transcriptContext: contextInfo.transcriptContext,
+            userTokens: contextInfo.userTokens,
             ...(getUsageLimits && {
                 usageLimits: {
                     five_hour: usageLimits.five_hour
