@@ -1,6 +1,33 @@
 import type { StatuslineConfig } from "./config-types.js";
 import { colors, formatCost, formatDuration, formatProgressBar, formatTokens } from "./formatters.js";
 
+/**
+ * Get color for percentage based on value (matches progress bar colors)
+ */
+function getPercentageColor(percentage: number, color: "progressive" | "single"): string {
+  if (color === "single") {
+    return colors.blue;
+  }
+
+  if (percentage >= 90) {
+    return colors.red;
+  }
+
+  if (percentage >= 70) {
+    return colors.yellow;
+  }
+
+  if (percentage >= 40) {
+    return colors.green;
+  }
+
+  if (percentage >= 20) {
+    return colors.cyan;
+  }
+
+  return colors.blue;
+}
+
 export interface UsageLimit {
   utilization: number;
   resets_at: string;
@@ -108,7 +135,8 @@ function renderSessionInfo(data: StatuslineData, config: StatuslineConfig): stri
     }
 
     if (showValue) {
-      sessionParts.push(`${colors.green}${data.contextPercentage}%${colors.reset}`);
+      const percentColor = getPercentageColor(data.contextPercentage, progressBar.color);
+      sessionParts.push(`${percentColor}${data.contextPercentage}%${colors.reset}`);
     }
   }
 
@@ -179,13 +207,13 @@ export function renderStatusline(
 ): string {
   const parts: string[] = [];
 
-  // Path and model
-  parts.push(renderPathAndModel(data, config));
-
   // Git branch
   if (config.git.enabled && data.branch) {
     parts.push(`${colors.white}${data.branch}${colors.reset}`);
   }
+
+  // Path and model
+  parts.push(renderPathAndModel(data, config));
 
   // Session info
   const sessionInfo = renderSessionInfo(data, config);

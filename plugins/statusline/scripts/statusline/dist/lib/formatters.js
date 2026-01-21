@@ -22,13 +22,9 @@ export function formatBranch(git, config) {
     if (!config.enabled || !git.branch) {
         return "";
     }
-    let output = git.branch;
-    if (config.showDirtyIndicator && git.isDirty) {
-        output += " *";
-    }
-    // Afficher les lignes ajoutées/supprimées au lieu du nombre de fichiers
+    const parts = [git.branch];
+    // Afficher les lignes ajoutées/supprimées au lieu de l'indicateur dirty
     if (config.showChanges && git.isDirty) {
-        const parts = [];
         if (git.additions > 0) {
             parts.push(`${colors.green}+${git.additions}${colors.reset}`);
         }
@@ -38,17 +34,17 @@ export function formatBranch(git, config) {
         if (git.modifications > 0 && git.additions === 0 && git.deletions === 0) {
             parts.push(`${colors.yellow}*${git.modifications}${colors.reset}`);
         }
-        if (parts.length > 0) {
-            output += ` ${parts.join(" ")}`;
-        }
+    }
+    else if (config.showDirtyIndicator && git.isDirty) {
+        parts.push("*");
     }
     if (config.showStaged && git.staged > 0) {
-        output += ` ${colors.green}S${git.staged}${colors.reset}`;
+        parts.push(`${colors.green}S${git.staged}${colors.reset}`);
     }
     if (config.showUnstaged && git.unstaged > 0) {
-        output += ` ${colors.yellow}U${git.unstaged}${colors.reset}`;
+        parts.push(`${colors.yellow}U${git.unstaged}${colors.reset}`);
     }
-    return output;
+    return parts.join(` ${colors.gray}•${colors.reset} `);
 }
 /**
  * Format cost with specified decimals
@@ -150,6 +146,12 @@ function getProgressBarColor(percentage, color) {
     if (percentage >= 70) {
         return colors.yellow;
     }
+    if (percentage >= 40) {
+        return colors.green;
+    }
+    if (percentage >= 20) {
+        return colors.cyan;
+    }
     return colors.blue;
 }
 /**
@@ -170,13 +172,18 @@ export function formatProgressBar(percentage, length, style, color, background) 
     if (style === "percentage") {
         return `${percentage}%`;
     }
-    const filled = Math.round((percentage / 100) * length);
+    // Calculate filled length, but always show at least 1 if percentage > 0
+    let filled = Math.round((percentage / 100) * length);
+    if (percentage > 0 && filled === 0) {
+        filled = 1;
+    }
     const empty = length - filled;
     const barColor = getProgressBarColor(percentage, color);
     if (style === "braille") {
-        const baseBar = colors.dim + "█".repeat(length) + colors.reset;
-        const overlay = barColor + "█".repeat(Math.ceil(filled / 2)) + colors.reset;
-        return overlay + baseBar.substring(overlay.length);
+        const emptyChar = getEmptyChar(background);
+        const filledPart = barColor + "█".repeat(Math.ceil(filled / 2)) + colors.reset;
+        const emptyPart = colors.dim + emptyChar.repeat(length - Math.ceil(filled / 2)) + colors.reset;
+        return filledPart + emptyPart;
     }
     // style === "blocks"
     const emptyChar = getEmptyChar(background);

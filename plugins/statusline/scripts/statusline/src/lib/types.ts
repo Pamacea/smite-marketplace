@@ -19,6 +19,8 @@ export interface HookInput {
       cache_creation_input_tokens?: number;
       cache_read_input_tokens?: number;
     };
+    total_input_tokens?: number;
+    total_output_tokens?: number;
     context_window_size?: number;
   };
 }

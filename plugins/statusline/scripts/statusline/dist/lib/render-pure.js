@@ -1,5 +1,26 @@
 import { colors, formatCost, formatProgressBar, formatTokens } from "./formatters.js";
 /**
+ * Get color for percentage based on value (matches progress bar colors)
+ */
+function getPercentageColor(percentage, color) {
+    if (color === "single") {
+        return colors.blue;
+    }
+    if (percentage >= 90) {
+        return colors.red;
+    }
+    if (percentage >= 70) {
+        return colors.yellow;
+    }
+    if (percentage >= 40) {
+        return colors.green;
+    }
+    if (percentage >= 20) {
+        return colors.cyan;
+    }
+    return colors.blue;
+}
+/**
  * Render path and model display
  */
 function renderPathAndModel(data, config) {
@@ -56,7 +77,8 @@ function renderSessionInfo(data, config) {
             sessionParts.push(bar);
         }
         if (showValue) {
-            sessionParts.push(`${colors.green}${data.contextPercentage}%${colors.reset}`);
+            const percentColor = getPercentageColor(data.contextPercentage, progressBar.color);
+            sessionParts.push(`${percentColor}${data.contextPercentage}%${colors.reset}`);
         }
     }
     if (sessionParts.length === 0) {
@@ -102,12 +124,12 @@ function renderDailySpend(data, config) {
  */
 export function renderStatusline(data, config) {
     const parts = [];
-    // Path and model
-    parts.push(renderPathAndModel(data, config));
     // Git branch
     if (config.git.enabled && data.branch) {
         parts.push(`${colors.white}${data.branch}${colors.reset}`);
     }
+    // Path and model
+    parts.push(renderPathAndModel(data, config));
     // Session info
     const sessionInfo = renderSessionInfo(data, config);
     if (sessionInfo) {

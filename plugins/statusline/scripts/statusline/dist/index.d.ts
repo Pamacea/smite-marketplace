@@ -1,2 +1,2 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 export { renderStatusline, type StatuslineData, type UsageLimit, } from "./lib/render-pure.js";

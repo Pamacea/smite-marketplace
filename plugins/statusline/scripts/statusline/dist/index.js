@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -269,27 +269,31 @@ async function loadConfig() {
 }
 async function getContextInfo(input, config) {
     const now = Date.now();
-    // Vérifier le cache pour éviter les flickers
-    if (contextCache && (now - contextCache.timestamp) < CACHE_TTL) {
-        return contextCache.data;
-    }
     let result;
     // Priorité absolue au payload si disponible (plus précis)
     const usePayloadContext = config.context.usePayloadContextWindow && input.context_window;
-    if (usePayloadContext) {
-        const current = input.context_window?.current_usage;
+    if (usePayloadContext && input.context_window) {
+        // Try current_usage first (real-time tracking)
+        const current = input.context_window.current_usage;
+        let tokens = 0;
+        let maxTokens = input.context_window.context_window_size || config.context.maxContextTokens;
         if (current) {
-            const tokens = (current.input_tokens || 0) +
-                (current.cache_creation_input_tokens || 0) +
-                (current.cache_read_input_tokens || 0);
-            const maxTokens = input.context_window?.context_window_size ||
-                config.context.maxContextTokens;
+            tokens =
+                (current.input_tokens || 0) +
+                    (current.cache_creation_input_tokens || 0) +
+                    (current.cache_read_input_tokens || 0);
+        }
+        // If current_usage is 0, fall back to total_input_tokens (session total)
+        if (tokens === 0 && input.context_window.total_input_tokens) {
+            tokens = input.context_window.total_input_tokens;
+        }
+        // Only use payload context if it has valid data (>0 tokens)
+        // Otherwise fall back to transcript-based calculation
+        if (tokens > 0) {
             const percentage = Math.min(100, Math.round((tokens / maxTokens) * 100));
             result = { tokens, percentage, lastOutputTokens: null };
             // Mettre en cache uniquement si on a des données valides
-            if (tokens > 0) {
-                contextCache = { timestamp: now, data: result };
-            }
+            contextCache = { timestamp: now, data: result };
             return result;
         }
     }
@@ -299,7 +303,11 @@ async function getContextInfo(input, config) {
     // - Payload context is temporarily unavailable
     // - Context is being recalculated
     // - Cache is being invalidated
-    if (contextCache && (now - contextCache.timestamp) < (CACHE_TTL * 3)) {
+    // IMPORTANT: Don't use cache if it has null/0 tokens - always recalculate in that case
+    if (contextCache &&
+        (now - contextCache.timestamp) < (CACHE_TTL * 3) &&
+        contextCache.data.tokens !== null &&
+        contextCache.data.tokens > 0) {
         // Garder la valeur cached pendant 6 secondes de plus pour éviter les sauts
         // This smooths transitions between different context calculation methods
         return contextCache.data;
@@ -318,6 +326,8 @@ async function getContextInfo(input, config) {
         tokens: contextData.tokens,
         percentage: contextData.percentage,
         lastOutputTokens: contextData.lastOutputTokens,
+        baseContext: contextData.baseContext,
+        transcriptContext: contextData.transcriptContext,
     };
     // Mettre en cache
     if (contextData.tokens !== null && contextData.percentage !== null) {
@@ -336,7 +346,13 @@ async function getSpendInfo(currentResetsAt) {
 }
 async function main() {
     try {
-        const input = await Bun.stdin.json();
+        // Read stdin using chunks since Bun.stdin.json() can hang
+        const chunks = [];
+        for await (const chunk of Bun.stdin.stream()) {
+            chunks.push(Buffer.from(chunk));
+        }
+        const stdinContent = Buffer.concat(chunks).toString();
+        const input = JSON.parse(stdinContent);
         // Ensure data directory exists
         const dataDir = dirname(LAST_PAYLOAD_PATH);
         try {

@@ -104,21 +104,35 @@ export async function getContextData(options) {
             }
         }
         // Estimate transcript tokens (using improved 3.5 ratio)
-        const transcriptTokens = Math.round(transcriptChars / 3.5);
-        const systemTokens = Math.round(systemChars / 3.5);
+        const transcriptTokens = Math.round(transcriptChars / 3.5) || 0;
+        const systemTokens = Math.round(systemChars / 3.5) || 0;
         // Calculate base context from files if enabled
         let baseContextTokens = 0;
         if (includeBaseContext && baseContextPath) {
-            baseContextTokens = await getBaseContextTokens(baseContextPath, workspaceDir);
+            try {
+                baseContextTokens = await getBaseContextTokens(baseContextPath, workspaceDir);
+                // Ensure we got a valid number
+                if (!isFinite(baseContextTokens) || baseContextTokens < 0) {
+                    baseContextTokens = 0;
+                }
+            }
+            catch {
+                baseContextTokens = 0;
+            }
         }
         // Total = transcript + system messages + base context files + overhead
-        const totalTokens = transcriptTokens + systemTokens + baseContextTokens + overheadTokens;
+        const totalTokens = (transcriptTokens + systemTokens + baseContextTokens + overheadTokens) || 0;
         // Calculate usable context
         let usableTokens = totalTokens;
         if (useUsableContextOnly) {
             usableTokens = Math.max(0, totalTokens - autocompactBufferTokens);
         }
-        const percentage = Math.min(100, Math.round((usableTokens / maxContextTokens) * 100));
+        // If usable tokens is 0 but total tokens > 0, use total tokens for small sessions
+        // This prevents showing 0 for sessions that are smaller than the autocompact buffer
+        if (usableTokens === 0 && totalTokens > 0) {
+            usableTokens = totalTokens;
+        }
+        const percentage = Math.min(100, Math.round(((usableTokens || 0) / maxContextTokens) * 100)) || 0;
         const lastOutputTokens = null;
         return {
             tokens: usableTokens,
@@ -128,7 +142,9 @@ export async function getContextData(options) {
             transcriptContext: transcriptTokens,
         };
     }
-    catch {
+    catch (error) {
+        // Log error for debugging
+        console.error(`[statusline] Error calculating context:`, error);
         return {
             tokens: null,
             percentage: null,
