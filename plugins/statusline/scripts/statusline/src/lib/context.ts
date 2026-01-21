@@ -220,10 +220,17 @@ export async function getContextData(
       try {
         const entry = JSON.parse(line);
 
-        // System messages (reminders) are already counted in baseContext
-        // so we skip them here to avoid double-counting
+        // Count different message types that consume context tokens
         if (entry.type === "user" || entry.type === "assistant") {
-          transcriptChars += line.length;
+          // Count message content
+          const content = entry.content || "";
+          transcriptChars += content.length;
+          messageCount++;
+        } else if (entry.type === "tool_result" || entry.type === "tool_use") {
+          // Count tool outputs (bash, grep, etc.) - these consume tokens too!
+          const content = entry.content || entry.output || "";
+          const input = entry.input || "";
+          transcriptChars += content.length + input.length;
           messageCount++;
         }
       } catch {
@@ -248,9 +255,9 @@ export async function getContextData(
       }
     }
 
-    // Total = transcript + base context files + overhead
-    // (system messages are excluded as they're already in baseContext)
-    const totalTokens = (transcriptTokens + baseContextTokens + overheadTokens) || 0;
+    // Total = transcript (messages + tools) + base context files + overhead
+    // All of these consume actual context tokens
+    const totalTokens = transcriptTokens + baseContextTokens + overheadTokens;
 
     // Calculate usable context
     let usableTokens = totalTokens;
@@ -275,8 +282,8 @@ export async function getContextData(
       tokens: usableTokens,
       percentage,
       lastOutputTokens,
-      baseContext: baseContextTokens,
-      transcriptContext: transcriptTokens,
+      baseContext: baseContextTokens, // included in total
+      transcriptContext: transcriptTokens, // messages + tools
     };
   } catch (error) {
     // Log error for debugging
