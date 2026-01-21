@@ -21,10 +21,12 @@ Current branch: !`git branch --show-current 2>&1`
    - Run `git rev-parse --git-dir` to verify
    - If error: inform user "Not a git repository" and exit
 
-2. **Clean Windows device files**: Remove problematic files BEFORE staging
-   - Run Windows cleanup: `cmd /c "for %f in (nul con prn aux com1 com2 com3 com4 com5 com6 com7 com8 com9 lpt1 lpt2 lpt3 lpt4 lpt5 lpt6 lpt7 lpt8 lpt9) do @if exist %f del /f /q %f 2>nul"`
-   - If command fails on non-Windows: continue without error
-   - This prevents "error: short read while indexing nul"
+2. **Platform detection and Windows cleanup**:
+   - Detect platform: Check if `uname` contains "MINGW" or "MSYS" (Git Bash on Windows)
+   - **On Windows only**: Run Windows cleanup: `cmd /c "for %f in (nul con prn aux com1 com2 com3 com4 com5 com6 com7 com8 com9 lpt1 lpt2 lpt3 lpt4 lpt5 lpt6 lpt7 lpt8 lpt9) do @if exist %f del /f /q %f 2>nul"`
+   - On Linux/Mac: Skip Windows cleanup
+   - If Windows cleanup fails: continue without error (non-Windows or command unavailable)
+   - This prevents "error: short read while indexing nul" on Windows
 
 3. **Analyze changes**: Review git status to determine what needs to be committed
    - Parse output from `git status --porcelain`
@@ -48,13 +50,14 @@ Current branch: !`git branch --show-current 2>&1`
 
 6. **Create commit**: Execute `git commit -m "message" 2>&1` immediately with the generated message
    - Capture output to detect errors
-   - On Windows, redirect stderr to stdout: use `2>&1`
-   - Handle common errors:
+   - **Cross-platform stderr handling**: Always use `2>&1` (works on all platforms)
+   - **Cross-platform error handling**:
      - "nothing to commit": Inform user and exit gracefully
      - "fatal: not a git repository": Clear error message
-     - **PowerShell hook errors** (".ps1 extension", "Processing -File"): Automatically retry with `--no-verify`
-     - Other hook failures: Show hook output and suggest bypass with --no-verify
-   - **IMPORTANT Windows PowerShell Issue**: If error contains "does not have a '.ps1' extension", immediately retry with `git commit --no-verify -m "message"`
+     - **Windows-only**: PowerShell hook errors (".ps1 extension", "Processing -File", "does not have a '.ps1' extension"):
+       - Automatically retry with `git commit --no-verify -m "message" 2>&1`
+       - Inform user: "ℹ️  Bypassed failing pre-commit hook (PowerShell compatibility issue)"
+     - **All platforms**: Other hook failures: Show hook output and suggest manual --no-verify bypass
 
 7. **Push changes**: After successful commit, push to remote with `git push 2>&1`
    - Check if commit was successful before pushing
@@ -62,11 +65,12 @@ Current branch: !`git branch --show-current 2>&1`
 </process>
 
 <success_criteria>
-- Git repository validation passed
-- Windows reserved files filtered out
+- Git repository validation passed (all platforms)
+- Windows reserved files filtered out (Windows only)
+- Platform correctly detected (Windows/Linux/Mac)
 - Changes properly staged if needed
 - Commit message follows format: `type(scope): description`
-- Commit created successfully
+- Commit created successfully (with automatic --no-verify retry on Windows if needed)
 - Changes pushed to remote (or error handled gracefully)
 - Clear user feedback on all operations
 </success_criteria>
@@ -79,8 +83,9 @@ Current branch: !`git branch --show-current 2>&1`
 - **MINIMAL OUTPUT**: Brief confirmation of what was committed
 - **IMPERATIVE MOOD**: Use "add", "update", "fix", not past tense
 - **LOWERCASE**: Description starts lowercase after colon
-- **ERROR HANDLING**: Always redirect stderr with `2>&1` on Windows
-- **WINDOWS COMPATIBILITY**: Filter out reserved device names (nul, con, prn, aux, com1-9, lpt1-9)
-- **POWERSELL HOOK BUG**: On Windows, if hook fails with ".ps1 extension" error, automatically retry with --no-verify
+- **CROSS-PLATFORM ERROR HANDLING**: Always redirect stderr with `2>&1` (works on Windows/Linux/Mac)
+- **PLATFORM DETECTION**: Detect Windows (MINGW/MSYS) before applying Windows-specific fixes
+- **WINDOWS COMPATIBILITY**: Filter out reserved device names (nul, con, prn, aux, com1-9, lpt1-9) only on Windows
+- **WINDOWS HOOK BUG**: On Windows only, if hook fails with ".ps1 extension" error, automatically retry with --no-verify
 - **GRACEFUL FAILURES**: If git operations fail, inform user clearly and exit
 </rules>
