@@ -404,11 +404,12 @@ async function getContextInfo(input, config, actualTranscriptPath // ✅ Pass ac
             const percentage = Math.min(100, Math.round((tokens / maxTokens) * 100));
             console.error(`[DEBUG] Using payload context: ${tokens} tokens (${percentage}%)`);
             // Calculate base context for display breakdown
+            // NOTE: We only count global ~/.claude/ files, NOT workspace .claude/
             let baseContextTokens = 0;
             if (config.context.includeBaseContext && config.context.baseContextPath) {
                 try {
                     const { getBaseContextTokens } = await import("./lib/context.js");
-                    baseContextTokens = await getBaseContextTokens(config.context.baseContextPath, input.workspace.current_dir);
+                    baseContextTokens = await getBaseContextTokens(config.context.baseContextPath);
                     if (!isFinite(baseContextTokens) || baseContextTokens < 0) {
                         baseContextTokens = 0;
                     }
@@ -460,7 +461,7 @@ async function getContextInfo(input, config, actualTranscriptPath // ✅ Pass ac
         overheadTokens: config.context.overheadTokens,
         includeBaseContext: config.context.includeBaseContext,
         baseContextPath: config.context.baseContextPath,
-        workspaceDir: input.workspace.current_dir,
+        // NOTE: workspaceDir removed - we don't count project .claude/ in base context
     });
     result = {
         tokens: contextData.tokens,

@@ -14,7 +14,6 @@ export interface ContextOptions {
     overheadTokens: number;
     includeBaseContext?: boolean;
     baseContextPath?: string;
-    workspaceDir?: string;
 }
 /**
  * Read last N lines from a file efficiently using streaming
@@ -27,8 +26,9 @@ export declare function readFirstLines(filePath: string, maxLines: number): Prom
 /**
  * Read and tokenize all base context files
  * Caches results for performance
+ * NOTE: Only counts global ~/.claude/ files, NOT workspace .claude/
  */
-export declare function getBaseContextTokens(baseContextPath: string, workspaceDir?: string): Promise<number>;
+export declare function getBaseContextTokens(baseContextPath: string): Promise<number>;
 /**
  * Calculate context tokens from transcript file
  * NOTE: The payload's current_usage is always 0, so we estimate from transcript content

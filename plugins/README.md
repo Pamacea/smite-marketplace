@@ -8,53 +8,85 @@ The Smite Plugin Marketplace is a centralized registry of plugins that extend Sm
 
 ## Available Plugins
 
-### AI Agents
+### Orchestration
 
-- **[@smite/mobs](./mobs/README.md)** - Multi-agent orchestration system with Spec-First development workflow
-  - **Architect** - Design, strategy, initialization, and creative thinking
+- **[@smite/ralph](./ralph/README.md)** - Multi-agent orchestrator with parallel execution (2-3x speedup)
+  - PRD auto-generation from natural language
+  - Dependency analysis and intelligent batching
+  - Auto-iterating loop for complex tasks
+  - Progress tracking and state persistence
+
+- **[@smite/mobs](./mobs/README.md)** - Multi-agent system with Spec-First development workflow
+  - **Architect** - Design, strategy, and creative workflow with 5 UI style variations
   - **Builder** - Tech-specialized implementation (Next.js, Rust, Python, Go)
-  - **Explorer** - Codebase exploration and dependency mapping
-  - **Finalize** - Unified QA, code review, refactoring, and documentation
+  - **Refactor** - Systematic 5-step refactoring with validation and subagents
   - **Note** - AI-powered Obsidian note creation and formatting
   - Spec-Lock Policy enforcement
   - Multi-tech stack support
   - Design-to-code capabilities
 
-### Quality & Testing
+### Development
 
-- **[@smite/quality-gate](./quality-gate/README.md)** - Code quality gate system with complexity, semantic, and security validation
-  - AST-based static analysis
-  - Security vulnerability scanning
-  - Complexity metrics (cyclomatic, cognitive, nesting)
-  - Automatic feedback loop with retry logic
-  - Audit logging for compliance
+- **[@smite/basics](./basics/README.md)** - Essential development commands (11 commands)
+  - **/oneshot** - Ultra-fast implementation (5-10 min max)
+  - **/epct** - Systematic 4-phase implementation
+  - **/explore** - Deep codebase exploration
+  - **/debug** - Systematic bug debugging
+  - **/commit** - Quick commit & push
 
-### Documentation
+- **[@smite/predator](./predator/README.md)** - Advanced modular workflow with 8-step systematic execution
+  - **/predator** - Feature implementation workflow
+  - **/debug** - Systematic bug resolution
+  - **/brainstorm** - Collaborative idea generation
+  - Adversarial code review capability
+  - Auto-iteration with limits
+  - Pull request automation
 
-- **[@smite/docs-editor-mcp](./docs-editor-mcp/README.md)** - MCP server for automatic documentation maintenance
-  - README architecture updater
-  - Dependency monitoring
-  - Structure scanning
-  - Manual edit preservation
-  - OpenAPI/Swagger sync (planned)
-  - JSDoc generation (planned)
+### Analysis
+
+- **[@smite/toolkit](./toolkit/README.md)** - Token optimization + semantic search (75% savings)
+  - **/toolkit search** - Semantic code search with 2x precision
+  - **/toolkit explore** - Codebase exploration
+  - **/toolkit graph** - Dependency analysis
+  - **/toolkit detect** - Bug detection (40% more bugs found)
+  - **/toolkit surgeon** - Token-optimized context (70-85% savings)
+  - mgrep integration for semantic search
+  - RAG (Retrieval Augmented Generation)
+
+### Productivity
+
+- **[@smite/auto-rename](./auto-rename/README.md)** - Intelligent session renaming
+  - Automatic renaming based on session content
+  - Smart triggers at optimal moments
+  - Slash command filtering
+  - Manual override with /rename command
+  - Format consistency ("Action: Context" pattern)
+
+- **[@smite/shell](./shell/README.md)** - Cross-platform shell aliases
+  - Global aliases: `cc` (normal mode) and `ccc` (bypass-permissions)
+  - Cross-platform support (Windows, macOS, Linux)
+  - One-time installation with safe backups
+  - PowerShell functions and shell aliases
+
+- **[@smite/statusline](./statusline/README.md)** - Auto-configuring statusline
+  - Git status integration (branch, dirty indicators, staged counts)
+  - Session tracking (cost, duration, tokens, context percentage)
+  - Usage limits (5-hour and 7-day API limit tracking)
+  - Spend tracking (daily and weekly)
+  - Visual progress bars with customizable styles
 
 ## Installation
 
 All plugins follow a standard installation pattern:
 
 ```bash
-# Navigate to the plugin directory
-cd plugins/[plugin-name]
+# Install plugin
+/plugin install [plugin-name]@smite
 
-# Install dependencies
-npm install
-
-# Build the plugin
-npm run build
-
-# Install/configure the plugin
-npm run install-hook  # For hooks
+# Run installation command (varies by plugin)
+/smite          # For basics
+/install-aliases # For shell
+/statusline install # For statusline
 ```
 
 See individual plugin documentation for detailed installation instructions.
@@ -72,11 +104,10 @@ The [index.json](./index.json) file contains metadata for all plugins including:
 
 ## Plugin Categories
 
-- **AI Agents** - Multi-agent orchestration and workflow automation
-- **Quality & Testing** - Code quality, validation, and testing tools
-- **Documentation** - Documentation generation and maintenance
-- **Automation** - Workflow automation and enhancement
-- **Integration** - Third-party service integrations
+- **Orchestration** - Multi-agent orchestration and workflow automation
+- **Development** - Development commands and workflows
+- **Analysis** - Code analysis, search, and optimization
+- **Productivity** - Productivity enhancements and utilities
 
 ## Creating Plugins
 
@@ -293,16 +324,6 @@ See individual plugin's CONTRIBUTING.md for specific contribution guidelines.
 ## License
 
 All plugins are licensed under the MIT License. See individual plugin LICENSE files for details.
-
-## Roadmap
-
-### Upcoming Plugins
-
-- **@smite/test-generator** - Automated test generation
-- **@smite-code-review** - AI-powered code review
-- **@smite-performance** - Performance profiling and optimization
-- **@smite-security** - Advanced security scanning
-- **@smite-docs-ai** - AI-powered documentation writer
 
 ### Marketplace Features
 

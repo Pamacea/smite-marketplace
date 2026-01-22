@@ -250,3 +250,10 @@ MIT License - Feel free to use and modify
 ## Credits
 
 Built for SMITE plugin ecosystem
+
+---
+
+**Version**: 3.1.0
+**Last Updated**: 2025-01-22
+**SMITE Version**: 3.1.0
+**Author**: Pamacea

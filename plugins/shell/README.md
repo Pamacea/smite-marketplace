@@ -213,7 +213,9 @@ alias ccc='claude --bypass-permissions'
 
 ## Version
 
-1.0.0
+3.1.0
+Last Updated: 2025-01-22
+SMITE Version: 3.1.0
 
 ---
 

@@ -16,7 +16,7 @@ This plugin provides a collection of high-quality, battle-tested commands for yo
 /smite
 ```
 
-That's it! The `/smite` command automatically installs all 11 development commands to your `~/.claude/commands/` directory.
+That's it! The `/smite` command automatically installs all 10 development commands to your `~/.claude/commands/` directory.
 
 **Cross-platform:** Works on Windows, macOS, and Linux.
 
@@ -158,7 +158,7 @@ These commands work seamlessly with SMITE agents:
 
 - Use `/oneshot` with `/builder` for rapid implementation
 - Use `/explore` before `/architect` for better design
-- Use `/debug` when `/simplifier` finds issues
+- Use `/debug` when issues are found
 - Use `/claude-memory` to document SMITE agent conventions
 - Use `/commit` after any SMITE agent work
 
@@ -179,15 +179,15 @@ After installation, commands are available at:
 ```
 ~/.claude/commands/
 ├── oneshot.md
+├── epct.md
 ├── explore.md
 ├── debug.md
 ├── commit.md
+├── run-tasks.md
 ├── claude-memory.md
-├── epct.md
-├── explain-architecture.md
-├── cleanup-context.md
 ├── create-pull-request.md
-└── run-tasks.md
+├── explain-architecture.md
+└── cleanup-context.md
 ```
 
 ## Updating
@@ -235,6 +235,6 @@ Some commands based on official Claude Code examples and community contributions
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: 2025-01-14
-**SMITE Version**: 3.0.0
+**Version**: 3.1.0
+**Last Updated**: 2025-01-22
+**SMITE Version**: 3.1.0

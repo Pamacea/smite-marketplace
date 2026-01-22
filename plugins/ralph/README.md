@@ -19,7 +19,7 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 /ralph "Build a todo app with authentication"
 
 # 3. Auto-iterating (keeps going until done)
-/loop "Build a full SaaS platform"
+/ralph:loop "Build a full SaaS platform"
 
 # 4. Use existing PRD
 /ralph execute .claude/.smite/prd.json
@@ -43,7 +43,7 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 
 **Auto-iterating loop** (recommended for complex tasks):
 ```bash
-/loop "Build a dashboard with real-time updates" --max-iterations 100
+/ralph:loop "Build a dashboard with real-time updates" --max-iterations 100
 ```
 
 **Custom PRD**:
@@ -74,8 +74,8 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 
 **Status & control**:
 ```bash
-/ralph status    # Show progress
-/ralph cancel    # Cancel workflow
+/ralph:status    # Show progress
+/ralph:cancel    # Cancel workflow
 ```
 
 ## 🔧 Configuration
@@ -114,7 +114,7 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 | Hook not installed | Run `npm run install-hook` in plugins/ralph |
 | Stories failing | Check `.claude/.smite/progress.txt` for details |
 | Dependency cycle detected | Fix PRD to remove circular dependencies |
-| Workflow stuck | Run `/ralph cancel` then restart |
+| Workflow stuck | Run `/ralph:cancel` then restart |
 
 ## ⚡ Performance
 
@@ -127,4 +127,8 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 **Example**: 20 stories with parallel batching = **3x faster** than sequential
 
 ---
-**Version**: 3.1.0 | **Category**: orchestration | **Author**: Pamacea
+**Version**: 3.1.0
+**Last Updated**: 2025-01-22
+**SMITE Version**: 3.1.0
+**Category**: orchestration
+**Author**: Pamacea

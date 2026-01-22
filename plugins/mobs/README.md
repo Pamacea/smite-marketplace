@@ -266,7 +266,7 @@ Mobs works seamlessly with:
 
 ## 📝 Version
 
-Version: 4.0.0
+Version: 3.1.0
 License: MIT
 Author: Pamacea
 

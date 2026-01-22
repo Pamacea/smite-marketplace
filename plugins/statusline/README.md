@@ -358,6 +358,8 @@ MIT License - See LICENSE file for details.
 
 ---
 
-**Version:** 1.0.0
+**Version:** 3.1.0
+**Last Updated:** 2025-01-22
+**SMITE Version:** 3.1.0
 **Author:** Pamacea
 **Plugin Repo:** `statusline@smite`

@@ -92,8 +92,9 @@ export async function readFirstLines(filePath, maxLines) {
 /**
  * Read and tokenize all base context files
  * Caches results for performance
+ * NOTE: Only counts global ~/.claude/ files, NOT workspace .claude/
  */
-export async function getBaseContextTokens(baseContextPath, workspaceDir) {
+export async function getBaseContextTokens(baseContextPath) {
     const now = Date.now();
     if (baseContextCache &&
         now - baseContextCache.timestamp < BASE_CONTEXT_CACHE_TTL) {
@@ -120,42 +121,39 @@ export async function getBaseContextTokens(baseContextPath, workspaceDir) {
                 totalTokens += estimateTokens(content);
             }
         }
-        // Read all .md files in rules directory
+        // Read all .md files in rules directory (recursively)
         if (existsSync(rulesDir)) {
-            const files = await readdir(rulesDir);
-            for (const file of files) {
-                if (file.endsWith(".md")) {
-                    const filePath = join(rulesDir, file);
-                    const content = await safeReadFile(filePath, MAX_FILE_SIZE_MB);
-                    if (content) {
-                        totalTokens += estimateTokens(content);
-                    }
-                }
-            }
-        }
-        // Read workspace-specific base context if provided
-        if (workspaceDir) {
-            const workspaceClaudeMd = join(workspaceDir, ".claude", "CLAUDE.md");
-            const workspaceRulesDir = join(workspaceDir, ".claude", "rules");
-            if (existsSync(workspaceClaudeMd)) {
-                const content = await safeReadFile(workspaceClaudeMd, MAX_FILE_SIZE_MB);
-                if (content) {
-                    totalTokens += estimateTokens(content);
-                }
-            }
-            if (existsSync(workspaceRulesDir)) {
-                const files = await readdir(workspaceRulesDir);
-                for (const file of files) {
-                    if (file.endsWith(".md")) {
-                        const filePath = join(workspaceRulesDir, file);
-                        const content = await safeReadFile(filePath, MAX_FILE_SIZE_MB);
-                        if (content) {
-                            totalTokens += estimateTokens(content);
+            try {
+                const readDirRecursive = async (dir) => {
+                    const files = await readdir(dir);
+                    for (const file of files) {
+                        const filePath = join(dir, file);
+                        try {
+                            const stats = await stat(filePath);
+                            if (stats.isDirectory()) {
+                                await readDirRecursive(filePath);
+                            }
+                            else if (file.endsWith(".md")) {
+                                const content = await safeReadFile(filePath, MAX_FILE_SIZE_MB);
+                                if (content) {
+                                    totalTokens += estimateTokens(content);
+                                }
+                            }
+                        }
+                        catch {
+                            // Skip file if read fails
                         }
                     }
-                }
+                };
+                await readDirRecursive(rulesDir);
+            }
+            catch {
+                // Skip directory if read fails
             }
         }
+        // NOTE: We do NOT include workspace-specific .claude/ files
+        // Only global ~/.claude/ files are counted as base context
+        // This matches the behavior shown in /context command
         baseContextCache = { timestamp: now, tokens: totalTokens };
     }
     catch {
@@ -169,7 +167,7 @@ export async function getBaseContextTokens(baseContextPath, workspaceDir) {
  * NOTE: The payload's current_usage is always 0, so we estimate from transcript content
  */
 export async function getContextData(options) {
-    const { transcriptPath, maxContextTokens, autocompactBufferTokens, useUsableContextOnly, overheadTokens, includeBaseContext, baseContextPath, workspaceDir, } = options;
+    const { transcriptPath, maxContextTokens, autocompactBufferTokens, useUsableContextOnly, overheadTokens, includeBaseContext, baseContextPath, } = options;
     try {
         // Use streaming read for large transcripts to avoid memory issues
         const lines = await readLastLines(transcriptPath, MAX_TRANSCRIPT_LINES);
@@ -214,10 +212,11 @@ export async function getContextData(options) {
         // Estimate transcript tokens (using improved 3.5 ratio)
         const transcriptTokens = Math.round(transcriptChars / 3.5) || 0;
         // Calculate base context from files if enabled
+        // NOTE: Only counts global ~/.claude/ files, NOT workspace .claude/
         let baseContextTokens = 0;
         if (includeBaseContext && baseContextPath) {
             try {
-                baseContextTokens = await getBaseContextTokens(baseContextPath, workspaceDir);
+                baseContextTokens = await getBaseContextTokens(baseContextPath);
                 // Ensure we got a valid number
                 if (!isFinite(baseContextTokens) || baseContextTokens < 0) {
                     baseContextTokens = 0;
