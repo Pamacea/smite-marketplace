@@ -56,24 +56,6 @@ Implementation agent with technology specialization (Next.js, Rust, Python, Go) 
 /builder "Add task CRUD operations"
 ```
 
-#### **Finalize** (`/finalize`)
-Unified quality assurance, code review, refactoring, linting, and documentation.
-
-```bash
-# Full finalize (QA + Docs)
-/finalize
-
-# QA only
-/finalize --mode=qa --type=review
-
-# Docs only
-/finalize --mode=docs --type=readme
-
-# Specific validation
-/finalize --mode=qa --type=test       # Generate & run tests
-/finalize --mode=qa --type=security  # Security audit
-```
-
 #### **Refactor** (`/refactor`)
 Systematic code refactoring with validation and resolution workflow.
 
@@ -120,7 +102,7 @@ Mobs follows a strict **Spec-Lock Policy**:
 
 1. **Architect** creates detailed specifications
 2. **Builder** implements from spec (cannot deviate)
-3. **Finalize** validates implementation matches spec
+3. **Refactor** improves code quality while preserving functionality
 4. If any agent finds impossible requirements:
    - STOP immediately
    - Request spec revision
@@ -191,9 +173,6 @@ All agents leverage the toolkit plugin when available:
 
 # 3. Refactor and improve
 /refactor -a -r -v -x -t --scope=directory src/features/auth
-
-# 4. Finalize and validate
-/finalize --mode=full
 ```
 
 ### Quick Note-Taking Workflow
@@ -217,7 +196,7 @@ All agents leverage the toolkit plugin when available:
 1. **Always follow Spec-First workflow**
    - Architect creates specs
    - Builder follows specs exactly
-   - Finalize validates specs
+   - Refactor improves code quality
 
 2. **Use semantic search first**
    - Try `/toolkit search` before manual exploration
@@ -229,10 +208,6 @@ All agents leverage the toolkit plugin when available:
    - Never deviate from approved spec
    - Document all architectural decisions
 
-4. **Run finalize before commits**
-   - Ensures code quality
-   - Keeps docs in sync
-   - Prevents technical debt
 
 ## 📚 Documentation
 
@@ -249,8 +224,7 @@ Complete documentation is available in the [docs/](docs/) folder:
 
 - `skills/architect/SKILL.md` - Architect agent documentation
 - `skills/builder/SKILL.md` - Builder agent documentation
-- `skills/finalize/SKILL.md` - Finalize agent documentation
-- `skills/refactor/SKILL.md` - Refactor agent documentation (NEW)
+- `skills/refactor/SKILL.md` - Refactor agent documentation
 - `skills/note/SKILL.md` - Note agent documentation
 
 ### Subagent Skills

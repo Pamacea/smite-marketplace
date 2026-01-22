@@ -59,9 +59,7 @@ export class PRDGenerator {
 
   private static generateStories(prompt: string): UserStory[] {
     const stories = this.detectFeatureStories(prompt);
-    const baseStories = stories.length > 0 ? stories : [this.createDefaultStory()];
-
-    return [...baseStories, this.createFinalizeStory(baseStories)];
+    return stories.length > 0 ? stories : [this.createDefaultStory()];
   }
 
   private static detectFeatureStories(prompt: string): UserStory[] {
@@ -119,17 +117,6 @@ export class PRDGenerator {
     );
   }
 
-  private static createFinalizeStory(dependencies: UserStory[]): UserStory {
-    return this.createStory(
-      this.generateStoryId("Finalize and document"),
-      "Finalize and document",
-      "finalize:finalize",
-      1,
-      ["All tests passing", "No linting errors", "Documentation complete", "Code reviewed"],
-      dependencies.map((s) => s.id)
-    );
-  }
-
   private static createStory(
     id: string,
     title: string,
@@ -161,21 +148,18 @@ export class PRDGenerator {
       // SMITE skill format (correct)
       "architect:design": "general",
       "builder:build": "typescript", // Default to TypeScript for builder
-      "finalize:finalize": "general",
       "simplifier:simplify": "typescript",
       "explorer:explore": "general",
 
       // Legacy format (for backward compatibility)
       "architect:task": "general",
       "builder:task": "typescript",
-      "finalize:task": "general",
       "simplifier:task": "typescript",
       "explorer:task": "general",
 
       // Short format
       "architect": "general",
       "builder": "typescript",
-      "finalize": "general",
       "simplifier": "typescript",
       "explorer": "general",
     };

@@ -202,12 +202,6 @@ export class TaskOrchestrator {
       "explorer:explorer": "explorer:explore",
       "explorer": "explorer:explore",
 
-      // Finalize agent mappings
-      "finalize:task": "finalize:finalize",
-      "finalize:finalize": "finalize:finalize",
-      "finalize:gatekeeper": "finalize:finalize",
-      "finalize": "finalize:finalize",
-
       // Simplifier agent mappings
       "simplifier:task": "simplifier:simplify",
       "simplifier:simplifier": "simplifier:simplify",

@@ -140,7 +140,6 @@ Execute individual steps:
 ## Integration
 
 - **Works after**: builder (implementation)
-- **Works with**: finalize (quality assurance)
 - **Triggers**: Manual invocation, automatic after changes
 - **Integrates with**: toolkit (analysis), reviewer/validator/resolver (subagents)
 

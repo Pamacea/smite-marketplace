@@ -8,58 +8,107 @@ version: 3.1.0
 
 ## Mission
 
-Intelligent note writing, formatting, and management for Obsidian vaults with template support and multi-vault capabilities.
+Unified note management system for Obsidian vaults with intelligent write, format, and search capabilities.
 
 ## Core Workflow
 
-1. **Input**: Command invocation (/note, /note:format, /search-notes)
+1. **Input**: Command invocation with operation flag (`-w`, `-f`, `-s`)
 2. **Process**:
-   - Parse command and determine note type or operation
-   - Detect target vault and load configuration
-   - Load template or apply free-form formatting
-   - Substitute variables (date, title, content, etc.)
-   - Handle file conflicts (Inbox → Cleaned/, Projects → overwrite/append)
-   - Write file with YAML frontmatter
-3. **Output**: Created/updated note with file path, or search results
+   - **Write** (`-w`): Create/update notes with templates
+   - **Format** (`-f`): Apply intelligent markdown formatting
+   - **Search** (`-s`): Search across vaults with ranking
+3. **Output**: Created note, formatted content, or search results
 
 ## Key Principles
 
-- **Multi-vault support**: Auto-detect vaults, explicit selection via --vault flag
-- **Template-based**: Predefined structures for consistent formatting
-- **Intelligent formatting**: Free-form markdown optimization
-- **Conflict handling**: Rules-based (Inbox moves conflicts, Projects overwrites)
+- **Unified interface**: Single command with three operations
+- **Multi-vault support**: Auto-detect vaults, explicit selection via `--vault`
+- **Template-based**: Predefined structures for consistency
+- **Intelligent formatting**: Smart markdown optimization
+- **Conflict handling**: Rules-based file management
 - **YAML frontmatter**: Valid metadata on all notes
 
-## Workflows
+## Operations
 
-### Create Note
-- **Trigger**: `/note <type> <content>`
-- **Types**: inbox, project, technical, meeting, resource
-- **Output**: Note created in vault with template applied
+### Write Notes (`-w`)
+Create or update notes in Obsidian vaults:
 
-### Format Content
-- **Trigger**: `/note:format <template|free> <content>`
-- **Modes**: Template (structured), Free (intelligent markdown)
-- **Output**: Formatted content to terminal, file, or clipboard
+**Note Types:**
+- `inbox` - Quick capture notes
+- `project` - Project briefs and documentation
+- `technical` - Technical notes and code documentation
+- `meeting` - Meeting notes with decisions and action items
+- `resource` - Resources, cheat sheets, and references
 
-### Search Vaults
-- **Trigger**: `/search-notes <query> [--vault=<scope>]`
-- **Scope**: Single vault or all vaults
-- **Search**: Filenames, frontmatter, content, tags
-- **Output**: Ranked results with context snippets
+**Process:**
+1. Parse note type and content
+2. Detect target vault (auto or via `--vault`)
+3. Load appropriate template
+4. Apply variable substitution
+5. Handle file conflicts (Inbox → Cleaned/, Projects → overwrite/append)
+6. Write file with YAML frontmatter
+
+**Output**: Note file path
+
+### Format Content (`-f`)
+Format text using templates or free-form styling:
+
+**Format Modes:**
+- `template` - Use specific template structure
+- `free` - Intelligent markdown formatting
+- `meeting`, `project`, `technical` - Predefined templates
+
+**Free-Form Enhancements:**
+- Convert URLs to markdown links
+- Format lists consistently
+- Add proper headings hierarchy
+- Create tables from structured data
+- Format code blocks with language tags
+- Add YAML frontmatter if missing
+- Clean up excessive whitespace
+
+**Output**: Formatted content to terminal, file, or clipboard
+
+### Search Notes (`-s`)
+Search for notes across vaults:
+
+**Search In:**
+- File names
+- YAML frontmatter
+- File content
+- Tags (#tag format)
+
+**Ranking:**
+- Exact filename match = highest
+- Frontmatter match = high
+- Title match = medium
+- Content match = normal
+
+**Output**: Ranked results with context snippets
 
 ## Integration
 
 - **SessionStart hook**: Auto-detect vaults from parent directory
 - **Config file**: `config/vaults.json` for vault paths and settings
-- **Template system**: Variable substitution with {{date}}, {{title}}, {{content}}, etc.
+- **Template system**: Variable substitution with `{{date}}`, `{{title}}`, etc.
 
 ## Configuration
 
-- **Vault detection**: Subdirectories with .obsidian folder
+- **Vault detection**: Subdirectories with `.obsidian` folder
 - **Folder structure**: Inbox/, Projects/, Technical/, Meetings/, Resources/
 - **Templates**: inbox.md, project-brief.md, technical-notes.md, meeting.md, resource.md
 - **Variables**: date, datetime, title, clientName, projectName, overview, content, context
+
+## File Conflict Handling
+
+### Inbox Notes
+- If file exists: Move to `Inbox/Cleaned/` before creating new one
+
+### Project Notes
+- If `brief.md` exists: Ask to overwrite or append to `Notes Techniques.md`
+
+### Resource Notes
+- If file exists: Append with timestamp separator
 
 ## Error Handling
 
@@ -69,7 +118,60 @@ Intelligent note writing, formatting, and management for Obsidian vaults with te
 - **Template missing**: Use default format
 - **Invalid YAML**: Fix or recreate frontmatter
 
----
-*Auto-generated from plugin.json - Last sync: 2025-01-22*
+## Subagent Collaboration
 
-**Note:** Previously named `obsidian-note-agent`, now `note`
+### note-create Subagent
+**Purpose**: Note creation from templates
+
+**Launched by**: `-w` flag (Write operation)
+
+**Capabilities**:
+- Template selection and loading
+- Variable substitution
+- File conflict resolution
+- YAML frontmatter generation
+
+### note-format Subagent
+**Purpose**: Note formatting and styling
+
+**Launched by**: `-f` flag (Format operation)
+
+**Capabilities**:
+- Template-based formatting
+- Free-form markdown optimization
+- URL to link conversion
+- Code block formatting
+- List standardization
+
+### note-search Subagent
+**Purpose**: Note search across vaults
+
+**Launched by**: `-s` flag (Search operation)
+
+**Capabilities**:
+- Multi-vault search
+- Filename, frontmatter, content search
+- Tag-based search
+- Relevance ranking
+- Context snippet generation
+
+## Output Files
+
+| Operation | File Location | Purpose |
+|-----------|---------------|---------|
+| Write | `<vault>/Inbox/YYYY-MM-DD-title.md` | Quick notes |
+| Write | `<vault>/Projects/Clients/<Client>/brief.md` | Project briefs |
+| Write | `<vault>/Projects/Clients/<Client>/Notes Techniques.md` | Technical notes |
+| Format | Terminal or `--output=<path>` | Formatted content |
+| Search | Terminal with results | Search results |
+
+## Best Practices
+
+1. **Use templates** for consistent note structure
+2. **Auto-detect vaults** when possible
+3. **Handle conflicts** gracefully with rules
+4. **Maintain YAML frontmatter** for metadata
+5. **Search across vaults** for comprehensive results
+
+---
+*Note Skill v4.0.0 - Unified note management with write, format, and search*

@@ -15,7 +15,6 @@ The Smite Plugin Marketplace is a centralized registry of plugins that extend Sm
   - **Builder** - Tech-specialized implementation (Next.js, Rust, Python, Go)
   - **Explorer** - Codebase exploration and dependency mapping
   - **Finalize** - Unified QA, code review, refactoring, and documentation
-  - **Simplifier** - Code simplification and refactoring
   - **Note** - AI-powered Obsidian note creation and formatting
   - Spec-Lock Policy enforcement
   - Multi-tech stack support

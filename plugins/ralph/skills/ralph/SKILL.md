@@ -21,12 +21,12 @@ Orchestrate multi-agent workflows with intelligent parallel execution to achieve
 - **Dependency analysis**: Automatic graph building ensures correct execution order
 - **State persistence**: Progress tracked in `.claude/.smite/prd.json`
 - **Spec-first**: Architect generates spec before Builder implements
-- **Quality gates**: Finalize validates all code changes
+- **Quality gates**: Refactor ensures code quality improvements
 
 ## Integration
 
 - **Requires**: toolkit (semantic search - mandatory)
-- **Orchestrates**: architect, builder, finalize, explorer, simplifier
+- **Orchestrates**: architect, builder, refactor, explorer, simplifier
 - **Reads from**: `.claude/.smite/prd.json`
 - **Writes to**: `.claude/.smite/ralph-state.json`, `.claude/.smite/progress.txt`
 

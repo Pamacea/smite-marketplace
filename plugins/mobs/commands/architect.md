@@ -245,7 +245,6 @@ Facilitate creative problem-solving and ideation.
 **Before Builder:**
 - Run Architect first to define specs
 - Then Builder implements
-- Then Finalize validates
 
 ## Workflow Example
 
@@ -271,7 +270,7 @@ Complete project architecture:
 
 **Works with:**
 - /builder (implement architecture)
-- /finalize (document decisions)
+- /refactor (improve quality)
 - ralph (full orchestration)
 
 ## Best Practices

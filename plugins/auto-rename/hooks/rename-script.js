@@ -35,35 +35,38 @@ class RenameScript {
 
   readStdin() {
     try {
-      // Check if stdin is available (file descriptor 0)
       const fs = require('fs');
-      const stdinFd = 0;
 
-      // Try to read with a small timeout
-      // Use synchronous read but handle the case where no data is available
+      // Check if stdin has data available without blocking
+      // Use stat to check if stdin is a pipe/has content
       try {
-        const inputData = fs.readFileSync(stdinFd, 'utf-8');
+        const stdinStat = fs.fstatSync(0);
+        // Only read if stdin is a pipe (not a tty) and has size
+        if (stdinStat.isFIFO() || stdinStat.size > 0) {
+          const inputData = fs.readFileSync(0, 'utf-8');
 
-        if (inputData && inputData.trim()) {
-          const parsed = JSON.parse(inputData);
+          if (inputData && inputData.trim()) {
+            const parsed = JSON.parse(inputData);
 
-          // Log successful input for debugging
-          if (parsed && (parsed.tool_name || parsed.content)) {
-            console.error('[AutoRename] Input received:', JSON.stringify(parsed).substring(0, 100));
+            // Log successful input for debugging
+            if (parsed && (parsed.tool_name || parsed.content)) {
+              console.error('[AutoRename] Input received:', JSON.stringify(parsed).substring(0, 100));
+            }
+
+            return parsed;
           }
-
-          return parsed;
         }
 
-        console.error('[AutoRename] No stdin data available');
+        console.error('[AutoRename] No stdin data available (not a pipe or empty)');
         return null;
       } catch (readError) {
-        // EAGAIN or EWOULDBLOCK means no data available on non-blocking stdin
-        // Other errors might be actual problems
-        if (readError.code !== 'EAGAIN' && readError.code !== 'EWOULDBLOCK') {
-          console.error('[AutoRename] stdin read error:', readError.message);
+        // On Windows or certain systems, fstatSync might fail for stdin
+        // Try reading anyway as fallback
+        if (readError.code === 'EBADF' || readError.code === 'EINVAL') {
+          console.error('[AutoRename] stdin not available, continuing without input');
+          return null;
         }
-        return null;
+        throw readError;
       }
     } catch (error) {
       // No stdin data or invalid JSON - return null for hooks that don't require input
@@ -76,18 +79,30 @@ class RenameScript {
     const sessionPath = this.manager.findCurrentSession();
 
     if (!sessionPath) {
+      console.error('[AutoRename] SessionStart: No session path found');
       return;
     }
 
-    // Wait to gather initial context
-    await this.delay(5000);
+    console.error('[AutoRename] SessionStart: Waiting for initial context...');
 
-    const entries = this.manager.readSession(sessionPath);
+    // Wait to gather initial context - adaptive delay
+    const initialDelay = 3000; // Reduced from 5000
+    await this.delay(initialDelay);
+
+    let entries = this.manager.readSession(sessionPath);
+    console.error(`[AutoRename] SessionStart: Found ${entries.length} entries after initial delay`);
 
     // If we still don't have much context, wait a bit more and retry
-    if (entries.length < 3) {
-      await this.delay(7000);
+    if (entries.length < 2) {
+      const additionalDelay = 5000; // Reduced from 7000
+      console.error(`[AutoRename] SessionStart: Only ${entries.length} entries, waiting ${additionalDelay}ms more...`);
+      await this.delay(additionalDelay);
+
+      // Clear cache to get fresh data
+      this.manager.clearCache();
       const updatedEntries = this.manager.readSession(sessionPath);
+      console.error(`[AutoRename] SessionStart: Found ${updatedEntries.length} entries after additional delay`);
+
       await this.attemptRename(sessionPath, updatedEntries, 'session-start');
       return;
     }
@@ -109,6 +124,8 @@ class RenameScript {
       return;
     }
 
+    // Clear cache to ensure we have fresh session data
+    this.manager.clearCache();
     const entries = this.manager.getSessionHistory(sessionPath);
     console.error(`[AutoRename] PostToolUse: session has ${entries.length} entries`);
 
@@ -130,6 +147,8 @@ class RenameScript {
       return;
     }
 
+    // Clear cache to ensure we have fresh session data
+    this.manager.clearCache();
     const entries = this.manager.getSessionHistory(sessionPath);
     console.error(`[AutoRename] UserPromptSubmit: session has ${entries.length} entries`);
 
@@ -169,7 +188,7 @@ class RenameScript {
     }
 
     const significantTools = [
-      'Write', 'Edit', 'MultiEdit',
+      'Write', 'Edit', 'MultiEdit', 'NotebookEdit',
       'Bash', 'Skill'
     ];
 
@@ -179,7 +198,19 @@ class RenameScript {
       // For Bash, check if it's a significant command
       if (input.tool_name === 'Bash' && input.tool_input) {
         const command = input.tool_input.command || '';
-        const significantCommands = ['git commit', 'npm ', 'yarn ', 'pnpm ', 'bun ', 'git add', 'git push'];
+        // Expanded list of significant commands
+        const significantCommands = [
+          'git commit', 'git add', 'git push', 'git pull', 'git merge', 'git checkout',
+          'git rebase', 'git reset', 'git revert', 'git stash',
+          'npm ', 'yarn ', 'pnpm ', 'bun ',
+          'npm install', 'npm run', 'npm ci',
+          'yarn install', 'yarn add',
+          'pnpm install', 'pnpm add',
+          'bun install', 'bun add',
+          'eslint', 'prettier', 'pytest', 'jest', 'vitest',
+          'build', 'test', 'lint', 'typecheck', 'format',
+          'docker', 'terraform', 'ansible'
+        ];
         const isSignificant = significantCommands.some(cmd => command.includes(cmd));
 
         console.error(`[AutoRename] Bash command: "${command}", significant: ${isSignificant}`);
@@ -252,11 +283,11 @@ class RenameScript {
       const { spawn } = require('child_process');
 
       return new Promise((resolve) => {
-        const claude = spawn('claude', ['--non-interactive'], {
-          env: {
-            ...process.env,
-            INPUT_DATA: JSON.stringify({ content: prompt })
-          }
+        // Use -p flag for non-interactive mode (not --non-interactive)
+        // Pipe prompt via stdin for proper input handling
+        const claude = spawn('claude', ['-p', '--output-format', 'text'], {
+          env: process.env,
+          shell: true // Use shell to properly resolve claude command on Windows
         });
 
         let output = '';
@@ -270,29 +301,47 @@ class RenameScript {
           errorOutput += data.toString();
         });
 
+        // Write prompt to stdin
+        claude.stdin.write(prompt);
+        claude.stdin.end();
+
         claude.on('close', (code) => {
+          console.error('[AutoRename] LLM generation completed with code:', code);
+
           if (output.trim()) {
+            // Extract first meaningful line as the name
             const name = output.trim()
               .split('\n')[0]
               .replace(/["']/g, '')
+              .trim()
               .substring(0, 50);
 
-            if (name.length > 5) {
+            if (name.length > 5 && !name.toLowerCase().startsWith('usage:')) {
+              console.error('[AutoRename] Generated name:', name);
               resolve(name);
               return;
             }
           }
 
+          console.error('[AutoRename] LLM output invalid, using fallback');
           const fallback = this.generateFallbackName();
           resolve(fallback);
         });
 
+        claude.on('error', (error) => {
+          console.error('[AutoRename] LLM spawn error:', error.message);
+          resolve(this.generateFallbackName());
+        });
+
+        // Increased timeout for LLM generation
         setTimeout(() => {
+          console.error('[AutoRename] LLM timeout, using fallback');
           claude.kill();
           resolve(this.generateFallbackName());
-        }, 10000);
+        }, 15000);
       });
     } catch (error) {
+      console.error('[AutoRename] LLM generation error:', error.message);
       return this.generateFallbackName();
     }
   }

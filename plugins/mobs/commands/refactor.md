@@ -385,7 +385,6 @@ When toolkit plugin is available, Refactor leverages:
 **Works with:**
 - /architect (design review)
 - /builder (before simplifying)
-- /finalize (quality assurance)
 - ralph (orchestration)
 
 ## Documentation

@@ -15,6 +15,12 @@ const path = require('path');
 const { execSync } = require('child_process');
 const os = require('os');
 
+// Token tracker paths
+const TOKEN_TRACKER_PATH = path.join(os.homedir(), '.claude', '.token-tracker.json');
+const TOKEN_DIFF_TIMEOUT = 5000; // 5 seconds - hide token diff after this time
+const SESSION_TIMEOUT = 1800000; // 30 minutes - reset tracker after this time
+const SPURIOUS_DIFF_THRESHOLD = 50000; // 50K - hide unreasonably large diffs
+
 // ANSI color codes
 const colors = {
   reset: '\x1b[0m',
@@ -29,7 +35,98 @@ const colors = {
 };
 
 /**
+ * Load token tracker from disk
+ */
+function loadTokenTracker(currentUsage, sessionId) {
+  try {
+    if (fs.existsSync(TOKEN_TRACKER_PATH)) {
+      const content = fs.readFileSync(TOKEN_TRACKER_PATH, 'utf-8');
+      const tracker = JSON.parse(content);
+      const now = Date.now();
+
+      // Reset tracker if too old (> 30 minutes) or session changed
+      if (
+        now - tracker.timestamp > SESSION_TIMEOUT ||
+        (sessionId && tracker.sessionId && sessionId !== tracker.sessionId)
+      ) {
+        return {
+          lastUsage: currentUsage,
+          timestamp: now,
+          lastDiffTime: now,
+          sessionId,
+        };
+      }
+      // Update sessionId if it wasn't set before
+      if (sessionId && !tracker.sessionId) {
+        tracker.sessionId = sessionId;
+      }
+      return tracker;
+    }
+  } catch (e) {
+    // File doesn't exist or is invalid
+  }
+  return {
+    lastUsage: currentUsage,
+    timestamp: Date.now(),
+    lastDiffTime: Date.now(),
+    sessionId,
+  };
+}
+
+/**
+ * Save token tracker to disk
+ */
+function saveTokenTracker(tracker) {
+  try {
+    tracker.timestamp = Date.now();
+    fs.writeFileSync(
+      TOKEN_TRACKER_PATH,
+      JSON.stringify(tracker, null, 2),
+      'utf-8'
+    );
+  } catch (e) {
+    // Fail silently - don't break statusline if we can't save
+  }
+}
+
+/**
+ * Calculate token difference and determine if it should be shown
+ */
+function getTokenDiff(currentUsage, tracker) {
+  const tokenDiff = currentUsage - tracker.lastUsage;
+  const now = Date.now();
+  const timeSinceLastDiff = now - (tracker.lastDiffTime || 0);
+
+  // Only show positive token diffs (new tokens added)
+  const shouldShow = tokenDiff > 0 && timeSinceLastDiff < TOKEN_DIFF_TIMEOUT;
+
+  return { diff: tokenDiff, shouldShow };
+}
+
+/**
+ * Update tracker with new usage if tokens have changed
+ */
+function updateTracker(tracker, currentUsage) {
+  const tokenDiff = currentUsage - tracker.lastUsage;
+  const now = Date.now();
+
+  if (tokenDiff > 0) {
+    // New tokens added - normal progression
+    tracker.lastUsage = currentUsage;
+    tracker.lastDiffTime = now;
+  } else if (tokenDiff < 0) {
+    // Context cleared or parallel session detected
+    tracker.lastUsage = currentUsage;
+    // lastDiffTime stays the same
+  }
+  // If tokenDiff === 0, no update needed
+
+  return tracker;
+}
+
+/**
  * Estimate tokens from transcript for CURRENT SESSION only
+ * Counts user messages, assistant messages, and tool results
  * Uses 3.5 chars per token ratio (balanced for code + text)
  */
 function estimateSessionTokens(transcriptPath) {
@@ -55,24 +152,21 @@ function estimateSessionTokens(transcriptPath) {
 
         // Count user and assistant messages (excluding "thinking" blocks)
         if (entry.type === 'user' || entry.type === 'assistant') {
-          // Content is in entry.message.content for Claude Code format
           const content = entry.message?.content || entry.content || '';
           if (Array.isArray(content)) {
-            // Filter out "thinking" blocks
             const nonThinkingContent = content.filter(c => c.type !== 'thinking');
             charCount += JSON.stringify(nonThinkingContent).length;
           } else {
             charCount += content.length;
           }
         }
-        // Count tool results and tool uses (also in message content array)
+        // Count tool results and tool uses
         else if (entry.type === 'tool_result' || entry.type === 'tool_use') {
           const toolContent = entry.message?.content || entry.content || entry.output || '';
           const toolInput = entry.message?.input || entry.input || '';
           charCount += JSON.stringify(toolContent).length + JSON.stringify(toolInput).length;
         }
       } catch {
-        // Skip malformed lines
         continue;
       }
     }
@@ -114,22 +208,39 @@ try {
   // Get context window size
   const contextWindow = data.context_window?.context_window_size || 200000;
 
-  // Token counting strategy: try transcript first, then payload
-  // We want CURRENT SESSION tokens, not cumulative
+  // Base context tokens (fixed overhead from Claude Code)
+  // From /context command:
+  // - System prompt: 2.9k tokens
+  // - System tools: 14.6k tokens
+  // - Custom agents: 251 tokens
+  // - Memory files (CLAUDE.md, rules): 6.1k tokens
+  // - Skills: 566 tokens
+  // Total: ~24.4k tokens (this is constant per session)
+  const BASE_CONTEXT_TOKENS = 24400;
 
-  // 1. Try transcript parsing (session-specific, most accurate)
-  let currentUsage = estimateSessionTokens(data.transcript_path);
+  // Token counting strategy:
+  // 1. Parse transcript for session tokens (user messages + assistant + tools)
+  // 2. Add base context (System prompt + tools + agents + memory files)
+  // This gives us CURRENT SESSION usage, not cumulative
 
-  // 2. Fallback: use payload current_usage if transcript is empty
-  // This happens at session start or if transcript parsing fails
-  if (currentUsage === 0) {
-    const payloadUsage = (data.context_window?.current_usage?.input_tokens || 0) +
-                         (data.context_window?.current_usage?.cache_creation_input_tokens || 0) +
-                         (data.context_window?.current_usage?.cache_read_input_tokens || 0);
+  const sessionTokens = estimateSessionTokens(data.transcript_path);
+  const currentUsage = sessionTokens + BASE_CONTEXT_TOKENS;
 
-    if (payloadUsage > 0) {
-      currentUsage = payloadUsage;
-    }
+  // Token tracking with diff
+  const sessionId = data.transcript_path; // Use transcript path as session ID
+  const tokenTracker = loadTokenTracker(currentUsage, sessionId);
+  let { diff: tokenDiff, shouldShow: showTokenDiff } = getTokenDiff(currentUsage, tokenTracker);
+
+  // Detect spurious diffs from base context calculation changes or session resets
+  if (Math.abs(tokenDiff) > SPURIOUS_DIFF_THRESHOLD) {
+    showTokenDiff = false;
+    tokenTracker.lastUsage = currentUsage;
+    tokenTracker.timestamp = Date.now();
+    saveTokenTracker(tokenTracker);
+  } else {
+    // Normal path: update tracker with actual changes
+    const updatedTracker = updateTracker(tokenTracker, currentUsage);
+    saveTokenTracker(updatedTracker);
   }
 
   const percentage = Math.min(100, Math.round((currentUsage / contextWindow) * 100));
@@ -149,6 +260,13 @@ try {
 
   // Format tokens in K
   const tokensK = (currentUsage / 1000).toFixed(1);
+
+  // Format token diff if showing
+  let tokenDiffStr = '';
+  if (showTokenDiff && tokenDiff > 0) {
+    const diffK = (tokenDiff / 1000).toFixed(1);
+    tokenDiffStr = colors.gray + '(' + colors.green + '+' + diffK + 'K' + colors.gray + ')' + colors.reset;
+  }
 
   // Get project path and format it relative to home directory
   const homeDir = os.homedir();
@@ -226,7 +344,7 @@ try {
     colors.bright + modelName + colors.reset + ' • ' +
     colors.yellow + '$' + cost + colors.reset + ' • ' +
     colors.white + mins + 'm' + secs + 's' + colors.reset + ' • ' +
-    colors.blue + tokensK + 'K' + colors.reset + ' • ' +
+    colors.blue + tokensK + 'K' + tokenDiffStr + colors.reset + ' • ' +
     bar + ' ' + percentage + '%' + colors.reset
   );
 

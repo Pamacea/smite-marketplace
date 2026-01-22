@@ -70,7 +70,6 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 **Available agents** (from mobs plugin):
 - `architect` - Design & strategy
 - `builder` - Implementation
-- `finalize` - QA & documentation
 - `refactor` - Systematic refactoring
 
 **Status & control**:
@@ -93,14 +92,13 @@ Orchestrates multiple agents to complete complex development tasks by executing 
 
 ## 🔗 Integration
 
-- **Requires**: mobs (architect, builder, finalize agents)
+- **Requires**: mobs (architect, builder, refactor agents)
 - **Used by**: All complex workflows
 - **Compatible with**: toolkit (semantic search)
 
 **Agents orchestrated** (from mobs plugin):
 - `/architect` - Design & strategy
 - `/builder` - Implementation
-- `/finalize` - QA & documentation
 - `/refactor` - Systematic refactoring
 
 ## 📚 Documentation

@@ -96,39 +96,6 @@
       "dependencies": ["US-003"],
       "passes": false,
       "notes": ""
-    },
-    {
-      "id": "US-006",
-      "title": "Run comprehensive QA",
-      "description": "Test all features, fix bugs, ensure quality",
-      "acceptanceCriteria": [
-        "All tests passing",
-        "No ESLint errors",
-        "No TypeScript errors",
-        "Manual testing complete",
-        "Lighthouse score > 90"
-      ],
-      "priority": 5,
-      "agent": "finalize:task",
-      "dependencies": ["US-003", "US-004", "US-005"],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "US-007",
-      "title": "Create documentation",
-      "description": "Write comprehensive documentation for the project",
-      "acceptanceCriteria": [
-        "README.md complete",
-        "AGENTS.md updated",
-        "Setup instructions",
-        "Usage examples"
-      ],
-      "priority": 6,
-      "agent": "finalize:task",
-      "dependencies": ["US-006"],
-      "passes": false,
-      "notes": ""
     }
   ]
 }
