@@ -71,7 +71,7 @@ class PRDParser {
         else {
             console.log(`❌ Cache miss for PRD: ${filePath}`);
         }
-        // SECURITY: Only allow .smite/prd.json or explicit user intent
+        // SECURITY: Only allow .claude/.smite/prd.json or explicit user intent
         if (!this.isValidPRDPath(fullPath)) {
             console.warn(`⚠️  Warning: Non-standard PRD path detected: ${filePath}`);
             console.warn(`   Standard path is: ${this.STANDARD_PRD_PATH}`);

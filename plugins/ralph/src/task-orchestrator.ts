@@ -6,21 +6,38 @@ import { DependencyGraph } from "./dependency-graph";
 import { StateManager } from "./state-manager";
 import { PRDParser } from "./prd-parser";
 import { SpecGenerator } from "./spec-generator";
+import { WorkflowEngine, WorkflowEngineOptions } from "./workflow-engine";
+import { WorkflowOptions } from "./workflow-types";
 import * as path from "path";
+
+export interface TaskOrchestratorOptions {
+  workflow?: string;
+  workflowOptions?: WorkflowOptions;
+  mcpEnabled?: boolean;
+}
 
 export class TaskOrchestrator {
   private prd: PRD;
   private dependencyGraph: DependencyGraph;
   private stateManager: StateManager;
   private specGenerator: SpecGenerator;
+  private workflowEngine: WorkflowEngine;
   private smiteDir: string;
+  private workflowOptions?: TaskOrchestratorOptions;
 
-  constructor(prd: PRD, smiteDir: string) {
+  constructor(prd: PRD, smiteDir: string, options?: TaskOrchestratorOptions) {
     this.prd = prd;
     this.dependencyGraph = new DependencyGraph(prd);
     this.stateManager = new StateManager(smiteDir);
     this.specGenerator = new SpecGenerator(smiteDir);
     this.smiteDir = smiteDir;
+    this.workflowOptions = options;
+
+    const workflowEngineOptions: WorkflowEngineOptions = {
+      smiteDir,
+      mcpEnabled: options?.mcpEnabled ?? true,
+    };
+    this.workflowEngine = new WorkflowEngine(workflowEngineOptions);
   }
 
   private static readonly DEFAULT_MAX_ITERATIONS = Infinity; // No limit by default - execute all stories
@@ -126,22 +143,41 @@ export class TaskOrchestrator {
     console.log(`   → Executing ${story.id}: ${story.title}`);
     console.log(`      Agent: ${story.agent}`);
 
-    // Spec-first workflow: Generate spec before invoking agent
-    const specResult = await this.generateAndValidateSpec(story);
-    if (!specResult.valid) {
+    // Use workflow engine if workflow is specified
+    if (this.workflowOptions?.workflow) {
+      const workflowState = await this.workflowEngine.executeWorkflow(
+        story,
+        this.workflowOptions.workflow,
+        this.workflowOptions.workflowOptions || {}
+      );
+
+      const workflowSuccess = workflowState.failedSteps.length === 0;
+
       await this.processStoryResult(story, state, {
         storyId: story.id,
-        success: false,
-        output: "",
-        error: `Spec validation failed: ${specResult.gaps.join(", ")}`,
+        success: workflowSuccess,
+        output: this.workflowEngine.getWorkflowSummary(workflowState),
+        error: workflowSuccess ? undefined : `Workflow failed at steps: ${workflowState.failedSteps.join(", ")}`,
         timestamp: Date.now(),
       });
-      state.inProgressStory = null;
-      return;
-    }
+    } else {
+      // Legacy execution path
+      const specResult = await this.generateAndValidateSpec(story);
+      if (!specResult.valid) {
+        await this.processStoryResult(story, state, {
+          storyId: story.id,
+          success: false,
+          output: "",
+          error: `Spec validation failed: ${specResult.gaps.join(", ")}`,
+          timestamp: Date.now(),
+        });
+        state.inProgressStory = null;
+        return;
+      }
 
-    const result = await this.invokeAgent(story, specResult.specPath);
-    await this.processStoryResult(story, state, result);
+      const result = await this.invokeAgent(story, specResult.specPath);
+      await this.processStoryResult(story, state, result);
+    }
 
     state.inProgressStory = null;
     state.currentIteration++;

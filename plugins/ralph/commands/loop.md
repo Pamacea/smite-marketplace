@@ -1,6 +1,6 @@
 ---
-description: "Auto-iterating multi-agent execution with loop until completion"
-argument-hint: "'<prompt>' | --max-iterations <n> | --completion-promise <text>"
+description: "Auto-iterating multi-agent execution with loop until completion and workflow system"
+argument-hint: "'<prompt>' | --max-iterations <n> | --completion-promise <text> | --workflow <id> | --step <id> | --from <id> | --to <id>"
 allowed-tools: Bash
 ---
 
@@ -10,9 +10,34 @@ Execute #$ARGUMENTS using autonomous looping with hook-based iteration until tas
 This command creates a Ralph Loop that:
 1. Auto-generates a detailed PRD from your prompt
 2. Creates `.claude/loop.md` with loop configuration
-3. Executes user stories systematically using agents
+3. Executes user stories systematically using agents with optional workflow system
 4. Uses stop-hook to intercept exit and re-feed prompt if not complete
 5. Continues until `<promise>COMPLETE</promise>` detected or max iterations
+
+## 🔄 Workflow System (Optional)
+
+The loop command supports the same workflow system as the ralph command:
+
+**Available Workflows:**
+- `spec-first` - Spec-first development (default)
+- `debug` - Bug detection and resolution
+- `refactor` - Code quality improvement
+- `feature` - Feature development with research
+
+**Workflow Arguments:**
+- `--workflow <id>` - Select workflow to use
+- `--step <id>` - Execute specific steps only
+- `--from <id>` - Start from specific step
+- `--to <id>` - Execute up to specific step
+- `--skip <id>` - Skip specific steps
+- `--mcp=false` - Disable MCP tools
+
+**Examples:**
+```bash
+/ralph:loop "Build a todo app" --workflow=spec-first
+/ralph:loop "Fix bug" --workflow=debug --max-iterations=10
+/ralph:loop "Refactor" --workflow=refactor --skip=review
+```
 </objective>
 
 <context>

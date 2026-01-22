@@ -7,13 +7,20 @@ const dependency_graph_1 = require("./dependency-graph");
 const state_manager_1 = require("./state-manager");
 const prd_parser_1 = require("./prd-parser");
 const spec_generator_1 = require("./spec-generator");
+const workflow_engine_1 = require("./workflow-engine");
 class TaskOrchestrator {
-    constructor(prd, smiteDir) {
+    constructor(prd, smiteDir, options) {
         this.prd = prd;
         this.dependencyGraph = new dependency_graph_1.DependencyGraph(prd);
         this.stateManager = new state_manager_1.StateManager(smiteDir);
         this.specGenerator = new spec_generator_1.SpecGenerator(smiteDir);
         this.smiteDir = smiteDir;
+        this.workflowOptions = options;
+        const workflowEngineOptions = {
+            smiteDir,
+            mcpEnabled: options?.mcpEnabled ?? true,
+        };
+        this.workflowEngine = new workflow_engine_1.WorkflowEngine(workflowEngineOptions);
     }
     async execute(maxIterations = TaskOrchestrator.DEFAULT_MAX_ITERATIONS) {
         // Get PRD path before initialization
@@ -98,21 +105,35 @@ class TaskOrchestrator {
         state.lastActivity = Date.now();
         console.log(`   → Executing ${story.id}: ${story.title}`);
         console.log(`      Agent: ${story.agent}`);
-        // Spec-first workflow: Generate spec before invoking agent
-        const specResult = await this.generateAndValidateSpec(story);
-        if (!specResult.valid) {
+        // Use workflow engine if workflow is specified
+        if (this.workflowOptions?.workflow) {
+            const workflowState = await this.workflowEngine.executeWorkflow(story, this.workflowOptions.workflow, this.workflowOptions.workflowOptions || {});
+            const workflowSuccess = workflowState.failedSteps.length === 0;
             await this.processStoryResult(story, state, {
                 storyId: story.id,
-                success: false,
-                output: "",
-                error: `Spec validation failed: ${specResult.gaps.join(", ")}`,
+                success: workflowSuccess,
+                output: this.workflowEngine.getWorkflowSummary(workflowState),
+                error: workflowSuccess ? undefined : `Workflow failed at steps: ${workflowState.failedSteps.join(", ")}`,
                 timestamp: Date.now(),
             });
-            state.inProgressStory = null;
-            return;
         }
-        const result = await this.invokeAgent(story, specResult.specPath);
-        await this.processStoryResult(story, state, result);
+        else {
+            // Legacy execution path
+            const specResult = await this.generateAndValidateSpec(story);
+            if (!specResult.valid) {
+                await this.processStoryResult(story, state, {
+                    storyId: story.id,
+                    success: false,
+                    output: "",
+                    error: `Spec validation failed: ${specResult.gaps.join(", ")}`,
+                    timestamp: Date.now(),
+                });
+                state.inProgressStory = null;
+                return;
+            }
+            const result = await this.invokeAgent(story, specResult.specPath);
+            await this.processStoryResult(story, state, result);
+        }
         state.inProgressStory = null;
         state.currentIteration++;
     }
@@ -160,11 +181,6 @@ class TaskOrchestrator {
             "explorer:task": "explorer:explore",
             "explorer:explorer": "explorer:explore",
             "explorer": "explorer:explore",
-            // Finalize agent mappings
-            "finalize:task": "finalize:finalize",
-            "finalize:finalize": "finalize:finalize",
-            "finalize:gatekeeper": "finalize:finalize",
-            "finalize": "finalize:finalize",
             // Simplifier agent mappings
             "simplifier:task": "simplifier:simplify",
             "simplifier:simplifier": "simplifier:simplify",

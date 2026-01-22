@@ -6,11 +6,15 @@ import * as path from "path";
 import { PRDGenerator } from "./prd-generator";
 import { PRDParser } from "./prd-parser";
 import { PRD, UserStory, RalphState } from "./types";
+import { WorkflowOptions } from "./workflow-types";
 
 export interface LoopOptions {
   maxIterations?: number;
   completionPromise?: string;
   autoExecute?: boolean; // If true, automatically start execution after setup
+  workflow?: string; // Workflow ID to use (e.g., "spec-first", "debug", "refactor")
+  workflowOptions?: WorkflowOptions; // Additional workflow options
+  mcpEnabled?: boolean; // Enable/disable MCP tools
 }
 
 export interface LoopConfig {
@@ -318,6 +322,10 @@ export async function setupAndExecuteLoop(
 
     console.log("\n🚀 Starting automatic execution...");
 
+    if (options.workflow) {
+      console.log(`🔄 Using workflow: ${options.workflow}`);
+    }
+
     if (maxIterations !== Infinity) {
       console.log(`⚠️  Limited to ${maxIterations} stories`);
     } else {
@@ -333,7 +341,12 @@ export async function setupAndExecuteLoop(
     }
     console.log();
 
-    const orchestrator = new TaskOrchestrator(setupResult.prd!, smiteDir);
+    const orchestrator = new TaskOrchestrator(setupResult.prd!, smiteDir, {
+      workflow: options.workflow,
+      workflowOptions: options.workflowOptions,
+      mcpEnabled: options.mcpEnabled ?? true,
+    });
+
     const state = await orchestrator.execute(maxIterations);
 
     return {

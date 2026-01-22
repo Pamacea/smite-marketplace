@@ -17,7 +17,6 @@ export declare class PRDGenerator {
     private static generateStories;
     private static detectFeatureStories;
     private static createDefaultStory;
-    private static createFinalizeStory;
     private static createStory;
     private static extractTechFromAgent;
     static suggestImprovements(prd: PRD): string[];

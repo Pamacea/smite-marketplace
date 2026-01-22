@@ -1,11 +1,19 @@
 import { PRD, RalphState } from "./types";
+import { WorkflowOptions } from "./workflow-types";
+export interface TaskOrchestratorOptions {
+    workflow?: string;
+    workflowOptions?: WorkflowOptions;
+    mcpEnabled?: boolean;
+}
 export declare class TaskOrchestrator {
     private prd;
     private dependencyGraph;
     private stateManager;
     private specGenerator;
+    private workflowEngine;
     private smiteDir;
-    constructor(prd: PRD, smiteDir: string);
+    private workflowOptions?;
+    constructor(prd: PRD, smiteDir: string, options?: TaskOrchestratorOptions);
     private static readonly DEFAULT_MAX_ITERATIONS;
     execute(maxIterations?: number): Promise<RalphState>;
     private logExecutionStart;

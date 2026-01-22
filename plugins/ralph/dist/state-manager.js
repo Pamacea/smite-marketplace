@@ -40,6 +40,7 @@ const crypto = __importStar(require("crypto"));
 const prd_parser_1 = require("./prd-parser");
 class StateManager {
     constructor(smiteDir) {
+        this.smiteDir = smiteDir;
         this.statePath = path.join(smiteDir, "ralph-state.json");
         this.progressPath = path.join(smiteDir, "progress.txt");
     }
@@ -144,6 +145,92 @@ class StateManager {
             }
         }
     }
+    /**
+     * Cleanup old state files and trim progress log
+     * Should be called on session completion
+     */
+    async cleanupOnComplete() {
+        await this.trimProgressLog();
+        await this.archiveCurrentState();
+        await this.cleanupOldStates();
+    }
+    /**
+     * Trim progress log to last N lines to prevent unbounded growth
+     */
+    async trimProgressLog() {
+        try {
+            const content = await fs.promises.readFile(this.progressPath, "utf-8");
+            const lines = content.split("\n");
+            if (lines.length > StateManager.MAX_PROGRESS_LINES) {
+                const trimmed = lines.slice(-StateManager.MAX_PROGRESS_LINES).join("\n");
+                await fs.promises.writeFile(this.progressPath, trimmed, "utf-8");
+            }
+        }
+        catch {
+            // File doesn't exist or can't be read, skip
+        }
+    }
+    /**
+     * Archive current state to a session-specific file
+     */
+    async archiveCurrentState() {
+        try {
+            const state = await this.load();
+            if (!state || state.status === "running") {
+                // Don't archive running sessions
+                return;
+            }
+            const archiveDir = path.join(this.smiteDir, "ralph-archive");
+            await fs.promises.mkdir(archiveDir, { recursive: true });
+            const archiveName = `ralph-${state.sessionId}-${state.status}-${Date.now()}.json`;
+            const archivePath = path.join(archiveDir, archiveName);
+            await fs.promises.rename(this.statePath, archivePath);
+        }
+        catch {
+            // State doesn't exist or can't be archived, skip
+        }
+    }
+    /**
+     * Cleanup old archived state files
+     * Keeps only the most recent N completed sessions
+     */
+    async cleanupOldStates() {
+        try {
+            const archiveDir = path.join(this.smiteDir, "ralph-archive");
+            await fs.promises.access(archiveDir, fs.constants.F_OK);
+        }
+        catch {
+            // Archive directory doesn't exist, nothing to clean
+            return;
+        }
+        try {
+            const archiveDir = path.join(this.smiteDir, "ralph-archive");
+            const files = await fs.promises.readdir(archiveDir);
+            // Get file stats and sort by age
+            const fileStats = await Promise.all(files
+                .filter((f) => f.endsWith(".json"))
+                .map(async (filename) => {
+                const filePath = path.join(archiveDir, filename);
+                const stats = await fs.promises.stat(filePath);
+                return { filename, filePath, mtime: stats.mtimeMs };
+            }));
+            // Sort by modification time (newest first)
+            fileStats.sort((a, b) => b.mtime - a.mtime);
+            // Delete files beyond MAX_OLD_STATES
+            const filesToDelete = fileStats.slice(StateManager.MAX_OLD_STATES);
+            // Also delete files older than SESSION_AGE_HOURS
+            const now = Date.now();
+            const maxAge = StateManager.SESSION_AGE_HOURS * 60 * 60 * 1000;
+            for (const file of fileStats) {
+                if (filesToDelete.includes(file) || now - file.mtime > maxAge) {
+                    await fs.promises.unlink(file.filePath);
+                }
+            }
+        }
+        catch {
+            // Cleanup failed, but don't break the session
+        }
+    }
     getDuration(state) {
         const duration = Date.now() - state.startTime;
         const minutes = Math.floor(duration / StateManager.MINUTES_MS);
@@ -192,4 +279,7 @@ class StateManager {
 }
 exports.StateManager = StateManager;
 StateManager.MINUTES_MS = 60000;
+StateManager.MAX_PROGRESS_LINES = 1000; // Keep last 1000 lines
+StateManager.MAX_OLD_STATES = 5; // Keep last 5 completed sessions
+StateManager.SESSION_AGE_HOURS = 24; // Clean sessions older than 24h
 //# sourceMappingURL=state-manager.js.map

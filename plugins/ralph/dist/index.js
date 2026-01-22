@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkCompletionPromise = exports.clearLoopFile = exports.incrementLoopIteration = exports.readLoopConfig = exports.setupAndExecuteLoop = exports.setupRalphLoop = exports.SpecLock = exports.SpecGenerator = exports.PRDGenerator = exports.StateManager = exports.TaskOrchestrator = exports.DependencyGraph = exports.PRDParser = void 0;
+exports.WorkflowConfigManager = exports.WorkflowEngine = exports.checkCompletionPromise = exports.clearLoopFile = exports.incrementLoopIteration = exports.readLoopConfig = exports.setupAndExecuteLoop = exports.setupRalphLoop = exports.SpecLock = exports.SpecGenerator = exports.PRDGenerator = exports.StateManager = exports.TaskOrchestrator = exports.DependencyGraph = exports.PRDParser = void 0;
 exports.execute = execute;
 exports.executeFromPRD = executeFromPRD;
 var prd_parser_1 = require("./prd-parser");
@@ -65,6 +65,12 @@ Object.defineProperty(exports, "incrementLoopIteration", { enumerable: true, get
 Object.defineProperty(exports, "clearLoopFile", { enumerable: true, get: function () { return loop_setup_1.clearLoopFile; } });
 Object.defineProperty(exports, "checkCompletionPromise", { enumerable: true, get: function () { return loop_setup_1.checkCompletionPromise; } });
 __exportStar(require("./types"), exports);
+// Workflow system exports
+var workflow_engine_1 = require("./workflow-engine");
+Object.defineProperty(exports, "WorkflowEngine", { enumerable: true, get: function () { return workflow_engine_1.WorkflowEngine; } });
+var workflow_config_1 = require("./workflow-config");
+Object.defineProperty(exports, "WorkflowConfigManager", { enumerable: true, get: function () { return workflow_config_1.WorkflowConfigManager; } });
+__exportStar(require("./workflow-types"), exports);
 // Re-export for convenience
 const prd_parser_2 = require("./prd-parser");
 const prd_generator_2 = require("./prd-generator");
@@ -91,8 +97,16 @@ async function execute(prompt, options) {
         }
         console.log(`\n✅ PRD ready at: ${prdPath}`);
         console.log(`📊 Stories: ${mergedPrd.userStories.length} total`);
+        if (options?.workflow) {
+            console.log(`🔄 Using workflow: ${options.workflow}`);
+        }
         // Execute (no limit by default - completes all stories)
-        const orchestrator = new task_orchestrator_2.TaskOrchestrator(mergedPrd, smiteDir);
+        const orchestratorOptions = {
+            workflow: options?.workflow,
+            workflowOptions: options?.workflowOptions,
+            mcpEnabled: options?.mcpEnabled ?? true,
+        };
+        const orchestrator = new task_orchestrator_2.TaskOrchestrator(mergedPrd, smiteDir, orchestratorOptions);
         const maxIterations = options?.maxIterations ?? Infinity; // Default: unlimited
         if (maxIterations !== Infinity) {
             console.log(`⚠️  Limited to ${maxIterations} stories`);
@@ -127,8 +141,16 @@ async function executeFromPRD(prdPath, options) {
         throw new Error("Failed to load merged PRD");
     }
     console.log(`📊 Stories: ${mergedPrd.userStories.length} total`);
+    if (options?.workflow) {
+        console.log(`🔄 Using workflow: ${options.workflow}`);
+    }
     // Execute (no limit by default)
-    const orchestrator = new task_orchestrator_2.TaskOrchestrator(mergedPrd, smiteDir);
+    const orchestratorOptions = {
+        workflow: options?.workflow,
+        workflowOptions: options?.workflowOptions,
+        mcpEnabled: options?.mcpEnabled ?? true,
+    };
+    const orchestrator = new task_orchestrator_2.TaskOrchestrator(mergedPrd, smiteDir, orchestratorOptions);
     const maxIterations = options?.maxIterations ?? Infinity; // Default: unlimited
     if (maxIterations !== Infinity) {
         console.log(`⚠️  Limited to ${maxIterations} stories`);

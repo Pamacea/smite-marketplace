@@ -1,11 +1,11 @@
 ---
-description: "Multi-agent orchestration with parallel execution"
-argument-hint: "[prd.json] | '<prompt>'"
+description: "Multi-agent orchestration with parallel execution and workflow system"
+argument-hint: "[prd.json] | '<prompt>' [--workflow=<id>] [--step=<id>] [--from=<id>] [--to=<id>]"
 ---
 
 # Ralph Multi-Agent
 
-Autonomous multi-agent workflow with parallel execution for 2-3x speedup.
+Autonomous multi-agent workflow with parallel execution for 2-3x speedup and step-based workflow system.
 
 ## ⚠️ MANDATORY: All Agents Must Use Semantic Search First
 
@@ -47,6 +47,72 @@ Autonomous multi-agent workflow with parallel execution for 2-3x speedup.
 4. **Execute** → Launch multiple agents simultaneously
 5. **Track** → Update progress and commit changes
 6. **Repeat** → Until all stories complete
+
+---
+
+## 🔄 Workflow System
+
+Ralph now supports a step-based workflow system similar to the mobs plugin. Each story can be executed through a series of predefined steps with MCP tool integration.
+
+### Available Workflows
+
+| Workflow ID | Name | Description | Steps |
+|------------|------|-------------|-------|
+| `spec-first` | Spec-First Development | Default workflow with specification generation | analyze → plan → execute → review → complete |
+| `debug` | Debug Workflow | Systematic bug detection and resolution | analyze → plan → resolve → verify → complete |
+| `refactor` | Refactor Workflow | Code quality improvement with validation | analyze → plan → execute → review → resolve → verify → complete |
+| `feature` | Feature Development | Complete feature implementation with research | analyze → plan → execute → review → complete |
+
+### Workflow Steps
+
+| Step | Description | MCP Tools |
+|------|-------------|-----------|
+| `analyze` | Codebase analysis and dependency detection | toolkit, web-search |
+| `plan` | Specification generation | - |
+| `execute` | Agent execution | - |
+| `review` | Quality check and validation | toolkit |
+| `resolve` | Apply fixes | - |
+| `verify` | Verify fixes with testing | toolkit |
+| `complete` | Mark story as completed | - |
+
+### Workflow Usage
+
+```bash
+# Use default spec-first workflow
+/ralph "Build a todo app" --workflow=spec-first
+
+# Use debug workflow
+/ralph "Fix authentication bug" --workflow=debug
+
+# Use refactor workflow
+/ralph "Improve code quality" --workflow=refactor
+
+# Execute specific steps only
+/ralph "Add feature" --workflow=feature --step=analyze --step=execute
+
+# Execute from specific step
+/ralph "Continue work" --workflow=spec-first --from=execute
+
+# Execute up to specific step
+/ralph "Plan only" --workflow=spec-first --to=plan
+
+# Skip specific steps
+/ralph "Quick execution" --workflow=spec-first --skip=review
+
+# Disable MCP tools
+/ralph "Simple task" --workflow=spec-first --mcp=false
+```
+
+### Workflow Configuration
+
+Workflows are defined in `plugins/ralph/config/workflows.json`. Each workflow includes:
+
+- **Steps**: Ordered list of steps to execute
+- **MCP Tools**: Tools available at each step
+- **Required**: Whether step failure should stop the workflow
+- **Outputs**: Expected outputs from each step
+
+---
 
 ## Parallel Execution Example
 
