@@ -1,12 +1,25 @@
 # Mobs - Multi-Agent Orchestration System
 
-> Spec-First development workflow with parallel agent execution
+> Spec-First development workflow with parallel agent execution and **creative design workflow**
 
 ## 🎯 Purpose
 
 Consolidated multi-agent system providing complete development workflow from architecture to implementation to quality assurance. Mobs follows **Spec-First methodology** where all agents work from approved specifications.
 
 **Target Audience**: Development teams needing structured, agent-driven development workflow
+
+## 🎨 NEW: Creative Design Workflow
+
+The Architect agent now features a powerful creative workflow that leverages MCP tools to research, analyze, and generate **5 distinct UI style variations** for your project.
+
+```bash
+# Complete creative workflow
+/architect -b -w -v -x "Design a modern SaaS dashboard"
+# Then browse interactive previews and choose:
+/architect --select=glassmorphism
+```
+
+**Learn more**: [Creative Workflow Documentation](docs/architect/ARCHITECT_CREATIVE_WORKFLOW.md)
 
 ## 🤖 Included Agents
 
@@ -233,7 +246,13 @@ All agents leverage the toolkit plugin when available:
 
 ## 📚 Documentation
 
-For detailed documentation on each agent, see:
+Complete documentation is available in the [docs/](docs/) folder:
+
+- **[Architect Agent](docs/architect/)** - Design, strategy, and creative workflow
+  - [Creative Workflow Guide](docs/architect/ARCHITECT_CREATIVE_WORKFLOW.md) - Complete creative workflow documentation
+  - [Architect Index](docs/architect/INDEX.md) - All architect documentation
+
+### Agent Skills
 
 - `skills/architect/SKILL.md` - Architect agent documentation
 - `skills/builder/SKILL.md` - Builder agent documentation
@@ -241,6 +260,22 @@ For detailed documentation on each agent, see:
 - `skills/explorer/SKILL.md` - Explorer agent documentation
 - `skills/simplifier/SKILL.md` - Simplifier agent documentation
 - `skills/note/SKILL.md` - Note agent documentation
+- `skills/frontend/SKILL.md` - Frontend subagent (NEW)
+- `skills/ux/SKILL.md` - UX subagent (NEW)
+
+### Workflow Steps
+
+- `steps/architect/` - Detailed creative workflow steps
+- `steps/architect/01-brief.md` - Design brief creation
+- `steps/architect/02-research.md` - Web search research
+- `steps/architect/03-visual-analysis.md` - Visual analysis
+- `steps/architect/04-styles.md` - Style generation
+- `steps/architect/05-preview.md` - Preview workspace
+- `steps/architect/06-implement.md` - Final implementation
+
+### Configuration
+
+- `config/design-styles.json` - 5 complete UI style frameworks (NEW)
 
 ## 🤝 Integration
 
@@ -259,6 +294,9 @@ Author: Pamacea
 
 ## 🌟 Features
 
+- **Creative Design Workflow** - MCP-powered research and 5-style generation (NEW)
+- **Interactive Previews** - Temporary workspace to see designs before implementing (NEW)
+- **Subagent System** - Specialized frontend and UX agents (NEW)
 - **Spec-First Development** - All agents work from approved specifications
 - **Multi-Tech Support** - Next.js, Rust, Python, Go specialization
 - **Design-to-Code** - Convert Figma designs directly to components

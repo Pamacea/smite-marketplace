@@ -1,11 +1,43 @@
 ---
-description: "Unified design, strategy, initialization, and creative thinking"
-argument-hint: "--mode=[init|strategy|design|brainstorm] '<prompt>'"
+description: "Unified design, strategy, initialization, and creative thinking with MCP-powered design workflow"
+argument-hint: "[--mode=init|strategy|design|brainstorm] [-w -v -i <url> -b -x --select=<style>] '<prompt>'"
 ---
 
 # SMITE Architect
 
-Complete project architecture from concept to implementation-ready specifications.
+Complete project architecture from concept to implementation-ready specifications with **creative design workflow** powered by MCP tools.
+
+## 🎨 NEW: Creative Design Workflow
+
+The Architect agent now features a powerful creative workflow that leverages MCP tools to research, analyze, and generate 5 distinct UI style variations for your project.
+
+### Workflow Options
+
+```bash
+# Step-by-step creative workflow
+/architect -b                    # Step 1: Create design brief
+/architect -w                    # Step 2: Web search for references
+/architect -v [-i <url>]         # Step 3: Visual analysis (optional specific image)
+# Step 4: Generate 5 style variations (automatic)
+/architect -x                    # Step 5: Create preview workspace
+/architect --select=<style>      # Step 6: Implement chosen style
+
+# Or combine steps
+/architect -b -w -v -x "Design a modern SaaS dashboard"
+```
+
+### Option Flags
+
+| Flag | Long Form | Purpose |
+|------|-----------|---------|
+| `-b` | `--brief` | Create design brief from prompt |
+| `-w` | `--websearch` | Research design trends via WebSearch MCP |
+| `-v` | `--vision` | Analyze references via Vision MCP |
+| `-i <url>` | `--image <url>` | Analyze specific image URL |
+| `-x` | `--preview` | Create temporary workspace with 5 style previews |
+| `--select=<style>` | `--select=<style>` | Implement chosen style (minimalist, brutalist, glassmorphism, neumorphism, bento) |
+
+---
 
 ## ⚠️ MANDATORY: Use Toolkit First for Code Analysis
 
@@ -23,40 +55,84 @@ Complete project architecture from concept to implementation-ready specification
 
 ---
 
-## Spec-First Mode
+## Creative Workflow Steps
 
-When executing with a spec file (provided in prompt):
+### Step 1: Design Brief (`-b`)
 
-1. **Read the spec completely** - Understand the architectural requirements
-2. **Follow the design approach** - Use the specified approach in the spec
-3. **Create detailed specs** - Generate comprehensive technical specifications
-4. **Validate assumptions** - If architectural assumptions don't match reality, update spec first
+Creates a comprehensive design brief based on your prompt.
 
-## Toolkit Integration
-
-When toolkit plugin is available, Architect can leverage:
-- **Codebase Analysis** - Understand existing patterns using `ToolkitAPI.Search.semantic()`
-- **Dependency Analysis** - Analyze architectural dependencies with `ToolkitAPI.DependencyGraph.build()`
-- **Impact Assessment** - Evaluate architectural changes with `ToolkitAPI.Analysis.impact()`
-- **Pattern Discovery** - Find existing patterns for consistency
-
-## Usage
+**Output**: `.claude/.smite/design-brief.md`
 
 ```bash
-# Initialize new project
-/architect --mode=init "Build a SaaS dashboard for analytics"
-
-# Define business strategy
-/architect --mode=strategy "Define pricing strategy for productivity tool"
-
-# Create design system
-/architect --mode=design "Modern minimalist design for fintech app"
-
-# Brainstorm solutions
-/architect --mode=brainstorm "How to improve user engagement"
+/architect -b "Design a modern SaaS analytics dashboard"
 ```
 
-## Modes
+### Step 2: Research (`-w`)
+
+Uses WebSearch MCP to find design trends, patterns, and references.
+
+**Output**: `.claude/.smite/design-research.md` with 15-30 curated references
+
+```bash
+/architect -w
+```
+
+### Step 3: Visual Analysis (`-v`)
+
+Uses Vision MCP to analyze reference images and extract design patterns.
+
+**Optional**: Use `-i <url>` to analyze a specific image.
+
+**Output**: `.claude/.smite/visual-analysis.md` with extracted tokens and patterns
+
+```bash
+# Analyze research references
+/architect -v
+
+# Analyze specific image
+/architect -v -i https://example.com/reference.png
+```
+
+### Step 4: Generate Styles (Automatic)
+
+Generates 5 complete UI style variations based on research and analysis.
+
+**Output**: `.claude/.smite/design-styles.md` with 5 complete specifications
+
+The 5 styles:
+1. **Minimalist** - Clean, whitespace-focused, typography-driven
+2. **Brutalist** - Raw, bold, high-contrast, unconventional
+3. **Glassmorphism** - Translucent layers, blur effects, depth
+4. **Neumorphism** - Soft shadows, extruded shapes, subtle
+5. **Bento/Grid** - Card-based, modular, organized grid
+
+### Step 5: Preview (`-x`)
+
+Creates a temporary Next.js workspace with interactive previews of all 5 styles.
+
+**Output**: Running dev server at `http://localhost:3000/preview`
+
+```bash
+/architect -x
+```
+
+Launches the **frontend subagent** to implement each style as interactive components.
+
+### Step 6: Implement (`--select=<style>`)
+
+Implements the chosen style in your main project and cleans up preview workspace.
+
+**Output**: Complete design system with design tokens, components, and Builder specification
+
+```bash
+/architect --select=minimalist
+```
+
+---
+
+## Original Modes (Still Available)
+
+These modes work alongside the creative workflow for different architectural needs.
 
 ### MODE: INIT (Project Initialization)
 
@@ -205,3 +281,129 @@ Complete project architecture:
 2. **Follow the workflow** - Init → Strategy → Design → Brainstorm
 3. **Review generated docs** - Ensure they meet your needs
 4. **Iterate if needed** - Refine with follow-up prompts
+
+---
+
+## MCP Tools Integration
+
+The creative workflow leverages these MCP tools:
+
+### WebSearch MCP
+- **Purpose**: Research current design trends, find inspiration, discover patterns
+- **Used in**: Step 2 (`-w` flag)
+- **Queries**: Design trends, color palettes, layout patterns, component inspiration
+- **Output**: 15-30 curated references with URLs
+
+### Vision MCP
+- **Purpose**: Analyze reference images to extract design tokens and patterns
+- **Used in**: Step 3 (`-v` flag)
+- **Capabilities**:
+  - `mcp__zai-mcp-server__analyze_image` - Extract design elements
+  - `mcp__zai-mcp-server__ui_to_artifact` - Convert UI to code specs
+  - `mcp__web-reader__webReader` - Fetch page content
+- **Output**: Color schemes, typography, spacing, component patterns
+
+### Chrome DevTools MCP
+- **Purpose**: Inspect live websites for implementation patterns
+- **Used in**: Optional for deeper research
+- **Capabilities**: Extract computed styles, analyze responsive breakpoints
+- **Output**: Technical implementation insights
+
+---
+
+## Subagent Collaboration
+
+### Frontend Subagent
+- **Purpose**: Implement design specifications as production-ready components
+- **Launched by**: Step 5 (`-x` flag) for preview creation
+- **Capabilities**:
+  - Pixel-perfect component implementation
+  - Design token integration
+  - Responsive layouts
+  - Accessibility (WCAG AA)
+- **Output**: Working Next.js components in preview workspace
+
+### UX Subagent
+- **Purpose**: Refine designs for optimal usability and accessibility
+- **Launched by**: Step 6 for final refinements
+- **Capabilities**:
+  - Heuristic evaluation
+  - Accessibility audit
+  - User flow analysis
+  - Micro-interaction design
+- **Output**: Refined design with improved UX
+
+---
+
+## Creative Workflow Example
+
+Complete design process for a SaaS dashboard:
+
+```bash
+# 1. Create design brief
+/architect -b "Design a modern SaaS analytics dashboard for e-commerce"
+
+# 2. Research trends and patterns
+/architect -w
+# Searches: "SaaS dashboard design 2025", "analytics dashboard patterns", etc.
+
+# 3. Analyze visual references
+/architect -v
+# Or analyze specific image:
+/architect -v -i https://dribbble.com/shots/xyz
+
+# 4. (Automatic) Generate 5 style variations
+# Creates: minimalist, brutalist, glassmorphism, neumorphism, bento specs
+
+# 5. Create interactive previews
+/architect -x
+# Creates temporary Next.js workspace with all 5 styles
+# Launches frontend subagent for implementation
+# Dev server: http://localhost:3000/preview
+
+# 6. User browses previews, chooses style
+
+# 7. Implement chosen style
+/architect --select=glassmorphism
+# Implements design system in main project
+# Cleans up preview workspace
+# Generates Builder specification
+```
+
+---
+
+## Output Files
+
+### Creative Workflow Outputs
+
+| File | Location | Purpose |
+|------|----------|---------|
+| Design Brief | `.claude/.smite/design-brief.md` | Project requirements and goals |
+| Research Summary | `.claude/.smite/design-research.md` | Curated references and trends |
+| Visual Analysis | `.claude/.smite/visual-analysis.md` | Extracted design tokens |
+| Style Variations | `.claude/.smite/design-styles.md` | 5 complete style specifications |
+| Final Spec | `.claude/.smite/final-design-spec.md` | Implementation-ready spec |
+
+### Traditional Mode Outputs
+
+| Mode | Files |
+|------|-------|
+| init | `docs/INIT_PLAN.md`, `docs/TECH_STACK.md` |
+| strategy | `docs/STRATEGY_ANALYSIS.md`, `docs/BUSINESS_MODEL.md` |
+| design | `docs/DESIGN_SYSTEM.md`, `docs/DESIGN_TOKENS.json` |
+| brainstorm | `docs/BRAINSTORM_SESSION.md` |
+
+---
+
+## Design Styles Reference
+
+See `plugins/mobs/config/design-styles.json` for complete specifications of all 5 styles.
+
+Quick reference:
+- **minimalist**: Low complexity, clean, professional
+- **brutalist**: Medium complexity, bold, edgy
+- **glassmorphism**: High complexity, modern, futuristic
+- **neumorphism**: High complexity, soft, subtle
+- **bento**: Medium complexity, organized, structured
+
+---
