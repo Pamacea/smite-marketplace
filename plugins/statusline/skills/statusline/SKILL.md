@@ -1,120 +1,60 @@
-# SMITE Statusline Agent
+# Statusline Skill
 
-## Capabilities
+## Mission
 
-The SMITE Statusline agent specializes in:
+Auto-configuring statusline display for Claude Code sessions with git status, context tracking, session info, and usage metrics.
 
-1. **Statusline Configuration**
-   - Automatic setup during plugin installation
-   - Configuration validation and migration
-   - User preference management
+## Core Workflow
 
-2. **Cross-Platform Support**
-   - Windows (PowerShell, CMD)
-   - macOS (zsh, bash)
-   - Linux (bash, zsh, fish)
-   - Runtime detection (bun/node)
+1. **Input**: Session start or update trigger
+2. **Process**:
+   - Detect OS and runtime (bun/node)
+   - Read configuration from defaults and user settings
+   - Gather status data (git, context, session, usage)
+   - Render compact statusline output
+3. **Output**: Formatted statusline string displayed in Claude Code UI
 
-3. **Feature Management**
-   - Core features: git, context, session info
-   - Optional features: usage limits, spend tracking
-   - Graceful degradation for missing features
+## Key Principles
 
-4. **Error Handling**
-   - Backup and rollback on failure
-   - Comprehensive logging
-   - User-friendly error messages
+- **Cross-platform**: Windows (PowerShell/CMD), macOS (zsh/bash), Linux (bash/zsh/fish)
+- **Automatic setup**: PostPluginInstall hook configures settings.json
+- **Graceful degradation**: Features work independently, no single point of failure
+- **Performance**: < 100ms render time, < 50MB memory footprint
+- **Safe installation**: Backup and rollback on failure
 
-## Workflow
+## Features
 
-### Installation Flow
+### Core Display
+- **Git status**: Branch name, changed files, staged/unstaged counts
+- **Session info**: Cost, duration, tokens used, percentage of budget
+- **Context tracking**: Current token count vs maximum (200K default)
+- **Path display**: Working directory (truncated mode)
 
-```
-1. Detect OS and runtime
-2. Backup existing settings.json
-3. Add statusline configuration
-4. Create user config from defaults
-5. Validate installation
-6. Rollback on failure
-```
+### Optional Features
+- **Usage limits**: 5-hour limit, weekly tracking
+- **Spend tracking**: API cost monitoring
+- **Custom metrics**: Extensible via user config
 
-### Update Flow
+## Integration
 
-```
-1. Detect existing configuration
-2. Update command path to new version
-3. Preserve user settings
-4. Migrate config if schema changed
-5. Validate changes
-```
+- **Trigger**: PostPluginInstall hook runs installation script
+- **Config**: Modifies `~/.claude/settings.json` with statusline command
+- **Runtime**: Bun (preferred), Node.js (fallback)
+- **Dependencies**: chalk, ora, cli-spinners
 
 ## Configuration
 
-### Default Configuration
+- **Default config**: `scripts/statusline/defaults.json`
+- **User config**: `~/.claude/plugins/cache/smite/statusline/1.0.0/scripts/statusline/statusline.config.json`
+- **Settings file**: Override defaults while preserving schema
+- **Install log**: `~/.claude/logs/statusline-install.log`
 
-Located at: `scripts/statusline/defaults.json`
+## Error Handling
 
-- Git display (branch, changes, staged/unstaged)
-- Session info (cost, duration, tokens, percentage)
-- Context tracking (max 200K tokens)
-- Usage limits (5-hour, weekly)
-- Path display (truncated mode)
+- **Installation failure**: Automatic rollback from backup
+- **Invalid config**: JSON validation prevents corruption
+- **Missing features**: Graceful degradation, partial functionality
+- **Runtime errors**: Comprehensive logging, user-friendly messages
 
-### User Configuration
-
-Located at: `~/.claude/plugins/cache/smite/statusline/1.0.0/scripts/statusline/statusline.config.json`
-
-Overrides defaults while preserving schema.
-
-## Tech Stack
-
-- **Runtime**: Bun (preferred), Node.js (fallback)
-- **Language**: TypeScript
-- **Dependencies**: chalk, ora, cli-spinners
-- **Platform**: Cross-platform (Windows/macOS/Linux)
-
-## Integration Points
-
-### Claude Code Settings
-
-Modifies `~/.claude/settings.json`:
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "bun ~/.claude/plugins/cache/smite/statusline/1.0.0/scripts/statusline/src/index.ts",
-    "padding": 0
-  }
-}
-```
-
-### PostPluginInstall Hook
-
-Automatically runs installation script after:
-
-```bash
-/plugin install statusline@smite
-/plugin marketplace update smite
-```
-
-## Error Recovery
-
-- Backup created before any modifications
-- JSON validation prevents corruption
-- Atomic writes (temp file + rename)
-- Rollback on critical errors
-- Detailed logging to `~/.claude/logs/statusline-install.log`
-
-## Performance Targets
-
-- Installation: < 5 seconds
-- Statusline render: < 100ms
-- Memory footprint: < 50MB
-- Zero crashes on invalid input
-
-## Documentation
-
-- User docs: README.md, INSTALLATION.md, CONFIGURATION.md
-- Developer docs: ARCHITECTURE.md
-- Troubleshooting: TROUBLESHOOTING.md
+---
+*Auto-generated from plugin.json - Last sync: 2025-01-22*

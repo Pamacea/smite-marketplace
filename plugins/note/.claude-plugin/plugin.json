@@ -1,26 +1,26 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
-  "name": "ralph",
-  "description": "Multi-agent orchestrator with parallel execution (2-3x speedup)",
+  "name": "note",
+  "description": "AI-powered note writing and formatting agent for Obsidian vaults with multi-vault support",
   "version": "3.1.0",
   "author": {
     "name": "Pamacea",
     "email": "[email protected]"
   },
-  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/ralph",
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/note",
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
-  "keywords": ["orchestration", "parallel", "multi-agent", "prd", "workflow"],
-  "category": "orchestration",
+  "keywords": ["obsidian", "notes", "documentation", "templates", "markdown"],
+  "category": "productivity",
   "commands": "./commands/",
   "skills": "./skills/",
   "hooks": {
-    "Stop": [
+    "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.js"
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/detect-vaults.js"
           }
         ]
       }

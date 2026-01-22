@@ -1,10 +1,17 @@
 {
-  "name": "auto-rename-session",
-  "version": "1.0.0",
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "auto-rename",
   "description": "Automatically rename Claude Code sessions based on their content using LLM analysis",
+  "version": "3.1.0",
   "author": {
-    "name": "SMITE"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/auto-rename",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["session", "naming", "automation", "ai", "productivity"],
+  "category": "productivity",
   "hooks": {
     "SessionStart": [
       {

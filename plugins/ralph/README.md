@@ -1,410 +1,126 @@
-# 🔥 SMITE Ralph - Multi-Agent Parallel Orchestrator
+# Ralph
 
-The revolution in autonomous coding: **2-3x faster** than traditional Ralph through intelligent parallel execution.
+> Multi-agent orchestrator with parallel execution (2-3x speedup)
 
-## 🚀 What is Ralph?
+## 🎯 Purpose
 
-Ralph is an autonomous AI agent orchestrator that coordinates multiple agents to complete complex tasks. **SMITE Ralph** enhances this with:
+Orchestrates multiple agents to complete complex development tasks by executing independent user stories in parallel. Achieves **2-3x speedup** over sequential execution through intelligent dependency analysis and batch optimization.
 
-- ⚡ **Parallel Execution**: Multiple agents running simultaneously
-- 🧠 **Smart Dependency Analysis**: Automatic batching and optimization
-- 🎯 **Multi-Agent Coordination**: 5 specialized agents working together
-- 📊 **Progress Tracking**: Real-time state management and logging
-- 🔄 **Auto-Iteration**: Loop until task completion (NEW!)
+**Target Audience**: Developers working on complex features with multiple components
 
-## 📦 Installation
+## 🚀 Quick Start
 
 ```bash
-# From SMITE marketplace
+# Install
 /plugin install ralph@smite
-```
 
-### Automatic Hook Setup
+# Auto-generate PRD and execute
+/ralph "Build a todo app with authentication"
 
-When you install Ralph, it automatically sets up a global hook in your `.claude` directory:
-
-- ✅ **Hook installed to**: `%USERPROFILE%\.claude\plugins\ralph-stop-hook.js`
-- ✅ **Works from any project**: No per-project setup needed
-- ✅ **Auto-installs**: Runs automatically via `postinstall` script
-
-The hook enables the `/loop` command's auto-iteration feature. It's installed once globally and works for all your projects.
-
-### Manual Hook Reinstallation
-
-If you move the plugin or need to reinstall the hook:
-
-```bash
-cd plugins/ralph
-npm run install-hook
-```
-
-### Verification
-
-Check if the hook is properly installed:
-
-```bash
-# Test if hook file exists
-test -f "$USERPROFILE/.claude/plugins/ralph-stop-hook.js" && echo "✅ Hook installed"
-
-# Test hook execution
-node "$USERPROFILE/.claude/plugins/ralph-stop-hook.js" && echo "✅ Hook works"
-```
-
-## 🎯 Quick Start
-
-### Mode 1: Auto-Iterating Loop ⚡ RECOMMENDED
-
-```bash
-# Auto-generate PRD and loop until complete
-/loopd a todo app with authentication and real-time updates"
-
-# With custom options
-/loopte REST API" --max-iterations 100 --completion-promise "API_DEPLOYED"
-```
-
-**How it works:**
-1. Generates detailed PRD from your prompt
-2. Creates `.claude/loop.md` with loop configuration
-3. You execute stories systematically using agents
-4. Continues until `<promise>COMPLETE</promise>` or max iterations
-
-**Best for:** Complex features, multi-step tasks, when you want autonomous execution
-
-**Documentation:** See `loop.md` for complete guide
-
-### Mode 2: Single-Pass Execution
-
-```bash
-# Auto-generate PRD and execute once
-/ralph "Build a simple component"
+# Auto-iterating (keeps going until done)
+/loop "Build a full SaaS platform"
 
 # Use existing PRD
 /ralph execute .claude/.smite/prd.json
 ```
 
-**Best for:** Quick tasks, when you want full control, single-pass execution
+## 📖 Usage
 
-## 📊 Execution Flow
+### Basic Workflow
 
-```
-Input Prompt
-    ↓
-Generate PRD
-    ↓
-Analyze Dependencies
-    ↓
-┌─────────────────────────┐
-│  Batch 1: US-001        │ ← Sequential (no dependencies)
-└─────────────────────────┘
-    ↓
-┌─────────────────────────┐
-│  Batch 2: US-002        │
-│  Batch 2: US-003  ⚡⚡⚡ │ ← PARALLEL! (both depend on US-001)
-│  Batch 2: US-004  ⚡⚡⚡ │
-└─────────────────────────┘
-    ↓
-┌─────────────────────────┐
-│  Batch 3: US-005        │
-│  Batch 3: US-006  ⚡⚡⚡ │ ← PARALLEL!
-└─────────────────────────┘
-    ↓
-Finalize: QA + Docs
-    ↓
-✅ COMPLETE
+```bash
+# 1. Ralph auto-generates PRD
+/ralph "Add user authentication with OAuth"
+
+# 2. Parses into user stories
+# 3. Builds dependency graph
+# 4. Executes independent stories in parallel
+# 5. Tracks progress and commits
 ```
 
-## 🎨 PRD Format
+### Advanced Options
 
+**Auto-iterating loop** (recommended for complex tasks):
+```bash
+/loop "Build a dashboard with real-time updates" --max-iterations 100
+```
+
+**Custom PRD**:
 ```json
 {
-  "project": "TodoApp",
-  "branchName": "ralph/todo-app",
-  "description": "Task management application",
+  "project": "MyProject",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Setup Next.js project",
-      "description": "Initialize Next.js with TypeScript",
-      "acceptanceCriteria": [
-        "Next.js installed",
-        "TypeScript configured",
-        "Build working"
-      ],
-      "priority": 10,
-      "agent": "architect:task",
-      "dependencies": [],
-      "passes": false,
-      "notes": ""
+      "title": "Setup Next.js",
+      "agent": "architect",
+      "dependencies": []
     },
     {
       "id": "US-002",
-      "title": "Build UI components",
-      "description": "Create task list and form",
-      "acceptanceCriteria": [
-        "TaskList component",
-        "AddTaskForm component",
-        "Responsive design"
-      ],
-      "priority": 9,
-      "agent": "builder:task",
-      "dependencies": ["US-001"],
-      "passes": false,
-      "notes": ""
-    },
-    {
-      "id": "US-003",
-      "title": "Run QA and docs",
-      "description": "Test and document everything",
-      "acceptanceCriteria": [
-        "All tests passing",
-        "No linting errors",
-        "Documentation complete"
-      ],
-      "priority": 1,
-      "agent": "finalize:task",
-      "dependencies": ["US-001", "US-002"],
-      "passes": false,
-      "notes": ""
+      "title": "Build UI",
+      "agent": "builder",
+      "dependencies": ["US-001"]
     }
   ]
 }
 ```
 
-## 🛠️ Commands
-
-### `/ralph execute` - Single-Pass Execution
-
-Execute a PRD once with parallel optimization (no looping).
-
+**Status & control**:
 ```bash
-# From PRD file
-/ralph execute .claude/.smite/prd.json
-
-# Auto-generate PRD from prompt
-/ralph "Build a REST API"
+/ralph status    # Show progress
+/ralph cancel    # Cancel workflow
 ```
 
-### `/loopto-Iterating Execution ⚡ NEW
+## 🔧 Configuration
 
-Execute with automatic looping using hook-based iteration (inspired by Ralph Wiggum).
+### Required
 
-```bash
-# Basic usage
-/loopd a todo app with authentication"
+- **PRD file**: `.claude/.smite/prd.json` (auto-generated or manual)
+- **State directory**: `.claude/.smite/` (auto-created)
 
-# With custom options
-/loopte REST API" --max-iterations 100 --completion-promise "API_DEPLOYED"
-```
+### Optional
 
-**How it works:**
-1. Generates PRD from your prompt
-2. Creates `.claude/loop.md` with loop configuration
-3. Executes user stories iteratively
-4. Hook intercepts exit and re-feeds prompt if not complete
-5. Stops when `<promise>COMPLETE</promise>` is detected
+- **`--max-iterations`**: Max loop iterations (default: 50)
+- **`--completion-promise`**: Completion token (default: `COMPLETE`)
 
-**Documentation:** See `loop.md` for complete guide.
+## 🔗 Integration
 
-### Check Status
+- **Requires**: architect, builder, finalize (SMITE agents)
+- **Used by**: All complex workflows
+- **Compatible with**: toolkit (semantic search)
 
-```bash
-/ralph status
+**Agents orchestrated**:
+- `architect` - Design & strategy
+- `builder` - Implementation
+- `finalize` - QA & documentation
+- `explorer` - Codebase analysis
+- `simplifier` - Refactoring
 
-# Shows:
-# - Session ID
-# - Current status (running/completed/failed)
-# - Progress (completed/failed stories)
-# - Recent progress log
-```
+## 📚 Documentation
 
-### Cancel Session
-
-```bash
-/ralph cancel
-
-# Gracefully stops Ralph
-# Saves progress for resumption
-```
-
-## 📁 File Structure
-
-```
-.claude/.smite/
-  ├── prd.json              # Current PRD
-  ├── ralph-state.json      # Execution state
-  └── progress.txt          # Activity log
-```
-
-## 🎯 Agents Used
-
-| Agent      | Purpose                          | Used For               |
-|------------|----------------------------------|------------------------|
-| `explorer` | Codebase analysis               | Understanding patterns |
-| `architect` | Design & strategy               | Project setup          |
-| `builder`  | Implementation                  | Feature development    |
-| `simplifier` | Code simplification            | Refactoring & cleanup  |
-| `finalize` | QA + Documentation              | Testing & docs         |
-
-### Using Simplifier in Ralph
-
-The simplifier agent can be used for code refactoring tasks:
-
-```json
-{
-  "id": "US-005",
-  "title": "Simplify and refactor code",
-  "description": "Apply code simplification to recent changes",
-  "acceptanceCriteria": [
-    "Code complexity reduced",
-    "Functionality preserved",
-    "All tests passing"
-  ],
-  "priority": 2,
-  "agent": "simplifier:task",
-  "dependencies": ["US-002", "US-003"],
-  "passes": false,
-  "notes": ""
-}
-```
-
-The simplifier will automatically:
-- Analyze code for complexity and inconsistencies
-- Apply project-specific best practices
-- Reduce nesting and redundancy
-- Improve clarity and maintainability
-- Preserve exact functionality
-
-## ⚡ Performance
-
-### Traditional Ralph (Sequential)
-```
-US-001 (3 min) → US-002 (3 min) → US-003 (3 min) → US-004 (3 min)
-= 12 minutes
-```
-
-### SMITE Ralph (Parallel)
-```
-US-001 (3 min) → (US-002 + US-003) (3 min, parallel!) → US-004 (3 min)
-= 9 minutes (25% faster!)
-
-With 10+ stories: 2-3x speedup!
-```
-
-## 🔧 Advanced Usage
-
-### Custom Agents
-
-Override default agent per story:
-
-```json
-{
-  "id": "US-002",
-  "agent": "builder:task",  // Use builder instead of default
-  ...
-}
-```
-
-### Complex Dependencies
-
-```json
-{
-  "id": "US-005",
-  "dependencies": ["US-001", "US-002", "US-003"],
-  ...
-}
-```
-
-Ralph automatically:
-- Validates all dependencies exist
-- Detects circular dependencies
-- Optimizes execution order
-- Creates parallel batches when possible
+- **[Full Guide](../../docs/RALPH_GUIDE.md)** - Complete Ralph usage
+- **[Examples](examples/)** - Sample PRDs
+- **[Spec-First](../../docs/SPEC_FIRST.md)** - Spec-driven workflow
 
 ## 🐛 Troubleshooting
 
-### Hook Errors
+| Issue | Solution |
+|-------|----------|
+| Hook not installed | Run `npm run install-hook` in plugins/ralph |
+| Stories failing | Check `.claude/.smite/progress.txt` for details |
+| Dependency cycle detected | Fix PRD to remove circular dependencies |
+| Workflow stuck | Run `/ralph cancel` then restart |
 
-#### Error: `Cannot find module '...\dist\stop-hook.js'`
+## ⚡ Performance
 
-**Cause**: Hook not installed or plugin was moved to a different location.
+| Project Type | Speedup |
+|--------------|---------|
+| Small (3-5 stories) | 20-30% faster |
+| Medium (6-10 stories) | 40-50% faster |
+| Large (10+ stories) | 50-60% faster |
 
-**Solution**:
-```bash
-cd plugins/ralph
-npm run install-hook
-```
-
-#### Error: `'ralph-stop-hook.js' is not recognized`
-
-**Cause**: Global hook file missing or corrupted.
-
-**Solution**:
-```bash
-# Ensure directory exists
-mkdir -p "$USERPROFILE/.claude/plugins"
-
-# Reinstall hook
-cd plugins/ralph
-npm run install-hook
-```
-
-#### `/loop` command not working
-
-**Cause**: Hook not intercepting session exit.
-
-**Solution**:
-1. Verify hook is installed: `test -f "$USERPROFILE/.claude/plugins/ralph-stop-hook.js"`
-2. Check plugin.json references global hook: `grep "ralph-stop-hook.js" plugins/ralph/.claude-plugin/plugin.json`
-3. Reinstall if needed: `cd plugins/ralph && npm run install-hook`
-
-### Ralph not starting
-
-```bash
-# Check .claude/.smite directory
-ls -la .claude/.smite/
-
-# Remove old state
-rm -rf .claude/.smite/
-
-# Start fresh
-/ralph "your prompt"
-```
-
-### Stories failing
-
-```bash
-# Check progress log
-cat .claude/.smite/progress.txt
-
-# See which stories failed
-cat .claude/.smite/ralph-state.json | grep failedStories
-```
-
-### Dependencies not resolving
-
-```bash
-# Validate PRD
-node plugins/ralph/dist/prd-validator.js .claude/.smite/prd.json
-```
-
-## 📚 Examples
-
-See `examples/` directory for complete PRDs:
-
-- `simple-todo-prd.json` - Basic todo app
-- `dashboard-with-auth.json` - SaaS dashboard
-- `ecommerce.json` - E-commerce platform
-
-## 🤝 Contributing
-
-Contributions welcome! Please read our contributing guidelines.
-
-## 📄 License
-
-MIT License - see LICENSE for details.
+**Example**: 20 stories with parallel batching = **3x faster** than sequential
 
 ---
-
-**Built with ❤️ by the SMITE team**
-
-*Zero-debt engineering with multi-agent parallel orchestration*
+**Version**: 3.1.0 | **Category**: orchestration | **Author**: Pamacea

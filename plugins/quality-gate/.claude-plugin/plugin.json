@@ -1,10 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "quality-gate",
-  "description": "Code quality gate system with automatic validation, testing, and documentation synchronization",
-  "version": "1.0.0",
+  "description": "Automated code review (complexity, security, semantics)",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/quality-gate",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["quality", "validation", "review", "security", "complexity"],
+  "category": "quality",
   "commands": "./commands/",
   "skills": "./skills/"
 }

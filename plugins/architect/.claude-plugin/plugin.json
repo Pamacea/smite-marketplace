@@ -1,10 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "architect",
-  "description": "SMITE Architect - Unified design, strategy, initialization, and creative thinking agent (merged initializer+strategist+aura+brainstorm)",
-  "version": "3.0.0",
+  "description": "Design & strategy agent (init + strategy + design + brainstorm)",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/architect",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["design", "strategy", "architecture", "initialization", "planning"],
+  "category": "development",
   "commands": "./commands/",
   "skills": "./skills/"
 }

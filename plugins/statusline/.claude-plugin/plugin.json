@@ -1,10 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "statusline",
   "description": "SMITE Statusline - Auto-configuring statusline with tokens, context, git, and more",
-  "version": "1.0.0",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/statusline",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["statusline", "git", "session", "context", "monitoring"],
+  "category": "productivity",
   "commands": "./commands/",
   "skills": "./skills/"
 }

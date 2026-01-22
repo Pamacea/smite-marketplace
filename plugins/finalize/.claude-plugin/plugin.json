@@ -1,10 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "finalize",
-  "description": "SMITE Finalize - Unified quality assurance, code review, and documentation agent (merged gatekeeper+surgeon+linter+handover+doc-maintainer)",
-  "version": "3.0.0",
+  "description": "QA & documentation agent (test + review + lint + docs)",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/finalize",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["qa", "testing", "review", "documentation", "linting"],
+  "category": "quality",
   "commands": "./commands/",
   "skills": "./skills/"
 }

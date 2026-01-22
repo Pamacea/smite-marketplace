@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "shell",
+  "description": "Cross-platform shell aliases for Claude Code (cc and ccc)",
+  "version": "3.1.0",
+  "author": {
+    "name": "Pamacea",
+    "email": "[email protected]"
+  },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/shell",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["shell", "aliases", "cli", "cross-platform", "productivity"],
+  "category": "productivity",
+  "commands": "./commands/"
+}

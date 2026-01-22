@@ -1,307 +1,53 @@
----
-name: simplifier
-description: Code simplification and refactoring agent
-version: 1.0.0
----
+# Simplifier Skill
 
-# 🧹 SMITE Simplifier
+## Mission
 
-**Code Clarity & Maintainability Agent**
+Code simplification and refactoring for clarity, consistency, and maintainability while preserving all functionality.
 
----
+## Core Workflow
 
-## 🎯 Mission
+1. **Input**: Code changes or manual invocation
+2. **Process**:
+   - Analyze code for complexity and inconsistencies
+   - Apply project best practices
+   - Simplify structure without changing behavior
+   - Reduce nesting and redundancy
+   - Improve readability and naming
+3. **Output**: Simplified code with preserved functionality
 
-**Simplify and refine code for clarity, consistency, and maintainability while preserving all functionality.**
+## Key Principles
 
----
+- **Preserve functionality**: No behavior changes
+- **Reduce complexity**: Lower cyclomatic and cognitive complexity
+- **Improve clarity**: Better naming, less nesting
+- **Maintain consistency**: Follow project standards
+- **No over-simplification**: Keep helpful abstractions
 
-## 📋 Commands
+## Integration
 
-### `/simplifier`
+- **Works after**: builder (implementation), ralph (orchestration)
+- **Triggers**: Manual invocation, automatic after code changes
+- **Integrates with**: finalize (code review phase)
 
-Run automatic code simplification - DEFAULT.
+## Modes
 
-**What it does:**
-1. Analyzes recently modified code
-2. Identifies complexity and inconsistencies
-3. Applies project-specific best practices
-4. Simplifies structure without changing behavior
-5. Improves readability and maintainability
+- **Default**: Recent changes only
+- **`--scope=file`**: Specific file simplification
+- **`--scope=directory`**: Entire directory
+- **`--scope=all`**: Full codebase
 
-**Example:**
-```bash
-/simplifier
-```
+## Configuration
 
-### `/simplifier --scope=file`
+- **Analysis scope**: Recent changes or specified scope
+- **Complexity targets**: Reduce nesting, eliminate redundancy
+- **Testing**: All tests must pass after simplification
 
-Simplify a specific file.
+## Error Handling
 
-**Usage:**
-```bash
-/simplifier --scope=file src/components/Button.tsx
-```
-
-### `/simplifier --scope=directory`
-
-Simplify an entire directory.
-
-**Usage:**
-```bash
-/simplifier --scope=directory src/components
-```
-
-### `/simplifier --scope=all`
-
-Simplify the entire codebase.
-
-**Usage:**
-```bash
-/simplifier --scope=all
-```
+- **Functionality changed**: Revert changes, report issue
+- **Tests failing**: Fix tests or revert simplification
+- **Over-simplified**: Restore helpful abstractions
+- **Style violations**: Run `npm run format` to fix
 
 ---
-
-## ✅ Simplification Checklist
-
-### 1. Functionality
-- [ ] All original features preserved
-- [ ] No behavior changes
-- [ ] All tests passing
-- [ ] No regressions
-
-### 2. Clarity
-- [ ] Reduced unnecessary nesting
-- [ ] Eliminated redundant code
-- [ ] Clear variable/function names
-- [ ] Consolidated related logic
-- [ ] Removed obvious comments
-
-### 3. Consistency
-- [ ] Applied project standards
-- [ ] Uniform naming conventions
-- [ ] Consistent patterns
-- [ ] Proper error handling
-- [ ] Type annotations where needed
-
-### 4. Maintainability
-- [ ] No over-simplification
-- [ ] No clever solutions
-- [ ] Preserved helpful abstractions
-- [ ] Easy to debug
-- [ ] Easy to extend
-
----
-
-## 🎯 Workflow
-
-1. **Analyze** code for complexity and inconsistencies
-2. **Identify** simplification opportunities
-3. **Apply** project best practices
-4. **Verify** functionality unchanged
-5. **Test** all changes
-6. **Document** significant changes
-
----
-
-## ✨ Output Format
-
-After simplification, provide a summary:
-
-```
-✅ SIMPLIFICATION COMPLETE
-
-Changes Made:
-- Reduced nesting in Button component (3 levels → 2 levels)
-- Consolidated duplicate validation logic in authService
-- Improved variable naming (temp → userSession)
-- Replaced nested ternary with switch statement in reducer
-
-Files Modified:
-- src/components/Button.tsx
-- src/services/authService.ts
-- src/utils/reducer.ts
-
-Metrics:
-- Complexity reduced: 15%
-- Lines of code: -8%
-- Cyclomatic complexity: 12 → 9
-
-Functionality: ✅ Preserved (no behavior changes)
-Test Coverage: ✅ All tests passing (92%)
-```
-
----
-
-## 🔗 Integration
-
-**Works with:**
-- architect:architect (design)
-- builder:constructor.task (implementation)
-- finalize:finalize (code review)
-- explorer:explorer.task (analysis)
-- ralph:ralph (orchestration)
-
-**Automatic triggers:**
-- After builder completes implementation
-- During finalize code review phase
-- Manual invocation via `/simplifier`
-
----
-
-## 💡 Best Practices
-
-1. **Always run simplifier after implementation**
-   - Ensures code quality
-   - Maintains consistency
-   - Prevents technical debt
-
-2. **Focus on recent changes**
-   - More efficient
-   - Reduces risk
-   - Faster feedback
-
-3. **Preserve functionality**
-   - Never change behavior
-   - Run all tests
-   - Check for regressions
-
-4. **Avoid over-simplification**
-   - Keep helpful abstractions
-   - Maintain code organization
-   - Prioritize readability
-
-5. **Follow project standards**
-   - Use CLAUDE.md guidelines
-   - Apply consistent patterns
-   - Maintain naming conventions
-
----
-
-## 🚫 Anti-Patterns to Avoid
-
-### ❌ Over-Simplification
-```typescript
-// Bad: Too clever
-const f = (x) => x > 0 ? (x < 10 ? x * 2 : x * 3) : 0
-
-// Good: Clear and explicit
-function calculateMultiplier(value: number): number {
-  if (value <= 0) return 0
-  if (value < 10) return value * 2
-  return value * 3
-}
-```
-
-### ❌ Nested Ternaries
-```typescript
-// Bad: Nested ternary
-const result = condition1
-  ? value1
-  : condition2
-    ? value2
-    : condition3
-      ? value3
-      : defaultValue
-
-// Good: Switch or if/else
-function getValue(): number {
-  if (condition1) return value1
-  if (condition2) return value2
-  if (condition3) return value3
-  return defaultValue
-}
-```
-
-### ❌ Removing Helpful Abstractions
-```typescript
-// Bad: Inlined everything
-async function processUser(id: string) {
-  const user = await db.users.findOne({ where: { id } })
-  if (!user) throw new Error('User not found')
-  const hashed = await bcrypt.hash(user.password, 10)
-  await db.sessions.create({ data: { userId: user.id, token: hashed } })
-  return hashed
-}
-
-// Good: Separated concerns
-async function getUser(id: string) {
-  const user = await db.users.findOne({ where: { id } })
-  if (!user) throw new Error('User not found')
-  return user
-}
-
-async function createSession(userId: string): Promise<string> {
-  const token = await generateToken()
-  await db.sessions.create({ data: { userId, token } })
-  return token
-}
-```
-
----
-
-**Built with ❤️ by SMITE v3.0**
-*Code Clarity & Maintainability Excellence*
-
----
-
-## 🔧 TOOLKIT USAGE (PRIORITY)
-
-### ⚠️ TOOLKIT-FIRST POLICY
-
-**PRIORITY ORDER:**
-- ✅ **1st choice: `/toolkit search`** - 75% token savings, 2x precision
-- ✅ **2nd choice: `mgrep`** - Alternative semantic search
-- ⚠️ **Last resort: `Grep` tool** - Only if toolkit unavailable
-
-**REMINDER:** PostToolUse hook logs when manual tools are used and suggests alternatives
-
-**BENEFITS:**
-- 75% token savings (180k → 45k)
-- 2x search precision (40% → 95%)
-- 40% more bugs detected
-
-### 🚀 HOW TO USE TOOLKIT
-
-You have **TWO ways** to use the toolkit:
-
-#### Method 1: `mgrep` Command (Direct & Fast)
-
-```bash
-# Find deeply nested code to simplify
-mgrep "nested if else ternary callback" --strategy semantic --glob "**/*.ts"
-
-# Search for duplicate patterns
-mgrep "similar function implementation" --strategy hybrid
-
-# Find specific complexity issues
-mgrep "callback hell promise chain" --strategy literal
-```
-
-#### Method 2: `CodeSearchAPI` (Programmatic)
-
-```typescript
-import { CodeSearchAPI } from '@smite/toolkit';
-const search = new CodeSearchAPI();
-
-// Find deeply nested code
-const complexCode = await search.search('nested if else ternary callback', {
-  strategy: 'SEMANTIC',
-  filePatterns: ['src/**/*.ts', 'lib/**/*.ts']
-});
-```
-
-**Which to use?**
-- **Quick searches**: Use `mgrep` command directly
-- **In code/agents**: Use `CodeSearchAPI` for programmatic access
-
-### ✅ COMPLIANCE CHECKLIST
-
-Before simplifying:
-- [ ] Using `mgrep` or `CodeSearchAPI`? ✅
-- [ ] Avoided `Grep` tool completely? ✅
-- [ ] Planning consistent changes? ✅
-- [ ] Maintaining functionality? ✅
-
-**Remember:** Simplify systematically, not randomly!
+*Auto-generated from plugin.json - Last sync: 2025-01-22*

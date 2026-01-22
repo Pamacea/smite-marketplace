@@ -1,10 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "explorer",
-  "description": "SMITE Explorer - Codebase exploration, dependency mapping, and pattern discovery agent",
-  "version": "1.0.0",
+  "description": "Codebase exploration, dependency mapping & pattern discovery",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/explorer",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["exploration", "dependencies", "patterns", "architecture", "analysis"],
+  "category": "analysis",
   "commands": "./commands/",
   "skills": "./skills/"
 }

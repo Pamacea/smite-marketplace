@@ -1,10 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "smite",
   "description": "Essential Claude commands for rapid development - oneshot, explore, debug, commit, claude-memory, and more",
-  "version": "1.0.0",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/smite",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["development", "commands", "workflow", "git", "documentation"],
+  "category": "development",
   "commands": "./commands/",
   "skills": "./skills/"
 }

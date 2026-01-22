@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "marketplace-name",
+  "version": "3.1.0",
+  "description": "Brief marketplace description",
+  "owner": {
+    "name": "Pamacea",
+    "email": "[email protected]"
+  },
+  "metadata": {
+    "description": "Full marketplace description with details",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "plugin-name",
+      "source": "./plugins/plugin-name",
+      "description": "Plugin description",
+      "version": "3.1.0",
+      "author": {
+        "name": "Pamacea"
+      },
+      "category": "development",
+      "tags": ["keyword1", "keyword2"],
+      "keywords": ["keyword1", "keyword2", "keyword3"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/plugin-name",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    }
+  ]
+}

@@ -1,66 +1,17 @@
 {
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "toolkit",
-  "description": "SMITE Toolkit - Unified token optimization layer with RAG (70-85% savings), mgrep semantic search (2x precision), bug detection, and dependency analysis",
-  "version": "1.0.0",
+  "description": "Token optimization layer with semantic search (75% savings), RAG, bug detection, dependency analysis",
+  "version": "3.1.0",
   "author": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/toolkit",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["optimization", "search", "rag", "semantic", "bug-detection", "dependencies"],
+  "category": "analysis",
   "commands": "./commands/",
-  "skills": "./skills/",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-index-hook.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-deps-hook.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-init-hook.js\""
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-save-hook.js\""
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-enforcer-hook.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cmd /c \"node %USERPROFILE%\\.claude\\plugins\\toolkit-stats-hook.js\""
-          }
-        ]
-      }
-    ]
-  }
+  "skills": "./skills/"
 }

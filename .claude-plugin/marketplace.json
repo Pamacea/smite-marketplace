@@ -1,128 +1,198 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "smite",
-  "version": "3.0.0",
-  "description": "SMITE - Zero-debt engineering agents with multi-agent parallel orchestration",
+  "version": "3.1.0",
+  "description": "Zero-debt engineering agents with multi-agent parallel orchestration",
   "owner": {
-    "name": "Pamacea"
+    "name": "Pamacea",
+    "email": "[email protected]"
+  },
+  "metadata": {
+    "description": "Complete SMITE development workflow with 13 plugins for orchestration, analysis, quality, and productivity. Features token optimization (75% savings), parallel execution (2-3x speedup), and automated code review.",
+    "pluginRoot": "./plugins"
   },
   "plugins": [
     {
-      "name": "explorer",
-      "source": "./plugins/explorer",
-      "description": "Codebase exploration, dependency mapping & pattern discovery",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
-    },
-    {
-      "name": "architect",
-      "source": "./plugins/architect",
-      "description": "Unified design, strategy, initialization & creative thinking (init+strategy+design+brainstorm)",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
-    },
-    {
-      "name": "builder",
-      "source": "./plugins/builder",
-      "description": "Implementation agent with auto-detection & tech specialization (constructor+router)",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
-    },
-    {
-      "name": "finalize",
-      "source": "./plugins/finalize",
-      "description": "Unified quality assurance, code review, refactoring, linting & documentation (gatekeeper+surgeon+linter+handover+doc-maintainer)",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "quality"
-    },
-    {
       "name": "ralph",
       "source": "./plugins/ralph",
-      "description": "Multi-agent orchestrator with parallel execution for 2-3x speedup",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
-    },
-    {
-      "name": "simplifier",
-      "source": "./plugins/simplifier",
-      "description": "Code simplification and refactoring agent for clarity, consistency, and maintainability (based on Anthropic's code-simplifier)",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "quality"
-    },
-    {
-      "name": "statusline",
-      "source": "./plugins/statusline",
-      "description": "Auto-configuring statusline with tokens, context, git, and more",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
-    },
-    {
-      "name": "shellalias",
-      "source": "./plugins/sell-aliases",
-      "description": "Alias for launch Claude Code by default or with bypass.",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
+      "description": "Multi-agent orchestrator with parallel execution (2-3x speedup)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "orchestration",
+      "tags": ["orchestration", "parallel", "workflow", "prd"],
+      "keywords": ["orchestration", "parallel", "multi-agent", "prd"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/ralph",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
     },
     {
       "name": "toolkit",
       "source": "./plugins/toolkit",
-      "description": "A token optimizer and toolkit integrator for enhanced Claude Code functionality",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "development"
+      "description": "Token optimization layer with semantic search (75% savings), RAG, bug detection, and dependency analysis",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "analysis",
+      "tags": ["optimization", "search", "rag", "bugs", "dependencies"],
+      "keywords": ["token", "optimization", "semantic-search", "rag", "mgrep"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/toolkit",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
     },
     {
-      "name": "smite",
-      "source": "./plugins/smite",
-      "description": "Essential Claude commands for rapid development (oneshot, explore, debug, commit, claude-memory, epct, apex, and more)",
-      "author": {
-        "name": "Melvynx"
-      },
-      "category": "development"
+      "name": "architect",
+      "source": "./plugins/architect",
+      "description": "Design & strategy agent (init + strategy + design + brainstorm)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "development",
+      "tags": ["design", "strategy", "architecture", "planning"],
+      "keywords": ["design", "strategy", "architecture", "initialization"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/architect",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
     },
     {
-      "name": "obsidian-note-agent",
-      "source": "./plugins/obsidian-note-agent",
-      "description": "AI-powered note writing and formatting agent for Obsidian vaults with multi-vault support",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "productivity"
+      "name": "builder",
+      "source": "./plugins/builder",
+      "description": "Implementation agent with tech specialization (Next.js, Rust, Python)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "development",
+      "tags": ["implementation", "coding", "nextjs", "rust", "python"],
+      "keywords": ["builder", "implementation", "coding", "constructor"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/builder",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
     },
     {
-      "name": "docs-editor-mcp",
-      "source": "./plugins/docs-editor-mcp",
-      "description": "Automatically update docs on file change.",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "productivity"
+      "name": "finalize",
+      "source": "./plugins/finalize",
+      "description": "QA & documentation agent (testing + review + linting + docs)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "quality",
+      "tags": ["qa", "testing", "review", "documentation", "linting"],
+      "keywords": ["finalize", "qa", "testing", "documentation", "review"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/finalize",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "explorer",
+      "source": "./plugins/explorer",
+      "description": "Codebase exploration, dependency mapping & pattern discovery",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "analysis",
+      "tags": ["exploration", "dependencies", "patterns", "architecture"],
+      "keywords": ["explorer", "codebase", "dependencies", "patterns"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/explorer",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "simplifier",
+      "source": "./plugins/simplifier",
+      "description": "Code simplification and refactoring for clarity & maintainability",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "quality",
+      "tags": ["refactoring", "simplification", "cleanup"],
+      "keywords": ["simplifier", "refactor", "cleanup", "maintainability"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/simplifier",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
     },
     {
       "name": "quality-gate",
       "source": "./plugins/quality-gate",
-      "description": "Automatically review code when write it, analyze it and rejects its if too complex or security bugs.",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "productivity"
+      "description": "Automated code review (complexity, security, semantics)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "quality",
+      "tags": ["quality", "review", "security", "complexity", "validation"],
+      "keywords": ["quality-gate", "validation", "security", "complexity"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/quality-gate",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "smite",
+      "source": "./plugins/smite",
+      "description": "Essential commands (oneshot, epct, apex, debug, explore, commit, pr)",
+      "version": "3.1.0",
+      "author": { "name": "Melvynx" },
+      "category": "development",
+      "tags": ["commands", "workflow", "development", "productivity"],
+      "keywords": ["smite", "commands", "oneshot", "epct", "apex"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/smite",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "statusline",
+      "source": "./plugins/statusline",
+      "description": "Auto-configuring statusline (tokens, git, session info)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "productivity",
+      "tags": ["statusline", "ui", "tokens", "git"],
+      "keywords": ["statusline", "session", "git", "tokens"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/statusline",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "note",
+      "source": "./plugins/note",
+      "description": "AI-powered note writing & formatting for Obsidian vaults",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "productivity",
+      "tags": ["obsidian", "notes", "documentation", "productivity"],
+      "keywords": ["obsidian", "notes", "writing", "formatting"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/note",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "docs",
+      "source": "./plugins/docs",
+      "description": "Automatic documentation maintenance (README, OpenAPI, JSDoc)",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "productivity",
+      "tags": ["documentation", "mcp", "automation", "sync"],
+      "keywords": ["docs", "editor", "mcp", "documentation-sync"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/docs",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "shell",
+      "source": "./plugins/shell",
+      "description": "Shell shortcuts (cc, ccc) for quick Claude Code access",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "productivity",
+      "tags": ["shell", "aliases", "shortcuts", "cli"],
+      "keywords": ["shell", "aliases", "shortcuts", "bash", "zsh"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/shell",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "auto-rename",
+      "source": "./plugins/auto-rename",
+      "description": "Intelligent session renaming based on context",
+      "version": "3.1.0",
+      "author": { "name": "Pamacea" },
+      "category": "productivity",
+      "tags": ["session", "naming", "automation", "ui"],
+      "keywords": ["session", "rename", "automation", "context"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/auto-rename",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
     }
   ]
 }

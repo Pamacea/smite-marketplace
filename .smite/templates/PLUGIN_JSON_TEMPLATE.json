@@ -1,0 +1,26 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "plugin-name",
+  "description": "One-line description",
+  "version": "3.1.0",
+  "author": {
+    "name": "Pamacea",
+    "email": "[email protected]"
+  },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/plugin-name",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT",
+  "keywords": ["keyword1", "keyword2", "keyword3"],
+  "category": "development",
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/start-hook.js"
+      }]
+    }]
+  }
+}

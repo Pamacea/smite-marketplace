@@ -1,89 +1,71 @@
-# 🗺️ Project Orchestration
+# 🚀 SMITE - Quick Reference
 
-## 🎯 Mission
-Engineering Zero-Dette via GLM 4.7/4.6.
+## 🎯 I'm here to...
 
-## 📚 Specialized Rules (Load on Demand)
-- **Logic & Data**: `.claude/rules/engineering.md`
-- **UI & UX**: `.claude/rules/frontend.md`
-- **Multi-Agent Ops**: `.claude/rules/agents.md`
+- **Build features**: `/build` or `/ralph`
+- **Fix bugs**: `/debug`
+- **Explore code**: `/explore` or `/toolkit search`
+- **Quality check**: `/finalize`
 
-## ⚓ Sync Hook
-When a task is identified, the agent MUST automatically load the corresponding rules:
+## 🔍 Mandatory Workflow
 
-**Automatic Rule Loading:**
-- Frontend tasks → Load `.claude/rules/frontend.md`
-- Engineering tasks → Load `.claude/rules/engineering.md`
-- **Code search/exploration → Load `.claude/rules/mgrep.md` [MANDATORY]**
-- Multi-agent operations → Load `.claude/rules/agents.md`
+**CRITICAL: ALWAYS use semantic search before ANY code exploration.**
 
-**Critical Rule:** Before ANY code exploration or file search, agents MUST follow the workflow defined in the global CLAUDE.md under "MANDATORY WORKFLOW - TOKEN OPTIMIZATION".
+1. **ALWAYS** use `/toolkit search "query"` first (75% token savings, 2x precision)
+2. **NEVER** use Grep/Glob first (wastes tokens)
+3. **Spec-first**: Architect → Builder → Finalize
 
-## 🛡️ Quality Gate (Automated Code Validation)
+**Why?** Traditional search: 180k tokens. Toolkit: 45k tokens. **75% savings.**
 
-**TOUS les changements de code sont automatiquement validés par le Quality Gate.**
+## 🛠️ Quick Commands
 
-### 📋 Configuration
-Fichier: `.claude/.smite/quality.json`
+| Command | Purpose | When to use |
+|---------|---------|-------------|
+| `/ralph "prompt"` | Multi-agent orchestration | Complex features (2-3x speedup) |
+| `/build --feature=name` | Implement feature | Spec-driven development |
+| `/debug` | Fix bugs systematically | Any bug/issue |
+| `/finalize` | QA + documentation | Before committing |
+| `/toolkit search "query"` | Semantic code search | ALWAYS before exploring |
 
-```json
-{
-  "enabled": true,
-  "exclude": [
-    "**/node_modules/**",
-    "**/.next/**",
-    "**/dist/**",
-    "**/.claude/**",
-    "**/.git/**",
-    "**/.claude/.smite/**",
-    "**/plugins/quality-gate/**"
-  ],
-  "complexity": {
-    "maxCyclomaticComplexity": 10,
-    "maxCognitiveComplexity": 15
-  },
-  "performance": {
-    "maxMemoryMB": 8192,
-    "batchSize": 10
-  }
-}
-```
+## 📚 Documentation
 
-### ✅ Ce qui est vérifié
-- **Complexité**: Fonctions trop complexes, imbrication excessive
-- **Sécurité**: Injection SQL, XSS, crypto faible, secrets hardcoded
-- **Sémantique**: Types incohérents, conventions de nommage, code dupliqué
-- **Tests**: Échecs de tests (Jest, Vitest, Mocha, pytest)
+- **All docs**: [docs/INDEX.md](docs/INDEX.md)
+- **Plugins**: [plugins/README.md](plugins/README.md)
+- **Ralph guide**: [docs/RALPH_GUIDE.md](docs/RALPH_GUIDE.md) (coming soon)
+- **Spec-first**: [docs/SPEC_FIRST.md](docs/SPEC_FIRST.md) (coming soon)
 
-### 💡 Utilisation Recommandée
+## 🛡️ Quality Gate
+
+**ALL code changes are automatically validated.**
+
+- **Complexity**: Max 10 cyclomatic, 15 cognitive
+- **Security**: SQL injection, XSS, weak crypto, secrets
+- **Semantics**: Type consistency, naming conventions
+
+**Config**: `.claude/.smite/quality.json`
+
+**Usage**:
 ```bash
-# Pour les gros projets, utiliser toujours des options scoped
-/quality-gate:quality-check --staged      # Seulement les fichiers staged
-/quality-gate:quality-check --changed     # Seulement les fichiers modifiés
-/quality-gate:quality-check --files "src/**/*.ts"  # Fichiers spécifiques
-
-# Jamais sans options sur un gros projet (risque OOM)
-# ❌ /quality-gate:quality-check  # Vérifie TOUT le projet = MÉMOIRE
+/quality-check --staged    # Only staged files
+/quality-check --changed   # Only modified files
 ```
 
-### ⚠️ Gestion de la Mémoire
-Le Quality Gate utilise **8GB de mémoire par défaut** (configurable). Pour les très gros projets:
-- Utilisez toujours `--staged` ou `--changed`
-- Traitement par lots de 10 fichiers (configurable via `batchSize`)
-- Augmentez `maxMemoryMB` si nécessaire (max recommandé: 16384)
+## 🎯 Key Principles
 
-## 🚦 Execution Decision Matrix
+- **Type-Safe**: Zod schemas, strict TypeScript
+- **Clean Code**: DRY, immutable, pure functions
+- **Barrel Exports**: One `index.ts` per folder
+- **Zero-Debt**: Fix issues as you create them
 
-| Task Type | Tool / Workflow |
-| :--- | :--- |
-| **Small Fix** | `/debug` |
-| **Complex Feature** | `/ralph:ralph` (Parallel PRD) |
-| **Long Session** | `/ralph:loop` |
-| **Architecture** | Architect Agent → Implementation(Builder Agent) |
+## 📂 Project Standards
 
-## 📂 Project Tree Standards
+```
+src/
+├── validation/    # Zod schemas
+├── components/ui/ # Shadcn atoms
+├── core/          # Business logic
+└── **/index.ts    # Barrels required
+```
 
-- `src/validation/` : Schémas Zod
-- `src/components/ui/` : Atomes (Shadcn)
-- `src/core/` : Logique métier pure
-- Barrels : Un `index.ts` par dossier obligatoire pour le Tree-shaking
+---
+**Version**: 3.1.0 | **Docs**: [docs/INDEX.md](docs/INDEX.md) | **Last updated**: 2025-01-22
