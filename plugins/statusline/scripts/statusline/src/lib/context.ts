@@ -22,7 +22,7 @@ export interface ContextOptions {
   overheadTokens: number;
   includeBaseContext?: boolean;
   baseContextPath?: string;
-  workspaceDir?: string;
+  // NOTE: workspaceDir removed - we don't count project .claude/ in base context
 }
 
 // Cache for base context calculation (60 second TTL)
@@ -136,10 +136,10 @@ export async function readFirstLines(filePath: string, maxLines: number): Promis
 /**
  * Read and tokenize all base context files
  * Caches results for performance
+ * NOTE: Only counts global ~/.claude/ files, NOT workspace .claude/
  */
 export async function getBaseContextTokens(
-  baseContextPath: string,
-  workspaceDir?: string
+  baseContextPath: string
 ): Promise<number> {
   const now = Date.now();
 
@@ -203,31 +203,9 @@ export async function getBaseContextTokens(
       }
     }
 
-    // Read workspace-specific base context if provided
-    if (workspaceDir) {
-      const workspaceClaudeMd = join(workspaceDir, ".claude", "CLAUDE.md");
-      const workspaceRulesDir = join(workspaceDir, ".claude", "rules");
-
-      if (existsSync(workspaceClaudeMd)) {
-        const content = await safeReadFile(workspaceClaudeMd, MAX_FILE_SIZE_MB);
-        if (content) {
-          totalTokens += estimateTokens(content);
-        }
-      }
-
-      if (existsSync(workspaceRulesDir)) {
-        const files = await readdir(workspaceRulesDir);
-        for (const file of files) {
-          if (file.endsWith(".md")) {
-            const filePath = join(workspaceRulesDir, file);
-            const content = await safeReadFile(filePath, MAX_FILE_SIZE_MB);
-            if (content) {
-              totalTokens += estimateTokens(content);
-            }
-          }
-        }
-      }
-    }
+    // NOTE: We do NOT include workspace-specific .claude/ files
+    // Only global ~/.claude/ files are counted as base context
+    // This matches the behavior shown in /context command
 
     baseContextCache = { timestamp: now, tokens: totalTokens };
   } catch {
@@ -253,7 +231,6 @@ export async function getContextData(
     overheadTokens,
     includeBaseContext,
     baseContextPath,
-    workspaceDir,
   } = options;
 
   try {
@@ -303,10 +280,11 @@ export async function getContextData(
     const transcriptTokens = Math.round(transcriptChars / 3.5) || 0;
 
     // Calculate base context from files if enabled
+    // NOTE: Only counts global ~/.claude/ files, NOT workspace .claude/
     let baseContextTokens = 0;
     if (includeBaseContext && baseContextPath) {
       try {
-        baseContextTokens = await getBaseContextTokens(baseContextPath, workspaceDir);
+        baseContextTokens = await getBaseContextTokens(baseContextPath);
         // Ensure we got a valid number
         if (!isFinite(baseContextTokens) || baseContextTokens < 0) {
           baseContextTokens = 0;

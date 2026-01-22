@@ -8,6 +8,19 @@ The Smite Plugin Marketplace is a centralized registry of plugins that extend Sm
 
 ## Available Plugins
 
+### AI Agents
+
+- **[@smite/mobs](./mobs/README.md)** - Multi-agent orchestration system with Spec-First development workflow
+  - **Architect** - Design, strategy, initialization, and creative thinking
+  - **Builder** - Tech-specialized implementation (Next.js, Rust, Python, Go)
+  - **Explorer** - Codebase exploration and dependency mapping
+  - **Finalize** - Unified QA, code review, refactoring, and documentation
+  - **Simplifier** - Code simplification and refactoring
+  - **Note** - AI-powered Obsidian note creation and formatting
+  - Spec-Lock Policy enforcement
+  - Multi-tech stack support
+  - Design-to-code capabilities
+
 ### Quality & Testing
 
 - **[@smite/quality-gate](./quality-gate/README.md)** - Code quality gate system with complexity, semantic, and security validation
@@ -60,6 +73,7 @@ The [index.json](./index.json) file contains metadata for all plugins including:
 
 ## Plugin Categories
 
+- **AI Agents** - Multi-agent orchestration and workflow automation
 - **Quality & Testing** - Code quality, validation, and testing tools
 - **Documentation** - Documentation generation and maintenance
 - **Automation** - Workflow automation and enhancement
