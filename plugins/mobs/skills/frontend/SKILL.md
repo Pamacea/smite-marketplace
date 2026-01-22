@@ -129,7 +129,7 @@ xl: 1280px  /* Large Desktop */
 - **Accessibility issues**: Fix before delivery
 - **Type errors**: Resolve all TypeScript errors
 
-## File Organization
+## Use Shadcn components
 
 ```
 src/
@@ -138,13 +138,33 @@ src/
 │   │   ├── Button.tsx
 │   │   ├── Input.tsx
 │   │   ├── Card.tsx
-│   │   └── index.ts
-│   └── features/
-│       └── [feature-name]/
-│           └── [FeatureComponent].tsx
+│   │   ├── Label.tsx
+│   │   ├── Select.tsx
+│   │   ├── Dropdown Menu.tsx
+│   │   ├── Slider.tsx
+│   │   ├── Separator.tsx
+│   │   ├── Carousel.tsx
+│   │   ├── Badge.tsx
+│   │   ├── Switch.tsx
+│   │   ├── Textarea.tsx
+│   │   ├── Toggle.tsx
+│   │   ├── Tabs.tsx
+│   │   ├── Accordion.tsx
+│       └── index.ts
 └── styles/
     ├── design-tokens.ts
     └── globals.css
+```
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── logic/ // Logic components
+│   ├── client/ // Frontend components
+│   ├── ui/ // Shadcn pre-built components
+└── 
 ```
 
 ## Best Practices

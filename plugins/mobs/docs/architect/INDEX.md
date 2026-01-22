@@ -26,7 +26,7 @@ Complete documentation for the Architect agent - design, strategy, and creative 
 
 ### Other Mobs Agents
 See [../../README.md](../../README.md) for complete mobs plugin documentation including:
-- Builder, Explorer, Finalize, Simplifier agents
+- Builder, Finalize, Simplifier agents
 - Note-taking utilities
 - Integration with Ralph and Toolkit
 
@@ -125,10 +125,6 @@ Available in `templates/`:
 # Builder
 /builder --tech=nextjs --feature="authentication"
 /builder --design --source="figma:file-id"
-
-# Exploration
-/explorer --task=find-function --target="getUserData"
-/explorer --task=map-architecture
 
 # Quality assurance
 /finalize --mode=full

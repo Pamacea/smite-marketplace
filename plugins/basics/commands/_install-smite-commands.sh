@@ -3,7 +3,7 @@
 # This script is called by the /smite command
 
 # Find smite plugin directory
-SMITE_DIR="$(pwd)/plugins/smite"
+SMITE_DIR="$(pwd)/plugins/basics"
 if [ ! -d "$SMITE_DIR" ]; then
     # Try relative to script
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

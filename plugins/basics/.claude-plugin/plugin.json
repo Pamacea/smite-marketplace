@@ -1,12 +1,12 @@
 {
-  "name": "smite",
+  "name": "basics",
   "description": "Essential Claude commands for rapid development - oneshot, explore, debug, commit, claude-memory, and more",
   "version": "3.1.0",
   "author": {
     "name": "Pamacea",
     "email": "[email protected]"
   },
-  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/smite",
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/basics",
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
   "keywords": ["development", "commands", "workflow", "git", "documentation"],

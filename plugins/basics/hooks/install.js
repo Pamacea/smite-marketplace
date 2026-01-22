@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * PostPluginInstall hook for commands@smite
+ * PostPluginInstall hook for basics@smite
  *
  * Copies essential command files to ~/.claude/commands/
  * without overwriting existing commands.

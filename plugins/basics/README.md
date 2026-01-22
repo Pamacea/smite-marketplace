@@ -10,7 +10,7 @@ This plugin provides a collection of high-quality, battle-tested commands for yo
 
 ```bash
 # 1. Install the plugin
-/plugin install smite@smite
+/plugin install basics@smite
 
 # 2. Run the installer command
 /smite
@@ -196,7 +196,7 @@ To update commands:
 
 ```bash
 # 1. Update the plugin
-/plugin update smite@smite
+/plugin update basics@smite
 
 # 2. Reinstall commands
 /smite
@@ -210,7 +210,7 @@ To remove all installed commands:
 
 ```bash
 # Uninstall plugin
-/plugin uninstall smite@smite
+/plugin uninstall basics@smite
 
 # Manually delete commands (optional)
 rm ~/.claude/commands/oneshot.md

@@ -270,7 +270,6 @@ Complete project architecture:
 ## Integration
 
 **Works with:**
-- /explorer (analyze existing codebase)
 - /builder (implement architecture)
 - /finalize (document decisions)
 - ralph (full orchestration)

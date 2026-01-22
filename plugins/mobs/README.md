@@ -56,20 +56,6 @@ Implementation agent with technology specialization (Next.js, Rust, Python, Go) 
 /builder "Add task CRUD operations"
 ```
 
-#### **Explorer** (`/explorer`)
-Codebase exploration, dependency mapping, and pattern discovery with semantic search.
-
-```bash
-# Find function usage
-/explorer --task=find-function --target="getUserData"
-
-# Map architecture
-/explorer --task=map-architecture
-
-# Analyze change impact
-/explorer --task=analyze-impacts --scope=module
-```
-
 #### **Finalize** (`/finalize`)
 Unified quality assurance, code review, refactoring, linting, and documentation.
 
@@ -88,18 +74,25 @@ Unified quality assurance, code review, refactoring, linting, and documentation.
 /finalize --mode=qa --type=security  # Security audit
 ```
 
-#### **Simplifier** (`/simplifier`)
-Code simplification and refactoring for clarity and maintainability.
+#### **Refactor** (`/refactor`)
+Systematic code refactoring with validation and resolution workflow.
 
 ```bash
-# Simplify recent changes
-/simplifier --focus=recent
+# Quick refactor (low-risk items)
+/refactor --quick
 
-# Simplify specific file
-/simplifier --scope=file src/components/Button.tsx
+# Complete workflow
+/refactor -a -r -v -x -t --scope=recent
 
-# Simplify entire project
-/simplifier --scope=all
+# Step-by-step
+/refactor -a              # Analyze code
+/refactor -r              # Review issues
+/refactor -v --item=3     # Validate change
+/refactor -x --item=3     # Resolve issue
+/refactor -t --item=3     # Verify results
+
+# Refactor entire project
+/refactor -a -r -v -x -t --scope=all
 ```
 
 ### Utility Agents
@@ -193,16 +186,13 @@ All agents leverage the toolkit plugin when available:
 # 1. Design the architecture
 /architect --mode=design "User authentication system"
 
-# 2. Explore existing patterns
-/explorer --task=find-deps --target="auth"
-
-# 3. Implement from spec
+# 2. Implement from spec
 /builder --tech=nextjs --feature="authentication"
 
-# 4. Simplify and refactor
-/simplifier --scope=directory src/features/auth
+# 3. Refactor and improve
+/refactor -a -r -v -x -t --scope=directory src/features/auth
 
-# 5. Finalize and validate
+# 4. Finalize and validate
 /finalize --mode=full
 ```
 
@@ -251,27 +241,41 @@ Complete documentation is available in the [docs/](docs/) folder:
 - **[Architect Agent](docs/architect/)** - Design, strategy, and creative workflow
   - [Creative Workflow Guide](docs/architect/ARCHITECT_CREATIVE_WORKFLOW.md) - Complete creative workflow documentation
   - [Architect Index](docs/architect/INDEX.md) - All architect documentation
+- **[Refactor Agent](docs/refactor/)** - Systematic code refactoring with validation (NEW)
+  - [Complete Workflow Guide](docs/refactor/REFACTOR_WORKFLOW.md) - Step-by-step refactoring guide
+  - [Refactor Index](docs/refactor/INDEX.md) - All refactor documentation
 
 ### Agent Skills
 
 - `skills/architect/SKILL.md` - Architect agent documentation
 - `skills/builder/SKILL.md` - Builder agent documentation
 - `skills/finalize/SKILL.md` - Finalize agent documentation
-- `skills/explorer/SKILL.md` - Explorer agent documentation
-- `skills/simplifier/SKILL.md` - Simplifier agent documentation
+- `skills/refactor/SKILL.md` - Refactor agent documentation (NEW)
 - `skills/note/SKILL.md` - Note agent documentation
-- `skills/frontend/SKILL.md` - Frontend subagent (NEW)
-- `skills/ux/SKILL.md` - UX subagent (NEW)
+
+### Subagent Skills
+
+- `skills/frontend/SKILL.md` - Frontend implementation subagent
+- `skills/ux/SKILL.md` - UX refinement subagent
+- `skills/reviewer/SKILL.md` - Code review subagent (NEW)
+- `skills/validator/SKILL.md` - Validation subagent (NEW)
+- `skills/resolver/SKILL.md` - Refactoring subagent (NEW)
 
 ### Workflow Steps
 
-- `steps/architect/` - Detailed creative workflow steps
-- `steps/architect/01-brief.md` - Design brief creation
-- `steps/architect/02-research.md` - Web search research
-- `steps/architect/03-visual-analysis.md` - Visual analysis
-- `steps/architect/04-styles.md` - Style generation
-- `steps/architect/05-preview.md` - Preview workspace
-- `steps/architect/06-implement.md` - Final implementation
+- `steps/architect/` - Creative workflow steps
+  - `01-brief.md` - Design brief creation
+  - `02-research.md` - Web search research
+  - `03-visual-analysis.md` - Visual analysis
+  - `04-styles.md` - Style generation
+  - `05-preview.md` - Preview workspace
+  - `06-implement.md` - Final implementation
+- `steps/refactor/` - Refactoring workflow steps (NEW)
+  - `01-analyze.md` - Detect code issues
+  - `02-review.md` - Review and prioritize
+  - `03-validate.md` - Validate changes
+  - `04-resolve.md` - Apply refactoring
+  - `05-verify.md` - Verify results
 
 ### Configuration
 
@@ -288,15 +292,16 @@ Mobs works seamlessly with:
 
 ## 📝 Version
 
-Version: 3.1.0
+Version: 4.0.0
 License: MIT
 Author: Pamacea
 
 ## 🌟 Features
 
-- **Creative Design Workflow** - MCP-powered research and 5-style generation (NEW)
-- **Interactive Previews** - Temporary workspace to see designs before implementing (NEW)
-- **Subagent System** - Specialized frontend and UX agents (NEW)
+- **Creative Design Workflow** - MCP-powered research and 5-style generation
+- **Systematic Refactoring** - 5-step workflow with validation and subagents (NEW)
+- **Interactive Previews** - Temporary workspace to see designs before implementing
+- **Subagent System** - Specialized frontend, UX, reviewer, validator, resolver agents
 - **Spec-First Development** - All agents work from approved specifications
 - **Multi-Tech Support** - Next.js, Rust, Python, Go specialization
 - **Design-to-Code** - Convert Figma designs directly to components
