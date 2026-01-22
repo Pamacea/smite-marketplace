@@ -17,6 +17,14 @@ export interface ContextOptions {
     workspaceDir?: string;
 }
 /**
+ * Read last N lines from a file efficiently using streaming
+ */
+export declare function readLastLines(filePath: string, maxLines: number): Promise<string[]>;
+/**
+ * Read first N lines from a file (for detecting session start events)
+ */
+export declare function readFirstLines(filePath: string, maxLines: number): Promise<string[]>;
+/**
  * Read and tokenize all base context files
  * Caches results for performance
  */

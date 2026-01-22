@@ -71,7 +71,7 @@ async function safeReadFile(filePath: string, maxsizeMB: number): Promise<string
 /**
  * Read last N lines from a file efficiently using streaming
  */
-async function readLastLines(filePath: string, maxLines: number): Promise<string[]> {
+export async function readLastLines(filePath: string, maxLines: number): Promise<string[]> {
   const fileStats = await stat(filePath);
 
   // For small files, read entirely
@@ -93,6 +93,39 @@ async function readLastLines(filePath: string, maxLines: number): Promise<string
       // Keep only last N lines
       if (lines.length > maxLines) {
         lines.shift();
+      }
+    }
+  }
+
+  return lines;
+}
+
+/**
+ * Read first N lines from a file (for detecting session start events)
+ */
+export async function readFirstLines(filePath: string, maxLines: number): Promise<string[]> {
+  const fileStats = await stat(filePath);
+
+  // For small files, read entirely
+  if (fileStats.size < MAX_TRANSCRIPT_FILE_SIZE) {
+    const content = await readFile(filePath, "utf-8");
+    const allLines = content.split("\n").filter((line) => line.trim());
+    return allLines.slice(0, maxLines);
+  }
+
+  // For large files, stream first N lines
+  const lines: string[] = [];
+  const rl = createInterface({
+    input: createReadStream(filePath, { encoding: "utf-8" }),
+    crlfDelay: Infinity,
+  });
+
+  for await (const line of rl) {
+    if (line.trim()) {
+      lines.push(line);
+      if (lines.length >= maxLines) {
+        rl.close();
+        break;
       }
     }
   }
@@ -221,11 +254,24 @@ export async function getContextData(
       try {
         const entry = JSON.parse(line);
 
+        // Skip entries that should NOT be counted as user tokens
+        // - "progress" entries contain hook prompts/outputs (not user content)
+        // - "file-history-snapshot" entries are internal file tracking (not user content)
+        if (entry.type === "progress" || entry.type === "file-history-snapshot") {
+          continue;
+        }
+
         // Count different message types that consume context tokens
         if (entry.type === "user" || entry.type === "assistant") {
-          // Count message content
+          // Count message content, but exclude "thinking" blocks (internal reasoning)
           const content = entry.content || "";
-          transcriptChars += content.length;
+          if (Array.isArray(content)) {
+            // Filter out "thinking" blocks from content array
+            const nonThinkingContent = content.filter((c: any) => c.type !== "thinking");
+            transcriptChars += JSON.stringify(nonThinkingContent).length;
+          } else {
+            transcriptChars += content.length;
+          }
           messageCount++;
         } else if (entry.type === "tool_result" || entry.type === "tool_use") {
           // Count tool outputs (bash, grep, etc.) - these consume tokens too!

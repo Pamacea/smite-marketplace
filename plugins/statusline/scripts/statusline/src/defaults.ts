@@ -80,6 +80,6 @@ export const defaultConfigJson = {
     },
   },
   dailySpend: {
-    cost: { enabled: true, format: "decimal1" as const },
+    cost: { enabled: false, format: "decimal1" as const },
   },
 };

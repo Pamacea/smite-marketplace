@@ -2,6 +2,7 @@
  * Hook input data structure from Claude Code
  */
 export interface HookInput {
+  session_id: string;
   workspace: {
     current_dir: string;
   };

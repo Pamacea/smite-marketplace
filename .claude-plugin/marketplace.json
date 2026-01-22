@@ -123,15 +123,6 @@
         "name": "Pamacea"
       },
       "category": "productivity"
-    },
-    {
-      "name": "browser-automation",
-      "source": "./plugins/browser-automation",
-      "description": "Browser MCP automation with smites agents.",
-      "author": {
-        "name": "Pamacea"
-      },
-      "category": "productivity"
     }
   ]
 }

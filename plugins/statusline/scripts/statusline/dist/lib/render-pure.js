@@ -55,9 +55,16 @@ function renderSessionInfo(data, config) {
         const maxTokens = config.context.maxContextTokens;
         const userTokens = data.userTokens ?? data.contextTokens;
         const totalTokens = data.contextTokens;
-        // Display format: userTokens(totalTokens) if different, otherwise just userTokens
+        // Display format:
+        // - If userTokens is very small (<1K) compared to total, show just total (new session)
+        // - If userTokens is significantly different from total, show userTokens(totalTokens)
+        // - Otherwise show just userTokens
         let tokensStr;
-        if (userTokens !== totalTokens) {
+        if (userTokens < 1000 && totalTokens >= 1000) {
+            // New session with just base context - show total only
+            tokensStr = formatTokens(totalTokens, config.session.tokens.showDecimals);
+        }
+        else if (userTokens !== totalTokens) {
             tokensStr = `${formatTokens(userTokens, config.session.tokens.showDecimals)}${colors.dim}(${formatTokens(totalTokens, false)})${colors.reset}`;
         }
         else {
@@ -81,22 +88,23 @@ function renderSessionInfo(data, config) {
     }
     if (config.session.percentage.enabled) {
         const { progressBar, showValue } = config.session.percentage;
-        // Calculate user percentage based on user tokens (excludes system context)
+        // Calculate percentage based on context tokens (includes base context for new sessions)
         const maxTokens = config.context.maxContextTokens || 200000; // Default to 200K if not set
-        const userTokens = data.userTokens ?? data.contextTokens ?? 0;
+        const contextTokens = data.contextTokens ?? 0;
         // Protect against division by zero
-        const userPercentage = maxTokens > 0 && userTokens > 0
-            ? Math.min(100, Math.round((userTokens / maxTokens) * 100))
+        const percentage = maxTokens > 0 && contextTokens > 0
+            ? Math.min(100, Math.round((contextTokens / maxTokens) * 100))
             : 0;
-        // Only show progress bar if we have some tokens
-        if (userTokens > 0 && maxTokens > 0) {
+        // Show progress bar if we have any tokens (including base context)
+        // This ensures the bar shows up even for new sessions with just base context
+        if (contextTokens > 0 && maxTokens > 0) {
             if (progressBar.enabled) {
-                const bar = formatProgressBar(userPercentage, progressBar.length, progressBar.style, progressBar.color, progressBar.background);
+                const bar = formatProgressBar(percentage, progressBar.length, progressBar.style, progressBar.color, progressBar.background);
                 sessionParts.push(bar);
             }
             if (showValue) {
-                const percentColor = getPercentageColor(userPercentage, progressBar.color);
-                sessionParts.push(`${percentColor}${userPercentage}%${colors.reset}`);
+                const percentColor = getPercentageColor(percentage, progressBar.color);
+                sessionParts.push(`${percentColor}${percentage}%${colors.reset}`);
             }
         }
     }
@@ -140,29 +148,75 @@ function renderDailySpend(data, config) {
 }
 /**
  * Render statusline output
+ *
+ * CRITICAL: Put tokens + progressbar + percentage FIRST after branch
+ * so they're always visible even on narrow terminals
+ *
+ * Order: Branch • Tokens • Progressbar • Model • Cost • Duration • GitChanges • Path
  */
 export function renderStatusline(data, config) {
     const parts = [];
-    // Git branch
+    // Git branch (keep it short - just the name)
     if (config.git.enabled && data.branch) {
-        parts.push(`${colors.white}${data.branch}${colors.reset}`);
+        // Extract just branch name without changes
+        const branchName = data.branch.split(/[•\s]/)[0];
+        parts.push(`${colors.white}${branchName}${colors.reset}`);
     }
-    // Path and model
-    parts.push(renderPathAndModel(data, config));
-    // Session info
-    const sessionInfo = renderSessionInfo(data, config);
-    if (sessionInfo) {
-        parts.push(sessionInfo);
+    // CRITICAL: Tokens + Progressbar + Percentage - RIGHT AFTER BRANCH
+    if (config.session.tokens.enabled && data.contextTokens !== null) {
+        const maxTokens = config.context.maxContextTokens;
+        const userTokens = data.userTokens ?? data.contextTokens;
+        const totalTokens = data.contextTokens;
+        // Show just total tokens for compact display
+        let tokensStr;
+        if (userTokens < 1000 && totalTokens >= 1000) {
+            tokensStr = formatTokens(totalTokens, config.session.tokens.showDecimals);
+        }
+        else if (userTokens !== totalTokens) {
+            tokensStr = `${formatTokens(userTokens, config.session.tokens.showDecimals)}`;
+        }
+        else {
+            tokensStr = formatTokens(userTokens, config.session.tokens.showDecimals);
+        }
+        parts.push(`${colors.magenta}${tokensStr}${colors.reset}`);
+        // Progressbar + percentage RIGHT after tokens
+        if (config.session.percentage.enabled) {
+            const { progressBar, showValue } = config.session.percentage;
+            const maxTokensVal = config.context.maxContextTokens || 200000;
+            const percentage = maxTokensVal > 0 && totalTokens > 0
+                ? Math.min(100, Math.round((totalTokens / maxTokensVal) * 100))
+                : 0;
+            if (totalTokens > 0 && maxTokensVal > 0) {
+                if (progressBar.enabled) {
+                    const bar = formatProgressBar(percentage, progressBar.length, progressBar.style, progressBar.color, progressBar.background);
+                    parts.push(bar);
+                }
+                if (showValue) {
+                    const percentColor = getPercentageColor(percentage, progressBar.color);
+                    parts.push(`${percentColor}${percentage}%${colors.reset}`);
+                }
+            }
+        }
     }
-    // Usage limits
-    const limitsInfo = renderUsageLimits(data, config);
-    if (limitsInfo) {
-        parts.push(limitsInfo);
+    // Model name (short)
+    const modelDisplay = config.showSonnetModel || !data.modelName.includes("Sonnet")
+        ? data.modelName
+        : "Sonnet";
+    parts.push(`${colors.orange}${modelDisplay}${colors.reset}`);
+    // Cost and duration
+    if (config.session.cost.enabled) {
+        parts.push(data.sessionCost);
     }
-    // Daily spend
-    const dailySpend = renderDailySpend(data, config);
-    if (dailySpend) {
-        parts.push(dailySpend);
+    if (config.session.duration.enabled) {
+        parts.push(data.sessionDuration);
+    }
+    // Git changes (if any) - compact format
+    if (config.git.showChanges && data.branch) {
+        const changes = data.branch.split(/[•\s]+/).slice(1);
+        const filtered = changes.filter(c => c && c !== "•");
+        if (filtered.length > 0) {
+            parts.push(filtered.join(" "));
+        }
     }
     return parts.join(` ${colors.gray}${config.separator}${colors.reset} `);
 }
