@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "toolkit",
   "description": "Token optimization layer with semantic search (75% savings), RAG, bug detection, dependency analysis",
   "version": "3.1.0",
@@ -11,7 +10,6 @@
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
   "keywords": ["optimization", "search", "rag", "semantic", "bug-detection", "dependencies"],
-  "category": "analysis",
   "commands": "./commands/",
   "skills": "./skills/"
 }

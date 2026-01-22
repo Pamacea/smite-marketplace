@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "quality-gate",
   "description": "Automated code review (complexity, security, semantics)",
   "version": "3.1.0",
@@ -11,7 +10,6 @@
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
   "keywords": ["quality", "validation", "review", "security", "complexity"],
-  "category": "quality",
   "commands": "./commands/",
   "skills": "./skills/"
 }

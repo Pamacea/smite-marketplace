@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "architect",
   "description": "Design & strategy agent (init + strategy + design + brainstorm)",
   "version": "3.1.0",
@@ -11,7 +10,6 @@
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
   "keywords": ["design", "strategy", "architecture", "initialization", "planning"],
-  "category": "development",
   "commands": "./commands/",
   "skills": "./skills/"
 }

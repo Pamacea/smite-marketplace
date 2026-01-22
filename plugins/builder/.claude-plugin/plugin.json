@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "builder",
   "description": "Implementation agent with tech specialization (Next.js, Rust, Python)",
   "version": "3.1.0",
@@ -11,7 +10,6 @@
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
   "keywords": ["implementation", "coding", "constructor", "nextjs", "rust", "python"],
-  "category": "development",
   "commands": "./commands/",
   "skills": "./skills/"
 }

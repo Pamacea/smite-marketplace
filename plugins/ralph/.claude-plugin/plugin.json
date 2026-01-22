@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "ralph",
   "description": "Multi-agent orchestrator with parallel execution (2-3x speedup)",
   "version": "3.1.0",
@@ -11,7 +10,6 @@
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
   "keywords": ["orchestration", "parallel", "multi-agent", "prd", "workflow"],
-  "category": "orchestration",
   "commands": "./commands/",
   "skills": "./skills/",
   "hooks": {
