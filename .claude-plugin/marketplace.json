@@ -8,7 +8,7 @@
     "email": "[email protected]"
   },
   "metadata": {
-    "description": "Complete SMITE development workflow with 13 plugins for orchestration, analysis, quality, and productivity. Features token optimization (75% savings), parallel execution (2-3x speedup), and automated code review.",
+    "description": "Complete SMITE development workflow with 12 plugins for orchestration, analysis, quality, and productivity. Features token optimization (75% savings), parallel execution (2-3x speedup), and automated code review.",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -139,19 +139,6 @@
       "tags": ["obsidian", "notes", "documentation", "productivity"],
       "keywords": ["obsidian", "notes", "writing", "formatting"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/note",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "docs",
-      "source": "./plugins/docs",
-      "description": "Automatic documentation maintenance (README, OpenAPI, JSDoc)",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "productivity",
-      "tags": ["documentation", "mcp", "automation", "sync"],
-      "keywords": ["docs", "editor", "mcp", "documentation-sync"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/docs",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"
     },

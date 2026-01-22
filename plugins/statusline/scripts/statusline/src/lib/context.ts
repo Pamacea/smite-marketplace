@@ -175,17 +175,31 @@ export async function getBaseContextTokens(
       }
     }
 
-    // Read all .md files in rules directory
+    // Read all .md files in rules directory (recursively)
     if (existsSync(rulesDir)) {
-      const files = await readdir(rulesDir);
-      for (const file of files) {
-        if (file.endsWith(".md")) {
-          const filePath = join(rulesDir, file);
-          const content = await safeReadFile(filePath, MAX_FILE_SIZE_MB);
-          if (content) {
-            totalTokens += estimateTokens(content);
+      try {
+        const readDirRecursive = async (dir: string) => {
+          const files = await readdir(dir);
+          for (const file of files) {
+            const filePath = join(dir, file);
+            try {
+              const stats = await stat(filePath);
+              if (stats.isDirectory()) {
+                await readDirRecursive(filePath);
+              } else if (file.endsWith(".md")) {
+                const content = await safeReadFile(filePath, MAX_FILE_SIZE_MB);
+                if (content) {
+                  totalTokens += estimateTokens(content);
+                }
+              }
+            } catch {
+              // Skip file if read fails
+            }
           }
-        }
+        };
+        await readDirRecursive(rulesDir);
+      } catch {
+        // Skip directory if read fails
       }
     }
 

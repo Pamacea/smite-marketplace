@@ -80,90 +80,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "@smite/docs-editor-mcp",
-      "name": "Docs Editor MCP",
-      "version": "1.0.0",
-      "description": "MCP server for automatic documentation maintenance (OpenAPI sync, README updates, JSDoc generation)",
-      "author": "Smite",
-      "license": "MIT",
-      "homepage": "https://github.com/pamacea/smite#docs-editor-mcp",
-      "repository": "https://github.com/pamacea/smite",
-      "bugs": "https://github.com/pamacea/smite/issues",
-      "category": "documentation",
-      "tags": [
-        "mcp",
-        "documentation",
-        "openapi",
-        "swagger",
-        "jsdoc",
-        "readme",
-        "automation"
-      ],
-      "smite": {
-        "minVersion": "1.0.0",
-        "type": "mcp-server",
-        "protocol": "stdio",
-        "entryPoint": "./dist/index.js",
-        "configFile": ".claude/.smite/docs-config.json",
-        "autoInstall": false
-      },
-      "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.0.4",
-        "@types/glob": "^8.1.0",
-        "@types/js-yaml": "^4.0.9",
-        "@types/mdast": "^4.0.4",
-        "@types/node": "^22.10.5",
-        "@types/unist": "^1.0.0",
-        "@typescript-eslint/parser": "^8.19.1",
-        "@typescript-eslint/typescript-estree": "^8.19.1",
-        "fast-glob": "^3.3.3",
-        "glob": "^13.0.0",
-        "js-yaml": "^4.1.0",
-        "remark-parse": "^11.0.0",
-        "remark-stringify": "^11.0.0",
-        "typescript": "^5.7.3",
-        "unified": "^11.0.5",
-        "zod": "^3.24.1"
-      },
-      "features": [
-        "README Architecture Updater - Monitors dependencies and structure",
-        "Manual Edit Preservation - Markers to preserve custom content",
-        "Diff Generation - Preview changes before applying",
-        "OpenAPI/Swagger Sync (Planned)",
-        "JSDoc Generator (Planned)"
-      ],
-      "installation": {
-        "type": "npm",
-        "location": "plugins/docs-editor-mcp",
-        "commands": [
-          "cd plugins/docs-editor-mcp",
-          "npm install",
-          "npm run build"
-        ],
-        "verification": "test -f dist/index.js"
-      },
-      "compatibility": {
-        "node": ">=18.0.0",
-        "typescript": ">=5.0.0",
-        "os": ["win32", "darwin", "linux"]
-      },
-      "documentation": "plugins/docs-editor-mcp/README.md",
-      "changelog": [
-        {
-          "version": "1.0.0",
-          "date": "2025-01-19",
-          "changes": [
-            "Initial release",
-            "README architecture updater",
-            "Dependency monitoring",
-            "Structure scanning",
-            "Manual edit preservation with markers",
-            "Markdown diff generation"
-          ]
-        }
-      ]
     }
   ],
   "categories": [
@@ -171,11 +87,6 @@
       "id": "quality",
       "name": "Quality & Testing",
       "description": "Tools for code quality, testing, and validation"
-    },
-    {
-      "id": "documentation",
-      "name": "Documentation",
-      "description": "Documentation generation and maintenance tools"
     },
     {
       "id": "automation",
