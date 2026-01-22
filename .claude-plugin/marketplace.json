@@ -8,7 +8,7 @@
     "email": "[email protected]"
   },
   "metadata": {
-    "description": "Complete SMITE development workflow with 12 plugins for orchestration, analysis, quality, and productivity. Features token optimization (75% savings), parallel execution (2-3x speedup), and automated code review.",
+    "description": "Complete SMITE development workflow with 7 plugins for orchestration, analysis, and productivity. Features token optimization (75% savings), parallel execution (2-3x speedup), and automated code review.",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -39,67 +39,15 @@
       "license": "MIT"
     },
     {
-      "name": "architect",
-      "source": "./plugins/architect",
-      "description": "Design & strategy agent (init + strategy + design + brainstorm)",
+      "name": "mobs",
+      "source": "./plugins/mobs",
+      "description": "Multi-agent orchestration system with spec-first workflow - Architect, Builder, Explorer, Finalize, Simplifier, and Note agents",
       "version": "3.1.0",
       "author": { "name": "Pamacea" },
-      "category": "development",
-      "tags": ["design", "strategy", "architecture", "planning"],
-      "keywords": ["design", "strategy", "architecture", "initialization"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/architect",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "builder",
-      "source": "./plugins/builder",
-      "description": "Implementation agent with tech specialization (Next.js, Rust, Python)",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "development",
-      "tags": ["implementation", "coding", "nextjs", "rust", "python"],
-      "keywords": ["builder", "implementation", "coding", "constructor"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/builder",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "finalize",
-      "source": "./plugins/finalize",
-      "description": "QA & documentation agent (testing + review + linting + docs)",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "quality",
-      "tags": ["qa", "testing", "review", "documentation", "linting"],
-      "keywords": ["finalize", "qa", "testing", "documentation", "review"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/finalize",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "explorer",
-      "source": "./plugins/explorer",
-      "description": "Codebase exploration, dependency mapping & pattern discovery",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "analysis",
-      "tags": ["exploration", "dependencies", "patterns", "architecture"],
-      "keywords": ["explorer", "codebase", "dependencies", "patterns"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/explorer",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "simplifier",
-      "source": "./plugins/simplifier",
-      "description": "Code simplification and refactoring for clarity & maintainability",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "quality",
-      "tags": ["refactoring", "simplification", "cleanup"],
-      "keywords": ["simplifier", "refactor", "cleanup", "maintainability"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/simplifier",
+      "category": "agents",
+      "tags": ["agents", "workflow", "spec-first", "orchestration", "architecture", "implementation", "qa", "exploration", "notes"],
+      "keywords": ["agents", "architect", "builder", "explorer", "finalize", "simplifier", "note"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/mobs",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"
     },
@@ -126,19 +74,6 @@
       "tags": ["statusline", "ui", "tokens", "git"],
       "keywords": ["statusline", "session", "git", "tokens"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/statusline",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "note",
-      "source": "./plugins/note",
-      "description": "AI-powered note writing & formatting for Obsidian vaults",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "productivity",
-      "tags": ["obsidian", "notes", "documentation", "productivity"],
-      "keywords": ["obsidian", "notes", "writing", "formatting"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/note",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"
     },
