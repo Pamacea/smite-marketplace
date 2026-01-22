@@ -9,6 +9,7 @@ import { homedir } from "node:os";
 // Import core modules
 import { defaultConfig, mergeConfig, type StatuslineConfig } from "./lib/config.js";
 import { getContextData } from "./lib/context.js";
+import { TokenTracker } from "./lib/token-tracker.js";
 import {
   colors,
   formatBranch,
@@ -69,28 +70,6 @@ const CONFIG_FILE_PATH = join(__dirname, "..", "statusline.config.json");
 const LAST_PAYLOAD_PATH = join(__dirname, "..", "data", "last_payload.txt");
 const CACHE_FILE_PATH = join(__dirname, "..", "data", "context_cache.json");
 const TOKEN_TRACKER_PATH = join(homedir(), ".claude", ".token-tracker.json");
-
-/**
- * Time to show token diff after activity stops.
- * 10 seconds balances visibility (long enough to see) with
- * recency (fades out before it becomes stale).
- */
-const TOKEN_DIFF_TIMEOUT = 10000;
-
-/**
- * Session timeout for token tracker.
- * 30 minutes = 1800000ms. After this period, we assume a new
- * work session and reset the baseline. Prevents showing old
- * token diffs from previous sessions.
- */
-const SESSION_TIMEOUT = 1800000;
-
-interface TokenTrackerData {
-  lastUsage: number;
-  timestamp: number;
-  lastDiffTime: number;
-  sessionId?: string; // Optional session identifier for parallel session detection
-}
 
 interface ContextCache {
   timestamp: number;
@@ -206,133 +185,6 @@ async function findActualTranscriptPath(payloadPath: string): Promise<string> {
     console.error(`[DEBUG] Error finding actual transcript: ${e}`);
     return payloadPath;
   }
-}
-
-/**
- * Load token tracker from disk
- */
-async function loadTokenTracker(
-  currentUsage: number,
-  sessionId?: string
-): Promise<TokenTrackerData> {
-  try {
-    if (existsSync(TOKEN_TRACKER_PATH)) {
-      const content = await readFile(TOKEN_TRACKER_PATH, "utf-8");
-      const tracker = JSON.parse(content) as TokenTrackerData;
-      const now = Date.now();
-
-      // Reset tracker if:
-      // 1. The tracker is too old (> 30 minutes = likely a new session)
-      // 2. Session ID changed (parallel session detected)
-      // DO NOT reset based on currentUsage < tracker.lastUsage as this causes false resets
-      if (
-        now - tracker.timestamp > SESSION_TIMEOUT ||
-        (sessionId && tracker.sessionId && sessionId !== tracker.sessionId)
-      ) {
-        return {
-          lastUsage: currentUsage,
-          timestamp: now,
-          lastDiffTime: now,
-          sessionId,
-        };
-      }
-      // Update sessionId if it wasn't set before
-      if (sessionId && !tracker.sessionId) {
-        tracker.sessionId = sessionId;
-      }
-      return tracker;
-    }
-  } catch (e) {
-    // File doesn't exist or is invalid
-  }
-  return {
-    lastUsage: currentUsage,
-    timestamp: Date.now(),
-    lastDiffTime: Date.now(),
-    sessionId,
-  };
-}
-
-/**
- * Save token tracker to disk
- */
-async function saveTokenTracker(tracker: TokenTrackerData): Promise<void> {
-  try {
-    tracker.timestamp = Date.now();
-    await writeFile(
-      TOKEN_TRACKER_PATH,
-      JSON.stringify(tracker, null, 2),
-      "utf-8"
-    );
-  } catch (e) {
-    // Fail silently - don't break statusline if we can't save
-  }
-}
-
-/**
- * Calculate token difference and determine if it should be shown
- * Handles parallel sessions by only showing positive diffs
- */
-function getTokenDiff(
-  currentUsage: number,
-  tracker: TokenTrackerData
-): { diff: number; shouldShow: boolean } {
-  // Calculate the actual difference
-  const tokenDiff = currentUsage - tracker.lastUsage;
-  const now = Date.now();
-  const timeSinceLastDiff = now - (tracker.lastDiffTime || 0);
-
-  // Only show positive token diffs (new tokens added)
-  // Negative diffs (context clearing, compaction) are hidden to avoid confusion
-  // The timeout only applies to HIDING the diff after activity stops
-  const shouldShow = tokenDiff > 0 && timeSinceLastDiff < TOKEN_DIFF_TIMEOUT;
-
-  return { diff: tokenDiff, shouldShow };
-}
-
-/**
- * Update tracker with new usage if tokens have changed
- * IMPORTANT: Only update lastDiffTime when NEW tokens are added
- * This allows the timeout to work and hide the +X.XK after 5s
- *
- * Parallel session handling:
- * - If currentUsage >= lastUsage: Normal progression, update tracker
- * - If currentUsage < lastUsage: Context was cleared/compacted or parallel session
- *   In this case, we update lastUsage but DON'T update lastDiffTime to avoid
- *   showing confusing negative diffs
- */
-function updateTracker(
-  tracker: TokenTrackerData,
-  currentUsage: number
-): TokenTrackerData {
-  const tokenDiff = currentUsage - tracker.lastUsage;
-  const now = Date.now();
-  const timeSinceLastDiff = now - (tracker.lastDiffTime || 0);
-
-  if (tokenDiff > 0) {
-    // New tokens added - active work in progress
-    // Keep the baseline (lastUsage) UNCHANGED to ACCUMULATE the diff
-    // Only update lastDiffTime to keep the diff visible
-
-    // Only reset baseline when timeout expires (5s of no activity)
-    if (timeSinceLastDiff >= TOKEN_DIFF_TIMEOUT) {
-      // Timeout expired - activity stopped, reset baseline
-      tracker.lastUsage = currentUsage;
-      tracker.lastDiffTime = now;
-    } else {
-      // Still active - just update the timestamp to keep diff visible
-      tracker.lastDiffTime = now;
-    }
-  } else if (tokenDiff < 0) {
-    // Context cleared or parallel session detected
-    // Update lastUsage to prevent showing huge positive diffs later
-    // but DON'T update lastDiffTime (don't show the negative diff)
-    tracker.lastUsage = currentUsage;
-    // lastDiffTime stays the same - existing timeout continues
-  }
-  // If tokenDiff === 0, no update needed
-
-  return tracker;
 }
 
 // Dynamic working directory tracking
@@ -459,100 +311,23 @@ async function trackWorkingDirectory(
     const recentEntries = transcript.slice(-20);
 
     for (const entry of recentEntries) {
-      // Check if this is a user or AI command
-      if (entry.type === "user" || entry.type === "assistant") {
-        const entryContent = entry.content || "";
+      // Guard clause: skip non-message entries
+      if (entry.type !== "user" && entry.type !== "assistant") {
+        continue;
+      }
 
-        // Try to extract bash commands from tool calls
-        // Format 1: <function=Bash>...command...</function>
-        // Format 2: Tool use blocks with "command" field
-        let bashCommands: string[] = [];
+      const entryContent = entry.content || "";
+      const bashCommands = extractBashCommands(entryContent);
 
-        // Try to find Bash tool calls in the content
-        const functionMatches = entryContent.match(/<function=Bash>([\s\S]*?)<\/function>/g);
-        if (functionMatches) {
-          for (const match of functionMatches) {
-            // Extract content between the tags
-            const innerContent = match.replace(/<\/?function=Bash>/g, "");
-            // Look for "command": "..." or just cd
-            const commandMatch = innerContent.match(/"command"\s*:\s*"([^"]*cd[^"]*)"/);
-            if (commandMatch) {
-              bashCommands.push(commandMatch[1]);
-            } else if (innerContent.includes("cd")) {
-              // Fallback: take all content containing cd
-              bashCommands.push(innerContent);
-            }
-          }
-        }
-
-        // Also look for direct commands in content (simple case)
-        if (bashCommands.length === 0) {
-          const directCdMatch = entryContent.match(/(?:^\s*|\n)(cd\s+[^\n]+)/g);
-          if (directCdMatch) {
-            bashCommands.push(...directCdMatch);
-          }
-        }
-
-        // Analyze each command to find cd commands
-        for (const cmd of bashCommands) {
-          // Normalize the command
-          const normalizedCmd = cmd.replace(/\\'/g, "'").replace(/\\"/g, '"');
-
-          // Look for cd with different patterns
-          // Pattern 1: cd && other_command
-          // Pattern 2: cd dir
-          // Pattern 3: command && cd dir
-          const cdPatterns = [
-            /(?:^|&&\s*|;\s*)cd\s+([^\s&;]+)/,
-            /cd\s+&&/,
-            /cd\s+"([^"]+)"/,
-            /cd\s+'([^']+)'/,
-          ];
-
-          for (const pattern of cdPatterns) {
-            const match = normalizedCmd.match(pattern);
-            if (match) {
-              let targetDir = match[1];
-
-              if (!targetDir && match[0]?.includes("cd &&")) {
-                // Case "cd &&" without argument = use initial directory
-                continue;
-              }
-
-              if (targetDir) {
-                // Clean remaining quotes
-                targetDir = targetDir.replace(/^["']|["']$/g, "").trim();
-
-                // Resolve relative or absolute path
-                if (targetDir.startsWith("/") || targetDir.match(/^[A-Za-z]:\\/)) {
-                  // Absolute path
-                  currentWorkingDir = targetDir;
-                } else if (targetDir === "..") {
-                  // Go up one level
-                  const parts: string[] = (currentWorkingDir || initialDir).split(/[/\\]/);
-                  parts.pop();
-                  currentWorkingDir = parts.join("/");
-                } else if (targetDir === "~") {
-                  // Home directory - use workspace home directory
-                  const workspaceParts = initialDir.split(/[/\\]/);
-                  if (workspaceParts.length >= 2) {
-                    currentWorkingDir = workspaceParts.slice(0, 2).join("/");
-                  } else {
-                    currentWorkingDir = initialDir;
-                  }
-                } else {
-                  // Relative path
-                  const basePath: string = currentWorkingDir || initialDir;
-                  const separator = basePath.includes("/") ? "/" : "\\";
-                  currentWorkingDir = basePath + separator + targetDir;
-                }
-
-                // Normalize path (use / everywhere)
-                if (currentWorkingDir) {
-                  currentWorkingDir = currentWorkingDir.replace(/\\/g, "/");
-                }
-              }
-            }
+      // Process each bash command
+      for (const cmd of bashCommands) {
+        const targetDir = extractCdTarget(cmd);
+        if (targetDir) {
+          const basePath = currentWorkingDir || initialDir;
+          currentWorkingDir = resolveTargetPath(targetDir, basePath);
+          // Normalize path (use / everywhere)
+          if (currentWorkingDir) {
+            currentWorkingDir = currentWorkingDir.replace(/\\/g, "/");
           }
         }
       }
@@ -797,32 +572,18 @@ async function main() {
     const currentUsage = contextInfo.tokens || 0;
     // Use actual transcript path as unique session ID (changes with /clear command)
     const sessionId = actualTranscriptPath;
-    const tokenTracker = await loadTokenTracker(currentUsage, sessionId);
-    let { diff: tokenDiff, shouldShow: showTokenDiff } = getTokenDiff(
-      currentUsage,
-      tokenTracker
-    );
+    const tracker = await TokenTracker.load(TOKEN_TRACKER_PATH, currentUsage, sessionId);
+    const { diff: tokenDiff, shouldShow: showTokenDiff } = tracker.getCurrentDiff(currentUsage);
 
     // Detect spurious diffs from base context calculation changes or session resets
-    /**
-     * Threshold for detecting spurious token diffs.
-     * 50K tokens = far more than typical single action (<10K).
-     * Diffs above this threshold are likely from:
-     * - Base context configuration changes
-     * - Session resets (/new command)
-     * - Context window compaction
-     */
-    const SPURIOUS_DIFF_THRESHOLD = 50000;
-    if (Math.abs(tokenDiff) > SPURIOUS_DIFF_THRESHOLD) {
+    if (tracker.isSpuriousDiff(tokenDiff)) {
       // This is likely a spurious diff - don't show it and reset baseline
-      showTokenDiff = false;
-      tokenTracker.lastUsage = currentUsage;
-      tokenTracker.timestamp = Date.now();
-      await saveTokenTracker(tokenTracker);
+      tracker.resetBaseline(currentUsage);
+      await tracker.save(TOKEN_TRACKER_PATH);
     } else {
       // Normal path: update tracker with actual changes
-      const updatedTracker = updateTracker(tokenTracker, currentUsage);
-      await saveTokenTracker(updatedTracker);
+      tracker.update(currentUsage);
+      await tracker.save(TOKEN_TRACKER_PATH);
     }
 
     // Track the dynamic working directory
