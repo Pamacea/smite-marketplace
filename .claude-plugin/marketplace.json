@@ -104,22 +104,9 @@
       "license": "MIT"
     },
     {
-      "name": "quality-gate",
-      "source": "./plugins/quality-gate",
-      "description": "Automated code review (complexity, security, semantics)",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "quality",
-      "tags": ["quality", "review", "security", "complexity", "validation"],
-      "keywords": ["quality-gate", "validation", "security", "complexity"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/quality-gate",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
       "name": "smite",
       "source": "./plugins/smite",
-      "description": "Essential commands (oneshot, epct, apex, debug, explore, commit, pr)",
+      "description": "Essential commands (oneshot, debug, commit, explore, epct, apex, smite)",
       "version": "3.1.0",
       "author": { "name": "Melvynx" },
       "category": "development",

@@ -15,15 +15,9 @@ const commands = [
   'explore.md',
   'debug.md',
   'commit.md',
-  'memory.md',
   'epct.md',
   'apex.md',
-  'explain.md',
-  'cleanup.md',
-  'pr.md',
-  'tasks.md',
-  'smite.md',
-  'spec.md'
+  'smite.md'
 ];
 
 function installCommands() {
