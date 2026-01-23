@@ -22,6 +22,9 @@ const COLORS = {
 const TOKENS_PER_CHAR = 0.15;
 const JSON_OVERHEAD = 4.0;
 
+// Cache for base context token count (per project)
+const baseContextCache = new Map();
+
 class StatusLine {
   constructor() {
     this.homeDir = os.homedir();
@@ -264,6 +267,132 @@ class StatusLine {
     return 'N/A';
   }
 
+  estimateBaseContextTokens() {
+    const cwd = process.cwd();
+    const cacheKey = cwd;
+
+    // Return cached value if available
+    if (baseContextCache.has(cacheKey)) {
+      return baseContextCache.get(cacheKey);
+    }
+
+    let totalChars = 0;
+
+    // Helper to safely count file characters
+    const countFile = (filePath) => {
+      try {
+        if (fs.existsSync(filePath)) {
+          const content = fs.readFileSync(filePath, 'utf-8');
+          return content.length;
+        }
+      } catch {
+        // File not accessible
+      }
+      return 0;
+    };
+
+    // Helper to recursively count files in directory matching pattern
+    const countDir = (dirPath, pattern = /\.md$/) => {
+      let count = 0;
+      try {
+        if (fs.existsSync(dirPath)) {
+          const items = fs.readdirSync(dirPath, { withFileTypes: true });
+          for (const item of items) {
+            const fullPath = path.join(dirPath, item.name);
+            if (item.isDirectory()) {
+              count += countDir(fullPath, pattern);
+            } else if (item.isFile() && pattern.test(item.name)) {
+              count += countFile(fullPath);
+            }
+          }
+        }
+      } catch {
+        // Dir not accessible
+      }
+      return count;
+    };
+
+    // 1. Global Claude config files
+    totalChars += countFile(path.join(this.claudeDir, 'CLAUDE.md'));
+
+    // 2. Global rules (core, domain, project)
+    totalChars += countDir(path.join(this.claudeDir, 'rules', 'core'));
+    totalChars += countDir(path.join(this.claudeDir, 'rules', 'domain'));
+    totalChars += countDir(path.join(this.claudeDir, 'rules', 'project'));
+
+    // 3. MCP config
+    totalChars += countFile(path.join(this.claudeDir, 'mcp.json'));
+    totalChars += countFile(path.join(this.claudeDir, 'mcp_settings.json'));
+
+    // 4. Project-specific config (if exists)
+    const projectClaudeMd = path.join(cwd, 'CLAUDE.md');
+    totalChars += countFile(projectClaudeMd);
+
+    const projectClaudeDir = path.join(cwd, '.claude');
+    if (fs.existsSync(projectClaudeDir)) {
+      // Project rules
+      totalChars += countDir(path.join(projectClaudeDir, 'rules'));
+
+      // Project smite config
+      totalChars += countDir(path.join(projectClaudeDir, '.smite'));
+    }
+
+    // 5. Plugins - check if plugins directory exists relative to project
+    const possiblePluginPaths = [
+      path.join(cwd, 'plugins'),
+      path.join(cwd, '..', 'plugins'),
+      path.join(this.claudeDir, 'plugins'),
+    ];
+
+    for (const pluginsPath of possiblePluginPaths) {
+      if (fs.existsSync(pluginsPath)) {
+        const pluginDirs = fs.readdirSync(pluginsPath, { withFileTypes: true })
+          .filter(d => d.isDirectory())
+          .map(d => path.join(pluginsPath, d.name));
+
+        for (const pluginDir of pluginDirs) {
+          // Count README, command files, hooks
+          totalChars += countFile(path.join(pluginDir, 'README.md'));
+          totalChars += countFile(path.join(pluginDir, 'package.json'));
+
+          // Count commands
+          const commandsDir = path.join(pluginDir, 'commands');
+          totalChars += countDir(commandsDir, /\.md$/);
+
+          // Count skills
+          const skillsDir = path.join(pluginDir, 'skills');
+          if (fs.existsSync(skillsDir)) {
+            const skillDirs = fs.readdirSync(skillsDir, { withFileTypes: true })
+              .filter(d => d.isDirectory());
+            for (const skillDir of skillDirs) {
+              const skillPath = path.join(skillsDir, skillDir.name);
+              totalChars += countFile(path.join(skillPath, 'SKILL.md'));
+              totalChars += countDir(skillPath, /\.md$/);
+            }
+          }
+
+          // Count hooks
+          const hooksDir = path.join(pluginDir, 'hooks');
+          totalChars += countDir(hooksDir, /\.js$/);
+
+          // Count .claude-plugin dir
+          const claudePluginDir = path.join(pluginDir, '.claude-plugin');
+          totalChars += countDir(claudePluginDir);
+        }
+      }
+    }
+
+    // Convert characters to estimated tokens
+    // Use TOKENS_PER_CHAR but with lower overhead since these are plain text/markdown
+    const estimatedTokens = Math.round(totalChars * TOKENS_PER_CHAR);
+
+    // Cache the result (with a reasonable minimum base)
+    const result = Math.max(estimatedTokens, 5000); // At least 5K base context
+    baseContextCache.set(cacheKey, result);
+
+    return result;
+  }
+
   extractTokens(sessionData, sessionPath) {
     let inputTokens = 0;
     let outputTokens = 0;
@@ -282,18 +411,25 @@ class StatusLine {
       }
     }
 
-    // If no actual tokens found, estimate from file size
-    if (inputTokens === 0 && outputTokens === 0 && sessionPath) {
+    // If we have actual tokens, add base context estimation
+    if (inputTokens > 0 || outputTokens > 0) {
+      const baseContext = this.estimateBaseContextTokens();
+      // Add base context to input tokens (it's sent with each request)
+      inputTokens += baseContext;
+    } else if (sessionPath) {
+      // No actual tokens found, estimate from file size + base context
       try {
         const stats = fs.statSync(sessionPath);
         const fileSize = stats.size;
         const estimatedTotal = Math.round((fileSize * TOKENS_PER_CHAR) / JSON_OVERHEAD);
-        inputTokens = Math.round(estimatedTotal * 0.7);
+        const baseContext = this.estimateBaseContextTokens();
+        inputTokens = Math.round(estimatedTotal * 0.7) + baseContext;
         outputTokens = Math.round(estimatedTotal * 0.3);
       } catch {
         const totalContent = sessionData.map(e => JSON.stringify(e)).join('');
         const estimatedTotal = Math.round((totalContent.length * TOKENS_PER_CHAR) / JSON_OVERHEAD);
-        inputTokens = Math.round(estimatedTotal * 0.7);
+        const baseContext = this.estimateBaseContextTokens();
+        inputTokens = Math.round(estimatedTotal * 0.7) + baseContext;
         outputTokens = Math.round(estimatedTotal * 0.3);
       }
     }
