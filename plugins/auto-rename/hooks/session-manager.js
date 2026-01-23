@@ -84,7 +84,17 @@ class SessionManager {
 
     for (const entry of recentEntries) {
       if (entry.type === 'user' && entry.message && entry.message.content) {
+        // Skip command/skill invocations - they're not real user messages
+        if (this.isCommandInvocation(entry.message.content)) {
+          continue;
+        }
+
         const content = this.extractContent(entry.message.content);
+
+        // Only capture meaningful content (not empty or just whitespace)
+        if (!content || content.trim().length < 3) {
+          continue;
+        }
 
         if (!context.firstUserMessage) {
           context.firstUserMessage = content.substring(0, 200);
@@ -108,6 +118,50 @@ class SessionManager {
     }
 
     return context;
+  }
+
+  isCommandInvocation(message) {
+    // Detect if this is a system command/skill invocation rather than a real user message
+    if (typeof message === 'string') {
+      // Skip messages containing command tags (from CLI command invocations)
+      // Skip messages containing skill expansion tags (<objective>, <process>, etc.)
+      return message.includes('<command-') ||
+             message.includes('<local-command-') ||
+             message.includes('<objective>') ||
+             message.includes('<process>') ||
+             message.includes('<verification>');
+    }
+
+    if (Array.isArray(message)) {
+      // Check if any element contains command tags or system artifacts
+      for (const m of message) {
+        if (typeof m === 'string') {
+          if (m.includes('<command-') ||
+              m.includes('<local-command-') ||
+              m.includes('<objective>') ||
+              m.includes('<process>') ||
+              m.includes('<verification>')) {
+            return true;
+          }
+        }
+        const text = m?.text || '';
+        if (text.includes('<command-') ||
+            text.includes('<local-command-') ||
+            text.includes('<objective>') ||
+            text.includes('<process>') ||
+            text.includes('<verification>')) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    const text = message?.text || '';
+    return text.includes('<command-') ||
+           text.includes('<local-command-') ||
+           text.includes('<objective>') ||
+           text.includes('<process>') ||
+           text.includes('<verification>');
   }
 
   extractContent(message) {

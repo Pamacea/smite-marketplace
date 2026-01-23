@@ -1,5 +1,46 @@
 # Auto-Rename Plugin Bug Fixes
 
+## Version 3.1.2 - January 23, 2026
+
+### 🐛 Bug #7: **Session Names Capture Command Artifacts Instead of User Intent** (HIGH)
+**Problem**: When using `/command` skills (like `/predator:debug`, `/debug`, `/commit`), the plugin captured command arguments and status bar artifacts instead of the user's actual request.
+**Impact**: Sessions named with garbage like "main • ~\Projects\smite • Glm 4.7 • $0.00 • 3K..." instead of the actual task
+**Fix**: Added `isCommandInvocation()` method to detect and skip system-generated messages
+**Location**: `session-manager.js:123-165, 85-108`
+
+**Root Cause**:
+When a user invokes `/predator:debug The auto-rename plugin doesn't work perfectly`, the session contains:
+1. First user message: `<command-args>main • ~\Projects\smite • Glm 4.7 • $0.00 • 3K...</command-args>` (status bar info)
+2. Second user message: `<objective>Debug and resolve...</objective>` (skill expansion)
+
+The old code captured the FIRST user message, which was command metadata, not the user's intent.
+
+**Fix Added**:
+```javascript
+isCommandInvocation(message) {
+  // Detect if this is a system command/skill invocation rather than a real user message
+  // Skips messages containing: <command->, <local-command->, <objective>, <process>, <verification>
+  // Returns true for system messages, false for genuine user input
+}
+```
+
+And updated `extractContext()` to skip these messages:
+```javascript
+for (const entry of recentEntries) {
+  if (entry.type === 'user' && entry.message && entry.message.content) {
+    // Skip command/skill invocations - they're not real user messages
+    if (this.isCommandInvocation(entry.message.content)) {
+      continue;
+    }
+    // ... rest of extraction
+  }
+}
+```
+
+**Result**: Session names now reflect the actual task, not command artifacts.
+
+---
+
 ## Version 3.1.1 - January 22, 2026
 
 ### 🐛 Critical Bugs Fixed

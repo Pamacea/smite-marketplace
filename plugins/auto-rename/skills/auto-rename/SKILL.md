@@ -1,7 +1,7 @@
 ---
 name: auto-rename
 description: Automatic session renaming with LLM-based context analysis
-version: 3.1.0
+version: 3.1.2
 ---
 
 # Auto Rename Skill
@@ -14,8 +14,8 @@ Automatically rename Claude Code sessions with intelligent, context-aware names 
 
 1. **Input**: Hook trigger (SessionStart, PostToolUse, UserPromptSubmit)
 2. **Process**:
-   - Filter slash commands from content (/debug, /commit, etc.)
-   - Analyze session context (first message, recent tools, project)
+   - Skip command/skill invocations (system-generated messages)
+   - Analyze session context (first real user message, recent tools, project)
    - Generate concise name following "Action: Context" format
    - Update session .jsonl file with system message
 3. **Output**: Session renamed and visible in history/resume
@@ -24,7 +24,7 @@ Automatically rename Claude Code sessions with intelligent, context-aware names 
 
 - **Automatic operation**: Runs in background without manual intervention
 - **Intelligent naming**: LLM analysis understands session context
-- **Command filtering**: Removes /debug, /commit, /smite:* from content
+- **Command artifact filtering**: Skips <command->, <objective>, <process> tags from skills
 - **Dynamic updates**: Name evolves as session progresses
 - **Manual override**: `/rename` command available for custom names
 

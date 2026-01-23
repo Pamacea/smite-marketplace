@@ -1,7 +1,7 @@
 {
   "name": "auto-rename",
   "description": "Automatically rename Claude Code sessions based on their content using LLM analysis",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "author": {
     "name": "Pamacea",
     "email": "[email protected]"
