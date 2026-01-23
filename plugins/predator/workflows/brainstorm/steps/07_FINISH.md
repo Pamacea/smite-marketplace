@@ -65,12 +65,12 @@ ${what_to_avoid_and_why}
 ${actionable_next_steps}
 
 ## Artifacts
-- Analysis: .predator/brainstorm/runs/${ts}/01_ANALYZE.md
-- Plan: .predator/brainstorm/runs/${ts}/02_PLAN.md
-- Execution: .predator/brainstorm/runs/${ts}/03_EXECUTE.md
-- Validation: .predator/brainstorm/runs/${ts}/04_VALIDATE.md
-${if examine}- Review: .predator/brainstorm/runs/${ts}/05_EXAMINE.md
-${if resolve}- Refinement: .predator/brainstorm/runs/${ts}/06_RESOLVE.md
+- Analysis: .claude/.smite/.predator/brainstorm/runs/${ts}/01_ANALYZE.md
+- Plan: .claude/.smite/.predator/brainstorm/runs/${ts}/02_PLAN.md
+- Execution: .claude/.smite/.predator/brainstorm/runs/${ts}/03_EXECUTE.md
+- Validation: .claude/.smite/.predator/brainstorm/runs/${ts}/04_VALIDATE.md
+${if examine}- Review: .claude/.smite/.predator/brainstorm/runs/${ts}/05_EXAMINE.md
+${if resolve}- Refinement: .claude/.smite/.predator/brainstorm/runs/${ts}/06_RESOLVE.md
 
 ## Final Status
 ✅ BRAINSTORM COMPLETE
@@ -87,7 +87,7 @@ Create documentation PR:
 mkdir -p docs/brainstorm
 
 # Save final summary
-cp .predator/brainstorm/runs/${ts}/SUMMARY.md docs/brainstorm/${topic_slug}.md
+cp .claude/.smite/.predator/brainstorm/runs/${ts}/SUMMARY.md docs/brainstorm/${topic_slug}.md
 
 # Commit and create PR
 git add docs/brainstorm/
@@ -124,7 +124,7 @@ Save summary locally:
 ```bash
 # Copy summary to accessible location
 mkdir -p docs/brainstorm
-cp .predator/brainstorm/runs/${ts}/SUMMARY.md docs/brainstorm/${topic_slug}_$(date +%Y%m%d).md
+cp .claude/.smite/.predator/brainstorm/runs/${ts}/SUMMARY.md docs/brainstorm/${topic_slug}_$(date +%Y%m%d).md
 
 # Commit if there are changes
 git add docs/brainstorm/
@@ -134,13 +134,13 @@ git commit -m "docs: save brainstorm results for '${topic}'
 
 ### 3. Save Final Report
 
-Save to `.predator/brainstorm/runs/${ts}/07_FINISH.md` and `.predator/brainstorm/runs/${ts}/SUMMARY.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/07_FINISH.md` and `.claude/.smite/.predator/brainstorm/runs/${ts}/SUMMARY.md`
 
 ### 4. Archive (Optional)
 
 ```bash
 # Move to archive
-mv .predator/brainstorm/runs/${ts} .predator/brainstorm/archive/
+mv .claude/.smite/.predator/brainstorm/runs/${ts} .claude/.smite/.predator/brainstorm/archive/
 ```
 
 ### Output
@@ -163,7 +163,7 @@ ${if pr}║ 📝 Docs created: ${docs_path}       ║
 ${else}║ 📁 Summary saved locally             ║
 ║                                         ║
 ║ 📁 Artifacts:                           ║
-║    .predator/brainstorm/runs/${ts}/    ║
+║    .claude/.smite/.predator/brainstorm/runs/${ts}/    ║
 ║                                         ║
 ╚════════════════════════════════════════╝
 

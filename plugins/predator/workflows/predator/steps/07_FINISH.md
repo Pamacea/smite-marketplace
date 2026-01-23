@@ -51,12 +51,12 @@ ${if resolve}✅ 06_RESOLVE - Issues fixed
 - Acceptance Criteria: ${P}/${Total} ✅
 
 ## Artifacts
-- Analysis: .predator/runs/${timestamp}/01_ANALYZE.md
-- Plan: .predator/runs/${timestamp}/02_PLAN.md
-- Execution: .predator/runs/${timestamp}/03_EXECUTE.md
-- Validation: .predator/runs/${timestamp}/04_VALIDATE.md
-${if examine}- Review: .predator/runs/${timestamp}/05_EXAMINE.md
-${if resolve}- Resolution: .predator/runs/${timestamp}/06_RESOLVE.md
+- Analysis: .claude/.smite/.predator/runs/${timestamp}/01_ANALYZE.md
+- Plan: .claude/.smite/.predator/runs/${timestamp}/02_PLAN.md
+- Execution: .claude/.smite/.predator/runs/${timestamp}/03_EXECUTE.md
+- Validation: .claude/.smite/.predator/runs/${timestamp}/04_VALIDATE.md
+${if examine}- Review: .claude/.smite/.predator/runs/${timestamp}/05_EXAMINE.md
+${if resolve}- Resolution: .claude/.smite/.predator/runs/${timestamp}/06_RESOLVE.md
 
 ## Final Status
 ✅ WORKFLOW COMPLETE
@@ -86,7 +86,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 # Create PR
 gh pr create \
   --title "feat: ${task}" \
-  --body "$(cat .predator/runs/${timestamp}/PR_DESCRIPTION.md)" \
+  --body "$(cat .claude/.smite/.predator/runs/${timestamp}/PR_DESCRIPTION.md)" \
   --base main \
   --head feature/$(slugify "${task}")
 ```
@@ -137,7 +137,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ### 3. Save Final Report
 
-Save to `.predator/runs/${timestamp}/07_FINISH.md` and `.predator/runs/${timestamp}/SUMMARY.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/07_FINISH.md` and `.claude/.smite/.predator/runs/${timestamp}/SUMMARY.md`
 
 ### 4. Clean Up (Optional)
 
@@ -145,9 +145,9 @@ Archive workflow artifacts:
 
 ```bash
 # If successful, archive
-mv .predator/runs/${timestamp} .predator/archive/
+mv .claude/.smite/.predator/runs/${timestamp} .claude/.smite/.predator/archive/
 
-# Keep only recent runs in .predator/runs/
+# Keep only recent runs in .claude/.smite/.predator/runs/
 ```
 
 ### Output
@@ -166,7 +166,7 @@ ${if pr}║ 📝 PR Created: ${pr_url}            ║
 ${else}║ 💾 Committed to local               ║
 ║                                         ║
 ║ 📁 Artifacts:                           ║
-║    .predator/runs/${timestamp}/        ║
+║    .claude/.smite/.predator/runs/${timestamp}/        ║
 ║                                         ║
 ╚════════════════════════════════════════╝
 

@@ -114,7 +114,7 @@ Ready to proceed? (y/n)
 
 ### 6. Save Plan
 
-Save to `.predator/runs/${timestamp}/02_PLAN.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/02_PLAN.md`
 
 ### Output
 
@@ -123,7 +123,7 @@ Save to `.predator/runs/${timestamp}/02_PLAN.md`
 - ${N} files to create
 - ${M} files to modify
 - ${K} acceptance criteria defined
-- Plan saved to: .predator/runs/${timestamp}/02_PLAN.md
+- Plan saved to: .claude/.smite/.predator/runs/${timestamp}/02_PLAN.md
 
 Next: 03_EXECUTE
 ```

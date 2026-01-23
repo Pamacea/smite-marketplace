@@ -144,7 +144,7 @@ Side effects: ${detected/none}
 
 ### 7. Save Validation Report
 
-Save to `.predator/debug/runs/${ts}/04_VALIDATE.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/04_VALIDATE.md`
 
 ### Output
 
@@ -165,7 +165,7 @@ Side Effects: ${detected/none}
 
 Overall: ${READY/NEEDS_WORK}
 
-Validation saved to: .predator/debug/runs/${ts}/04_VALIDATE.md
+Validation saved to: .claude/.smite/.predator/debug/runs/${ts}/04_VALIDATE.md
 
 ${if READY}Next: 05_EXAMINE (if -examine flag)
 ${if NOT_READY}Next: Return to 03_EXECUTE or request guidance

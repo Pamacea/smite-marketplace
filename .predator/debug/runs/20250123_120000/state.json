@@ -1,0 +1,18 @@
+{
+  "workflow": "debug",
+  "bug_description": "Stop hook for ralph plugin runs when ralph agent is not active, and fails with MODULE_NOT_FOUND for stop-hook.js",
+  "flags": {
+    "auto": true,
+    "examine": false,
+    "pr": false,
+    "max_attempts": "unlimited"
+  },
+  "state": {
+    "current_step": "INIT",
+    "error_context": [],
+    "hypotheses": [],
+    "attempts": 0,
+    "fix_applied": false
+  },
+  "start_time": "2025-01-23T12:00:00Z"
+}

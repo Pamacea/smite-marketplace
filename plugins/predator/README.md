@@ -126,7 +126,7 @@ workflows/
 Each workflow run creates a timestamped folder with all artifacts:
 
 ```
-.predator/
+.claude/.smite/.predator/
 ├── runs/
 │   └── 20250122_143000/
 │       ├── state.json
@@ -274,10 +274,10 @@ Reinstall if needed:
 
 ### Artifacts Not Saving
 
-Check `.predator/` directory permissions:
+Check `.claude/.smite/.predator/` directory permissions:
 ```bash
-mkdir -p .predator/runs
-chmod 755 .predator
+mkdir -p .claude/.smite/.predator/runs
+chmod 755 .claude/.smite/.predator
 ```
 
 ## Contributing

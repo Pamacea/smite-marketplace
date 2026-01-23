@@ -3,9 +3,16 @@ dist/
 *.log
 .claude/
 
-# Allow statusline dist folders (needed for plugin installation)
+# Allow dist folders for plugins (needed for plugin installation)
 !plugins/statusline/scripts/dist/
 !plugins/statusline/scripts/statusline/dist/
+!plugins/ralph/dist/
+!plugins/predator/dist/
+!plugins/mobs/dist/
+!plugins/toolkit/dist/
+!plugins/basics/dist/
+!plugins/auto-rename/dist/
+!plugins/shell/dist/
 
 # Windows reserved device names (cannot be tracked by git)
 nul

@@ -17,7 +17,7 @@ depth = extractDepth(args) || 'medium'
 ### 2. Create Output Folder
 
 ```bash
-mkdir -p .predator/brainstorm/runs/$(date +%Y%m%d_%H%M%S)
+mkdir -p .claude/.smite/.predator/brainstorm/runs/$(date +%Y%m%d_%H%M%S)
 ```
 
 ### 3. Initialize State Variables
@@ -54,13 +54,13 @@ start_time: <timestamp>
 ║  • Participants: ${participants}        ║
 ║  • Depth: ${depth}                      ║
 ║                                         ║
-║ Output: .predator/brainstorm/runs/${ts}/║
+║ Output: .claude/.smite/.predator/brainstorm/runs/${ts}/║
 ╚════════════════════════════════════════╝
 ```
 
 ### 5. Save State
 
-Write to `.predator/brainstorm/runs/${ts}/state.json`
+Write to `.claude/.smite/.predator/brainstorm/runs/${ts}/state.json`
 
 ### Output
 
@@ -69,7 +69,7 @@ Write to `.predator/brainstorm/runs/${ts}/state.json`
 - Topic: ${topic}
 - Participants: ${participants} idea generators
 - Depth: ${depth}
-- Output folder: .predator/brainstorm/runs/${ts}/
+- Output folder: .claude/.smite/.predator/brainstorm/runs/${ts}/
 
 Next: 01_ANALYZE (understand problem space)
 ```

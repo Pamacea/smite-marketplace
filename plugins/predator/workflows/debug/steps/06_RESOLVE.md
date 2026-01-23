@@ -98,7 +98,7 @@ Test related functionality:
 
 ### 5. Save Resolution Report
 
-Save to `.predator/debug/runs/${ts}/06_RESOLVE.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/06_RESOLVE.md`
 
 ### Output
 
@@ -113,7 +113,7 @@ Bug Still Fixed: ${YES/NO}
 Deferred Issues: ${D}
 (See report for details)
 
-Resolution saved to: .predator/debug/runs/${ts}/06_RESOLVE.md
+Resolution saved to: .claude/.smite/.predator/debug/runs/${ts}/06_RESOLVE.md
 
 Next: 07_FINISH
 ```

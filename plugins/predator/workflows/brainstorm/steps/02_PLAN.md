@@ -129,7 +129,7 @@ Ready to brainstorm? (y/n)
 
 ### 6. Save Plan
 
-Save to `.predator/brainstorm/runs/${ts}/02_PLAN.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/02_PLAN.md`
 
 ### Output
 
@@ -140,7 +140,7 @@ Challenge Angles: ${N} defined
 Synthesis Strategy: ${approach}
 Deliverable: ${format}
 
-Plan saved to: .predator/brainstorm/runs/${ts}/02_PLAN.md
+Plan saved to: .claude/.smite/.predator/brainstorm/runs/${ts}/02_PLAN.md
 
 Next: 03_EXECUTE (generate and challenge ideas)
 ```

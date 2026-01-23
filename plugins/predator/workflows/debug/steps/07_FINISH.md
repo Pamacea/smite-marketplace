@@ -53,12 +53,12 @@ ${N} hypotheses tested
 - Hypothesis ${N2}: ${result}
 
 ## Artifacts
-- Analysis: .predator/debug/runs/${ts}/01_ANALYZE.md
-- Plan: .predator/debug/runs/${ts}/02_PLAN.md
-- Execution: .predator/debug/runs/${ts}/03_EXECUTE.md
-- Validation: .predator/debug/runs/${ts}/04_VALIDATE.md
-${if examine}- Review: .predator/debug/runs/${ts}/05_EXAMINE.md
-${if resolve}- Resolution: .predator/debug/runs/${ts}/06_RESOLVE.md
+- Analysis: .claude/.smite/.predator/debug/runs/${ts}/01_ANALYZE.md
+- Plan: .claude/.smite/.predator/debug/runs/${ts}/02_PLAN.md
+- Execution: .claude/.smite/.predator/debug/runs/${ts}/03_EXECUTE.md
+- Validation: .claude/.smite/.predator/debug/runs/${ts}/04_VALIDATE.md
+${if examine}- Review: .claude/.smite/.predator/debug/runs/${ts}/05_EXAMINE.md
+${if resolve}- Resolution: .claude/.smite/.predator/debug/runs/${ts}/06_RESOLVE.md
 
 ## Final Status
 ✅ BUG FIXED
@@ -86,7 +86,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 # Create PR
 gh pr create \
   --title "fix: ${bug_title}" \
-  --body "$(cat .predator/debug/runs/${ts}/PR_DESCRIPTION.md)" \
+  --body "$(cat .claude/.smite/.predator/debug/runs/${ts}/PR_DESCRIPTION.md)" \
   --base main \
   --head fix/$(slugify "${bug_title}")
 ```
@@ -139,13 +139,13 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ### 3. Save Final Report
 
-Save to `.predator/debug/runs/${ts}/07_FINISH.md` and `.predator/debug/runs/${ts}/SUMMARY.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/07_FINISH.md` and `.claude/.smite/.predator/debug/runs/${ts}/SUMMARY.md`
 
 ### 4. Archive (Optional)
 
 ```bash
 # If successful, move to archive
-mv .predator/debug/runs/${ts} .predator/debug/archive/
+mv .claude/.smite/.predator/debug/runs/${ts} .claude/.smite/.predator/debug/archive/
 ```
 
 ### Output
@@ -167,7 +167,7 @@ ${if pr}║ 📝 PR Created: ${pr_url}            ║
 ${else}║ 💾 Committed to local               ║
 ║                                         ║
 ║ 📁 Artifacts:                           ║
-║    .predator/debug/runs/${ts}/         ║
+║    .claude/.smite/.predator/debug/runs/${ts}/         ║
 ║                                         ║
 ╚════════════════════════════════════════╝
 

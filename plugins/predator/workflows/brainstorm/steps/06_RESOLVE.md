@@ -121,7 +121,7 @@ ${READY_FOR_DELIVERY/NEEDS_MORE_WORK}
 
 ### 6. Save Refinement Report
 
-Save to `.predator/brainstorm/runs/${ts}/06_RESOLVE.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/06_RESOLVE.md`
 
 ### Output
 
@@ -135,7 +135,7 @@ Re-Validation: ${PASS/FAIL}
 Deferred Issues: ${D}
 (See report for details)
 
-Refinement saved to: .predator/brainstorm/runs/${ts}/06_RESOLVE.md
+Refinement saved to: .claude/.smite/.predator/brainstorm/runs/${ts}/06_RESOLVE.md
 
 Next: 07_FINISH
 ```

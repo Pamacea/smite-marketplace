@@ -157,7 +157,7 @@ Mark progress through phases
 
 ### 7. Save Execution Log
 
-Save to `.predator/brainstorm/runs/${ts}/03_EXECUTE.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/03_EXECUTE.md`
 
 ### Output
 
@@ -176,7 +176,7 @@ Phase 2 - Challenge:
 Phase 3 - Synthesize:
 - Top solutions identified: ${N}
 
-Execution saved to: .predator/brainstorm/runs/${ts}/03_EXECUTE.md
+Execution saved to: .claude/.smite/.predator/brainstorm/runs/${ts}/03_EXECUTE.md
 
 Next: 04_VALIDATE (verify solutions)
 ```

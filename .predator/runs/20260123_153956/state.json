@@ -1,0 +1,18 @@
+{
+  "workflow": "predator",
+  "task": "Créer un plugin statusline pour Smite",
+  "flags": {
+    "auto": false,
+    "examine": false,
+    "pr": false,
+    "max_attempts": "unlimited"
+  },
+  "state": {
+    "current_step": "INIT",
+    "issues_found": [],
+    "files_created": [],
+    "files_modified": []
+  },
+  "start_time": "2026-01-23T15:39:56Z",
+  "run_folder": "20260123_153956"
+}

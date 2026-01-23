@@ -1,15 +1,28 @@
 {
   "name": "statusline",
-  "description": "SMITE Statusline - Auto-configuring statusline with tokens, context, git, and more",
-  "version": "3.1.0",
+  "description": "Lightweight session statusline display - git branch, insertions, path, model, cost, tokens, progress, percentage, duration",
+  "version": "1.0.0",
   "author": {
     "name": "Pamacea",
-    "email": "[email protected]"
+    "email": "contact@pamacea.com"
   },
   "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/statusline",
   "repository": "https://github.com/Pamacea/smite",
   "license": "MIT",
-  "keywords": ["statusline", "git", "session", "context", "monitoring"],
+  "keywords": ["statusline", "session", "git", "productivity", "display"],
   "commands": "./commands/",
-  "skills": "./skills/"
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/statusline.js post-tool",
+            "enabled": false
+          }
+        ]
+      }
+    ]
+  }
 }

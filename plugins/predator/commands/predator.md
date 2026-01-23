@@ -127,7 +127,7 @@ After each step:
 - Implementation stays strictly within scope
 - Code passes all validation checks
 - Pull request created (if -pr flag) or commit made
-- Workflow artifacts saved to .predator/runs/
+- Workflow artifacts saved to .claude/.smite/.predator/runs/
 </success_criteria>
 
 <execution_rules>

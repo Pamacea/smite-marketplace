@@ -128,7 +128,7 @@ After each step:
 - Ideas challenged adversarially
 - Top solutions identified and ranked
 - Feasibility and risk assessed
-- Documentation saved to .predator/brainstorm/runs/
+- Documentation saved to .claude/.smite/.predator/brainstorm/runs/
 </success_criteria>
 
 <execution_rules>

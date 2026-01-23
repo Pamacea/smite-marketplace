@@ -1,4 +1,0 @@
-/**
- * Statusline configuration types
- */
-export {};

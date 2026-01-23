@@ -18,7 +18,7 @@ max_attempts = extractMaxAttempts(args) || 'unlimited'
 Create timestamped debug folder:
 
 ```bash
-mkdir -p .predator/debug/runs/$(date +%Y%m%d_%H%M%S)
+mkdir -p .claude/.smite/.predator/debug/runs/$(date +%Y%m%d_%H%M%S)
 ```
 
 ### 3. Initialize State Variables
@@ -54,13 +54,13 @@ start_time: <timestamp>
 ║  • Create PR: ${pr}                     ║
 ║  • Max Attempts: ${max_attempts}        ║
 ║                                         ║
-║ Output: .predator/debug/runs/${ts}/    ║
+║ Output: .claude/.smite/.predator/debug/runs/${ts}/    ║
 ╚════════════════════════════════════════╝
 ```
 
 ### 5. Save State
 
-Write to `.predator/debug/runs/${ts}/state.json`
+Write to `.claude/.smite/.predator/debug/runs/${ts}/state.json`
 
 ### Output
 
@@ -68,7 +68,7 @@ Write to `.predator/debug/runs/${ts}/state.json`
 ✅ DEBUG INIT COMPLETE
 - Bug description captured
 - Flags parsed: auto=${auto}, examine=${examine}, pr=${pr}
-- Output folder: .predator/debug/runs/${ts}/
+- Output folder: .claude/.smite/.predator/debug/runs/${ts}/
 - State initialized
 
 Next: 01_ANALYZE (gather error context)

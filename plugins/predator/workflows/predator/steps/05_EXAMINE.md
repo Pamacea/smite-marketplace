@@ -97,7 +97,7 @@ Create action plan:
 
 ### 4. Save Review Report
 
-Save to `.predator/runs/${timestamp}/05_EXAMINE.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/05_EXAMINE.md`
 
 ### Output
 
@@ -116,7 +116,7 @@ Agents Consulted:
 - Logic Reviewer ✅
 - Architecture Reviewer ✅
 
-Review report saved to: .predator/runs/${timestamp}/05_EXAMINE.md
+Review report saved to: .claude/.smite/.predator/runs/${timestamp}/05_EXAMINE.md
 
 ${if C > 0}Next: 06_RESOLVE (critical issues found)
 ${if C == 0}Next: 07_FINISH (no critical issues)

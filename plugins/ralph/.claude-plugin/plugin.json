@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.js"
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/dist/stop-hook.js"
           }
         ]
       }

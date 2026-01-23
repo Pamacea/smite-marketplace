@@ -68,12 +68,15 @@ The Smite Plugin Marketplace is a centralized registry of plugins that extend Sm
   - One-time installation with safe backups
   - PowerShell functions and shell aliases
 
-- **[@smite/statusline](./statusline/README.md)** - Auto-configuring statusline
-  - Git status integration (branch, dirty indicators, staged counts)
-  - Session tracking (cost, duration, tokens, context percentage)
-  - Usage limits (5-hour and 7-day API limit tracking)
-  - Spend tracking (daily and weekly)
-  - Visual progress bars with customizable styles
+- **[@smite/statusline](./statusline/README.md)** - Lightweight session statusline
+  - Git branch and changes display (+N/-M format)
+  - Project path with smart abbreviation
+  - Model name detection (Opus, Sonnet, Haiku)
+  - Session cost calculation
+  - Token count with K suffix
+  - Visual progress bar (10 chars)
+  - Context percentage
+  - Session duration (Hh Mm format)
 
 ## Installation
 
@@ -86,7 +89,7 @@ All plugins follow a standard installation pattern:
 # Run installation command (varies by plugin)
 /smite          # For basics
 /install-aliases # For shell
-/statusline install # For statusline
+/statusline     # Display current status
 ```
 
 See individual plugin documentation for detailed installation instructions.

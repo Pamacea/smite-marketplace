@@ -152,7 +152,7 @@ ${identified_pattern}
 
 ### 8. Save Analysis
 
-Save to `.predator/debug/runs/${ts}/01_ANALYZE.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/01_ANALYZE.md`
 
 ### Output
 
@@ -163,7 +163,7 @@ Location: ${file}:${line}
 Pattern: ${pattern}
 Hypothesis: ${preliminary_hypothesis}
 
-Analysis saved to: .predator/debug/runs/${ts}/01_ANALYZE.md
+Analysis saved to: .claude/.smite/.predator/debug/runs/${ts}/01_ANALYZE.md
 
 Next: 02_PLAN (create investigation strategy)
 ```

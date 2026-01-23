@@ -1,8 +1,0 @@
-{
-  "input_transcript": "C:\\Users\\Yanis\\.claude\\projects\\C--Users-Yanis-Projects-smite\\e2e4cf91-7ab7-4b0a-907c-f00308887a29.jsonl",
-  "actual_transcript": "C:\\Users\\Yanis\\.claude\\projects\\C--Users-Yanis-Projects-smite\\610897ef-2e7f-4994-85cb-27155431fd13.jsonl",
-  "detected_clear": true,
-  "context_tokens": 3810,
-  "user_tokens": 0,
-  "total_input_tokens": 202266
-}

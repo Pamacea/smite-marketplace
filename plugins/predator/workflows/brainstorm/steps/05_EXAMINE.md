@@ -91,7 +91,7 @@ ${if_rankings_changed}
 
 ### 4. Save Review Report
 
-Save to `.predator/brainstorm/runs/${ts}/05_EXAMINE.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/05_EXAMINE.md`
 
 ### Output
 
@@ -110,7 +110,7 @@ Re-evaluation:
 - Solutions requiring revision: ${N}
 - New considerations: ${N}
 
-Review saved to: .predator/brainstorm/runs/${ts}/05_EXAMINE.md
+Review saved to: .claude/.smite/.predator/brainstorm/runs/${ts}/05_EXAMINE.md
 
 ${if N > 0}Next: 06_RESOLVE (address concerns)
 ${if N == 0}Next: 07_FINISH (solutions are solid)

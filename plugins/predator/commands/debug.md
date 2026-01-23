@@ -129,7 +129,7 @@ After each step:
 - Fix verified working (tested multiple times)
 - No side effects or regressions
 - All quality checks passed
-- Workflow artifacts saved to .predator/debug/runs/
+- Workflow artifacts saved to .claude/.smite/.predator/debug/runs/
 </success_criteria>
 
 <execution_rules>

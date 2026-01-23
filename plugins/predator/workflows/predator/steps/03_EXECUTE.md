@@ -93,7 +93,7 @@ Maintain change log:
 
 ### 6. Save Implementation Log
 
-Save to `.predator/runs/${timestamp}/03_EXECUTE.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/03_EXECUTE.md`
 
 ### Output
 
@@ -108,7 +108,7 @@ Implementation Summary:
 All tasks completed:
 ${task list}
 
-Implementation log saved to: .predator/runs/${timestamp}/03_EXECUTE.md
+Implementation log saved to: .claude/.smite/.predator/runs/${timestamp}/03_EXECUTE.md
 
 Next: 04_VALIDATE
 ```

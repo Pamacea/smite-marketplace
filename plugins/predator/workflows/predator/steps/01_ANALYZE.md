@@ -112,7 +112,7 @@ Create analysis report:
 
 ### 6. Save Analysis
 
-Save to `.predator/runs/${timestamp}/01_ANALYZE.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/01_ANALYZE.md`
 
 ### Output
 
@@ -121,7 +121,7 @@ Save to `.predator/runs/${timestamp}/01_ANALYZE.md`
 - Codebase structure mapped
 - ${N} relevant files identified
 - Existing patterns documented
-- Analysis saved to: .predator/runs/${timestamp}/01_ANALYZE.md
+- Analysis saved to: .claude/.smite/.predator/runs/${timestamp}/01_ANALYZE.md
 
 Next: 02_PLAN
 ```

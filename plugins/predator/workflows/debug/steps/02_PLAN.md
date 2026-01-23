@@ -112,7 +112,7 @@ Ready to investigate? (y/n)
 
 ### 6. Save Plan
 
-Save to `.predator/debug/runs/${ts}/02_PLAN.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/02_PLAN.md`
 
 ### Output
 
@@ -122,7 +122,7 @@ Hypotheses: ${N} identified
 Priority: ${top_hypothesis}
 Strategy: ${investigation_approach}
 
-Plan saved to: .predator/debug/runs/${ts}/02_PLAN.md
+Plan saved to: .claude/.smite/.predator/debug/runs/${ts}/02_PLAN.md
 
 Next: 03_EXECUTE (test hypotheses and fix)
 ```

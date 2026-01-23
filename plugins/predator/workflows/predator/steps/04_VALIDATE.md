@@ -113,7 +113,7 @@ Passed: ${P}/${Total}
 
 ### 6. Save Validation Report
 
-Save to `.predator/runs/${timestamp}/04_VALIDATE.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/04_VALIDATE.md`
 
 ### Output
 
@@ -126,7 +126,7 @@ Acceptance Criteria: ${P}/${Total} passed
 
 Overall: ${PASS/FAIL}
 
-Validation report saved to: .predator/runs/${timestamp}/04_VALIDATE.md
+Validation report saved to: .claude/.smite/.predator/runs/${timestamp}/04_VALIDATE.md
 
 ${if PASS}Next: 05_EXAMINE (if -examine flag)
 ${if FAIL}Next: Return to 03_EXECUTE or request guidance

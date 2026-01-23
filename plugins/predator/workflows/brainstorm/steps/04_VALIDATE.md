@@ -124,7 +124,7 @@ ${overall_quality_of_brainstorm_session}
 
 ### 6. Save Validation Report
 
-Save to `.predator/brainstorm/runs/${ts}/04_VALIDATE.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/04_VALIDATE.md`
 
 ### Output
 
@@ -137,7 +137,7 @@ Low-Risk Solutions: ${N}
 
 Top Recommendation: ${title}
 
-Validation saved to: .predator/brainstorm/runs/${ts}/04_VALIDATE.md
+Validation saved to: .claude/.smite/.predator/brainstorm/runs/${ts}/04_VALIDATE.md
 
 Next: 05_EXAMINE (if -examine flag)
 ```

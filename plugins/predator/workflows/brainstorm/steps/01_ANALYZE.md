@@ -161,7 +161,7 @@ ${what_success_looks_like}
 
 ### 8. Save Analysis
 
-Save to `.predator/brainstorm/runs/${ts}/01_ANALYZE.md`
+Save to `.claude/.smite/.predator/brainstorm/runs/${ts}/01_ANALYZE.md`
 
 ### Output
 
@@ -172,7 +172,7 @@ Constraints: ${N} identified
 Stakeholders: ${S} identified
 Success Criteria: ${C} defined
 
-Analysis saved to: .predator/brainstorm/runs/${ts}/01_ANALYZE.md
+Analysis saved to: .claude/.smite/.predator/brainstorm/runs/${ts}/01_ANALYZE.md
 
 Next: 02_PLAN (create exploration strategy)
 ```

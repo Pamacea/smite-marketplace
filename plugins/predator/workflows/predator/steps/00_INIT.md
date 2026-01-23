@@ -18,7 +18,7 @@ max_attempts = extractMaxAttempts(args) || 'unlimited'
 Create a timestamped output folder for workflow artifacts:
 
 ```bash
-mkdir -p .predator/runs/$(date +%Y%m%d_%H%M%S)
+mkdir -p .claude/.smite/.predator/runs/$(date +%Y%m%d_%H%M%S)
 ```
 
 ### 3. Initialize State Variables
@@ -55,13 +55,13 @@ start_time: <timestamp>
 ║  • Create PR: ${pr}                     ║
 ║  • Max Attempts: ${max_attempts}        ║
 ║                                         ║
-║ Output: .predator/runs/${timestamp}/    ║
+║ Output: .claude/.smite/.predator/runs/${timestamp}/    ║
 ╚════════════════════════════════════════╝
 ```
 
 ### 5. Save State
 
-Write state to `.predator/runs/${timestamp}/state.json`:
+Write state to `.claude/.smite/.predator/runs/${timestamp}/state.json`:
 
 ```json
 {
@@ -78,7 +78,7 @@ Write state to `.predator/runs/${timestamp}/state.json`:
 ```
 ✅ INIT COMPLETE
 - Flags parsed: auto=${auto}, examine=${examine}, pr=${pr}
-- Output folder created: .predator/runs/${timestamp}/
+- Output folder created: .claude/.smite/.predator/runs/${timestamp}/
 - State initialized
 
 Next: 01_ANALYZE

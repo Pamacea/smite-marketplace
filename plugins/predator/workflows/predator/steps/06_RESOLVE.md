@@ -97,7 +97,7 @@ Track all changes:
 
 ### 5. Save Resolution Report
 
-Save to `.predator/runs/${timestamp}/06_RESOLVE.md`
+Save to `.claude/.smite/.predator/runs/${timestamp}/06_RESOLVE.md`
 
 ### Output
 
@@ -111,7 +111,7 @@ Re-Validation: ${PASS/FAIL}
 Deferred Issues: ${D}
 (See report for details)
 
-Resolution report saved to: .predator/runs/${timestamp}/06_RESOLVE.md
+Resolution report saved to: .claude/.smite/.predator/runs/${timestamp}/06_RESOLVE.md
 
 Next: 07_FINISH
 ```

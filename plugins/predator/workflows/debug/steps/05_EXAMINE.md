@@ -95,7 +95,7 @@ Review test coverage:
 
 ### 4. Save Review Report
 
-Save to `.predator/debug/runs/${ts}/05_EXAMINE.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/05_EXAMINE.md`
 
 ### Output
 
@@ -114,7 +114,7 @@ Robustness:
 - Error handling: ✅/❌
 - Performance: ✅/❌
 
-Review saved to: .predator/debug/runs/${ts}/05_EXAMINE.md
+Review saved to: .claude/.smite/.predator/debug/runs/${ts}/05_EXAMINE.md
 
 ${if C > 0}Next: 06_RESOLVE (critical issues found)
 ${if C == 0}Next: 07_FINISH (fix is solid)

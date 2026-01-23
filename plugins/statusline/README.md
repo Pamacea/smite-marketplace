@@ -1,365 +1,126 @@
-# SMITE Statusline Plugin
+# Statusline Plugin
 
-A comprehensive, auto-configuring statusline for Claude Code with git integration, token tracking, usage limits, and spend tracking.
+Lightweight session statusline display for Claude Code.
 
----
+## Overview
 
-## Quick Start
-
-```bash
-# Install (automatic configuration)
-/plugin install statusline@smite
-
-# That's it! Restart Claude Code to see your statusline.
-```
-
-**Expected Output:**
-```
-main • $1.23 • 45.2K • [████████░░] 78% • 23m15s
-```
-
----
-
-## Features
-
-### Git Status
-
-- **Branch name** - Current git branch
-- **Dirty indicator** - `+` added, `-` deleted, `~` modified
-- **Staged/unstaged counts** - Track changes in each stage
+Display a compact statusline showing your current session information:
 
 ```
-feature/auth • +2 -1 ~3
+main • +123/-45  • ~/Projects/smite • Opus 4.5 • $1.23 • 45K • ████████░░ • 78% • 1h 23m
 ```
 
-### Session Info
+## Components
 
-- **Session cost** - Money spent in current session
-- **Duration** - Time elapsed in session
-- **Tokens used** - Context tokens consumed
-- **Context percentage** - Visual progress bar with percentage
-
-```
-$1.23 • 45.2K • [████████░░] 78%
-```
-
-### Usage Limits
-
-- **5-hour and 7-day limits** - Track API usage limits
-- **Time remaining** - Time until limit resets
-- **Pacing delta** - Are you over/under budget?
-- **Progress bars** - Visual representation of limit usage
-
-```
-⏱️ 1h23m • [████████░░] 65% • +0.15
-```
-
-### Spend Tracking
-
-- **Daily spend** - Track daily costs
-- **Weekly usage** - 7-day rolling window
-- **Pacing information** - Stay on budget
-
-```
-📅 $12.34 • 📈 $3.45
-```
-
----
+| Component | Description | Example |
+|-----------|-------------|---------|
+| **branch** | Git branch name | `main`, `feature-branch` |
+| **insertions** | Git changes (additions/deletions) | `+123/-45`, `+42` |
+| **path** | Abbreviated project path | `~/Projects/smite` |
+| **model** | AI model name | `Opus 4.5`, `Sonnet 4.5` |
+| **cost** | Estimated session cost | `$1.23` |
+| **tokens** | Total tokens used | `45K`, `123` |
+| **progress** | Visual progress bar | `████████░░` |
+| **percentage** | Context window used | `78%` |
+| **duration** | Session duration | `1h 23m`, `15m` |
 
 ## Installation
 
-### Step 1: Install Plugin
+```bash
+# Install via plugin system
+/plugin install statusline
+```
+
+## Usage
+
+### Display Status
 
 ```bash
-/plugin install statusline@smite
+/statusline
 ```
 
-### Step 2: Run Configuration Script
+### Output Examples
 
-After installation, run the configuration command:
-
-```bash
-/statusline install
+**Active development session:**
+```
+main • +123/-45  • ~/Projects/smite • Opus 4.5 • $1.23 • 45K • ████████░░ • 78% • 1h 23m
 ```
 
-This will:
-1. Configure your `~/.claude/settings.json`
-2. Create `~/.claude/statusline.config.json` with defaults
-3. Backup existing settings
-4. Run on platform-specific runtime (Bun or Node.js)
-
-### Step 3: Restart Claude Code
-
-That's it! The statusline will appear automatically.
-
-### Manual Installation (Alternative)
-
-If automatic installation doesn't work:
-
-1. Install plugin: `/plugin install statusline@smite`
-2. Run manually:
-   ```bash
-   # With Node.js
-   node ~/.claude/plugins/cache/smite/statusline/1.0.0/dist/install.js
-
-   # With Bun
-   bun ~/.claude/plugins/cache/smite/statusline/1.0.0/dist/install.js
-   ```
-
-3. Restart Claude Code
-
-For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md).
-
----
-
-## Basic Usage
-
-Once installed, the statusline appears automatically at the bottom of Claude Code.
-
-### Commands
-
-```bash
-# Reinstall/update configuration
-/statusline install
-
-# View current configuration
-/statusline config
-
-# Reset to defaults
-/statusline reset
-
-# Show help
-/statusline help
-
-# Preview changes without modifying files
-/statusline install --dry-run
+**New session with no changes:**
+```
+main  • ~/Projects/myapp • Sonnet 4.5 • $0.05 • 3K • █░░░░░░░░░ • 12% • 2m
 ```
 
----
-
-## Screenshots
-
-### Default Configuration
+**Non-git project:**
 ```
-main • $0.85 • 123.4K • [████████░░] 42% • 12m30s
+N/A  • ~/temp/script • Haiku 4.5 • $0.01 • 1K • ░░░░░░░░░░ • 5% • 1m
 ```
 
-### With Git Changes
-```
-feature/new-ui • +5 ~2 • $1.23 • 89.1K • [██████████] 95% • 34m15s
-```
+## Features
 
-### Compact Mode
-```
-main • $0.45 • 45K • 67%
-```
-
----
+- **Lightweight**: No external dependencies, uses Node.js built-ins
+- **Fast**: Executes in < 100ms
+- **Cross-platform**: Works on Windows, macOS, and Linux
+- **Graceful degradation**: Shows "N/A" for missing data
+- **Smart path abbreviation**: Long paths are shortened intelligently
 
 ## Configuration
 
-Configuration is stored in `~/.claude/statusline.config.json`.
+### Auto-display (Optional)
 
-### Quick Tweaks
+The plugin includes an optional hook to auto-display status after tool use. Edit `plugins/statusline/.claude-plugin/plugin.json`:
 
 ```json
-{
-  "git": {
-    "enabled": true,
-    "showBranch": true,
-    "showChanges": true
-  },
-  "session": {
-    "cost": { "enabled": true },
-    "tokens": { "enabled": true }
-  }
+"hooks": {
+  "PostToolUse": [
+    {
+      "matcher": "Edit|Write|Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/statusline.js post-tool",
+          "enabled": true
+        }
+      ]
+    }
+  ]
 }
 ```
 
-For all configuration options, see [CONFIGURATION.md](CONFIGURATION.md).
+Set `"enabled": true` to activate auto-display.
 
----
+## Cost Calculation
+
+Cost is estimated based on model pricing (per million tokens):
+
+| Model | Input | Output |
+|-------|-------|--------|
+| Opus 4.5 | $15 | $75 |
+| Sonnet 4.5 | $3 | $15 |
+| Haiku 4.5 | $1 | $5 |
+
+*Note: These are approximate prices and may vary by region.*
+
+## Requirements
+
+- Node.js (for hook script)
+- Git (for branch/changes info)
+- Claude Code session directory (`~/.claude/sessions/`)
 
 ## Troubleshooting
 
-### Statusline not showing?
+**"N/A" for branch**: Not in a git repository
 
-1. Check if plugin is installed:
-   ```bash
-   /plugin list
-   ```
+**Empty cost/tokens**: No API calls in current session yet
 
-2. Verify `settings.json` has `statusLine` entry:
-   ```bash
-   /statusline config
-   ```
+**Incorrect model**: Session data format may vary, defaults to entry model field
 
-3. Check logs:
-   ```bash
-   cat ~/.claude/logs/statusline-install.log
-   ```
-
-### Git status not working?
-
-Ensure git is installed and available in PATH:
-```bash
-git --version
-```
-
-### Context calculation wrong?
-
-Edit `~/.claude/statusline.config.json`:
-```json
-{
-  "context": {
-    "maxContextTokens": 200000,
-    "usePayloadContextWindow": true
-  }
-}
-```
-
-### Colors not appearing?
-
-The statusline uses ANSI color codes for visual highlighting. If colors are not showing:
-
-1. **Verify Node.js/Bun is installed**: The statusline script requires a JavaScript runtime
-2. **Test the script manually**:
-   ```bash
-   echo '{}' | bun ~/.claude/statusline.js
-   # or
-   echo '{}' | node ~/.claude/statusline.js
-   ```
-
-3. **Check for errors**: The statusline will show error messages in red if something fails
-
-**Note**: Claude Code's terminal has specific ANSI color support. The statusline uses inline color embedding to ensure compatibility with Claude Code's terminal emulator (see [GitHub Issue #6466](https://github.com/anthropics/claude-code/issues/6466)).
-
----
-
-## Features in Detail
-
-### Progress Bars
-
-Customizable progress bars with multiple styles:
-
-```json
-{
-  "progressBar": {
-    "enabled": true,
-    "length": 10,
-    "style": "braille",  // "braille" or "blocks"
-    "color": "progressive",  // "progressive", "green", "blue", etc.
-    "background": "none"  // "none", "light", "dim"
-  }
-}
-```
-
-**Styles:**
-- Braille: ` [████████░░] 80% `
-- Blocks: ` [████░░░░░░] 50% `
-
-### Path Display
-
-Choose how to display your working directory:
-
-```json
-{
-  "pathDisplayMode": "truncated"  // "full", "truncated", "basename"
-}
-```
-
-**Modes:**
-- `full`: `C:\Users\Yanis\Projects\smite-marketplace`
-- `truncated`: `...s\smite-marketplace`
-- `basename`: `smite-marketplace`
-
-### Session vs Limits vs Weekly
-
-Track different timeframes:
-
-- **Session**: Current Claude Code session
-- **Limits**: 5-hour and 7-day API limits
-- **Weekly Usage**: 7-day rolling window with pacing
-- **Daily Spend**: Today's total spend
-
----
-
-## Advanced Topics
-
-### Disable Features
-
-Delete feature folders to disable them:
-
-```bash
-# Disable usage limits
-rm -rf plugins/statusline/scripts/statusline/src/lib/features/limits
-
-# Disable spend tracking
-rm -rf plugins/statusline/scripts/statusline/src/lib/features/spend
-```
-
-### Custom Colors
-
-Edit `statusline.config.json`:
-
-```json
-{
-  "session": {
-    "percentage": {
-      "progressBar": {
-        "color": "blue",  // "green", "blue", "yellow", "red", "progressive"
-        "background": "light"  // "none", "light", "dim"
-      }
-    }
-  }
-}
-```
-
-### Platform-Specific Notes
-
-- **Windows**: Uses Git Bash or WSL for git commands
-- **macOS**: Requires git installed (via Xcode Command Line Tools)
-- **Linux**: Requires git installed via package manager
-
----
-
-## Architecture
-
-Curious about how it works? See [ARCHITECTURE.md](docs/statusline/ARCHITECTURE.md) for:
-
-- System architecture
-- Data flow
-- Plugin lifecycle
-- Extension points
-
----
-
-## Contributing
-
-This is a SMITE plugin. To modify:
-
-1. Edit source files in `plugins/statusline/scripts/statusline/src/`
-2. Rebuild TypeScript if needed
-3. Test with `/statusline install --dry-run`
-
----
+**Path not abbreviated**: Path is short enough to display fully
 
 ## License
 
-MIT License - See LICENSE file for details.
+MIT License - see [SMITE repository](https://github.com/Pamacea/smite) for details.
 
----
+## Version
 
-## Support
-
-- **Issues**: Report via `/statusline help`
-- **Documentation**: [CONFIGURATION.md](CONFIGURATION.md), [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-- **Architecture**: [ARCHITECTURE.md](docs/statusline/ARCHITECTURE.md)
-
----
-
-**Version:** 3.1.0
-**Last Updated:** 2025-01-22
-**SMITE Version:** 3.1.0
-**Author:** Pamacea
-**Plugin Repo:** `statusline@smite`
+1.0.0

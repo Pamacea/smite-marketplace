@@ -1,6 +1,6 @@
 {
   "name": "@smite/ralph",
-  "version": "3.0.0",
+  "version": "3.1.1",
   "description": "Multi-agent orchestrator with parallel execution",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,9 +12,7 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "typecheck": "tsc --noEmit",
-    "postinstall": "node install-hook.js",
-    "install-hook": "node install-hook.js"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "claude-code",

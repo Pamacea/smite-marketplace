@@ -17,7 +17,7 @@ Provide modular step-based workflows for systematic development, debugging, and 
    - Execute specialized workflow (predator/debug/brainstorm)
    - Follow 8-step modular execution (00-07)
    - Load workflow steps on-demand for context optimization
-   - Save artifacts to `.predator/runs/`
+   - Save artifacts to `.claude/.smite/.predator/runs/`
 3. **Output**: Completed task with documentation and optional PR
 
 ## Key Principles
@@ -91,7 +91,7 @@ Each workflow has:
 - **Command selection**: Choose based on task type
 - **Flag configuration**: Add flags for automation and review
 - **Workflow customization**: Edit step files to customize behavior
-- **Artifact location**: `.predator/runs/` by default
+- **Artifact location**: `.claude/.smite/.predator/runs/` by default
 
 ## Error Handling
 
@@ -117,7 +117,7 @@ Each run saves:
 
 1. **Choose the right workflow**: Match workflow to task type
 2. **Use flags appropriately**: `-auto` for quick tasks, `-examine` for production
-3. **Review artifacts**: Check `.predator/runs/` for detailed logs
+3. **Review artifacts**: Check `.claude/.smite/.predator/runs/` for detailed logs
 4. **Customize steps**: Edit workflow steps to match project needs
 5. **Combine with agents**: Use workflows independently or with SMITE agents
 

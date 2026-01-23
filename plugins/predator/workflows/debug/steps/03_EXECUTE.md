@@ -130,7 +130,7 @@ If fix doesn't work:
 
 ### 8. Save Execution Log
 
-Save to `.predator/debug/runs/${ts}/03_EXECUTE.md`
+Save to `.claude/.smite/.predator/debug/runs/${ts}/03_EXECUTE.md`
 
 ### Output
 
@@ -150,7 +150,7 @@ Verification:
 - Bug fixed: ✅/❌
 - Functionality preserved: ✅/❌
 
-Execution log saved to: .predator/debug/runs/${ts}/03_EXECUTE.md
+Execution log saved to: .claude/.smite/.predator/debug/runs/${ts}/03_EXECUTE.md
 
 Next: 04_VALIDATE (comprehensive verification)
 ```
