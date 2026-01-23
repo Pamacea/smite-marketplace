@@ -1,0 +1,58 @@
+{
+  "id": "minimalist",
+  "name": "Minimalist",
+  "description": "Clean, whitespace-focused, typography-driven design with purposeful simplicity",
+  "mood": "Calm, professional, focused",
+  "bestFor": ["SaaS products", "Dashboard applications", "Professional services", "Data-heavy apps"],
+  "complexity": "Low",
+  "characteristics": [
+    "Generous white space",
+    "Strong typography hierarchy",
+    "Limited color palette",
+    "Simple geometric shapes",
+    "Subtle interactions"
+  ],
+  "colorPalette": {
+    "primary": "#0F172D",
+    "secondary": "#64748B",
+    "accent": "#3B82F6",
+    "background": "#FFFFFF",
+    "surface": "#F8FAFC",
+    "border": "#E2E8F0",
+    "text": {
+      "primary": "#0F172D",
+      "secondary": "#475569",
+      "muted": "#94A3B8"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "heading": "Inter, system-ui, sans-serif",
+      "body": "Inter, system-ui, sans-serif"
+    },
+    "useDefaultScale": true
+  },
+  "spacing": {
+    "useDefault": true,
+    "baseUnit": "4px",
+    "scale": [0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96]
+  },
+  "borderRadius": {
+    "sm": "4px",
+    "md": "6px",
+    "lg": "8px",
+    "full": "9999px"
+  },
+  "shadows": {
+    "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    "md": "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+    "lg": "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+    "xl": "0 20px 25px -5px rgb(0 0 0 / 0.1)"
+  },
+  "layout": {
+    "grid": "12-column grid",
+    "containerMaxWidth": "1200px",
+    "gutter": "24px",
+    "useDefaultBreakpoints": true
+  }
+}

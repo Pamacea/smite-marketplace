@@ -1,7 +1,8 @@
 {
+  "$schema": "../core/validation/schemas/plugin.schema.json",
   "name": "basics",
   "description": "Essential Claude commands for rapid development - oneshot, explore, debug, commit, claude-memory, and more",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "author": {
     "name": "Pamacea",
     "email": "[email protected]"
@@ -11,5 +12,25 @@
   "license": "MIT",
   "keywords": ["development", "commands", "workflow", "git", "documentation"],
   "commands": "./commands/",
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "hooks": {
+    "PostPluginInstall": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/install.js"
+          }
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "required": ["core"],
+    "optional": ["toolkit"]
+  },
+  "mcp": {
+    "required": [],
+    "optional": []
+  }
 }

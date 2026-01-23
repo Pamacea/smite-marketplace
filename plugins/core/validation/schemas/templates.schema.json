@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://smite.dev/schemas/templates.json",
+  "title": "Note Templates Configuration",
+  "description": "Schema for Obsidian note templates configuration",
+  "type": "object",
+  "required": ["version", "templates"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Template schema version"
+    },
+    "variables": {
+      "type": "object",
+      "description": "Global variables available in all templates",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Variable name and default value or description"
+      }
+    },
+    "templates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/template"
+      }
+    }
+  },
+  "definitions": {
+    "template": {
+      "type": "object",
+      "required": ["id", "name", "content"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique template identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable template name"
+        },
+        "description": {
+          "type": "string",
+          "description": "What this template is for"
+        },
+        "content": {
+          "type": "string",
+          "description": "Template content with {{variable}} placeholders"
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "default": { "type": "string" },
+              "required": { "type": "boolean" }
+            }
+          }
+        },
+        "outputPath": {
+          "type": "string",
+          "description": "Default output path pattern (e.g., 'Inbox/{{date}}-{{title}}.md')"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Default tags to add to notes created from this template"
+        }
+      }
+    }
+  }
+}

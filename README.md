@@ -1,4 +1,4 @@
-# 🔥 SMITE v3.1.1
+# 🔥 SMITE v3.2.0
 
 **Zero-debt engineering agents with multi-agent parallel orchestration (2-3x faster)**
 
@@ -7,15 +7,22 @@
 ## ⚡ Quick Start
 
 ```bash
-# Install
+# Step 1: Install Core (REQUIRED - provides shared utilities)
 /plugin marketplace add Pamacea/smite
-/plugin install ralph@smite
+/plugin install core@smite
 
-# Execute
+# Step 2: Install desired plugins
+/plugin install toolkit@smite    # Optional but recommended (75% token savings)
+/plugin install ralph@smite       # Multi-agent orchestrator
+/plugin install mobs@smite        # Architect, Builder, Refactor, Note
+/plugin install basics@smite      # Oneshot, Epct, Debug, Explore, Commit
+
+# Step 3: Execute
 /ralph "Build a todo app with authentication"
+/architect "Design a modern dashboard"
 ```
 
-**CRITICAL: Always use semantic search before exploring code** (75% token savings)
+**🚨 CRITICAL: Always use semantic search before exploring code** (75% token savings)
 ```bash
 /toolkit search "authentication flow"    # 1st choice (75% savings)
 mgrep "authentication"                   # 2nd choice (semantic search)
@@ -25,48 +32,84 @@ mgrep "authentication"                   # 2nd choice (semantic search)
 
 ---
 
-## 🚀 What's New in v3.1
+## 🎯 Plugin Dependencies
 
-### ✨ **Refactored Documentation**
-- **50% shorter READMEs** (300 → 150 lines)
-- **50% shorter SKILLs** (200 → 100 lines)
-- **Standardized templates** across all plugins
-- **Official Anthropic schema** compliance
+**Starting with v3.2.0, SMITE uses a modular plugin system with shared dependencies.**
 
-### 🔧 **Marketplace Improvements**
-- **$schema validation** for marketplace.json
-- **Uniform versioning** (all plugins 3.1.0)
-- **Categories** (orchestration, analysis, development, quality, productivity)
-- **Tags + keywords** for discoverability
+### Required vs Optional Plugins
 
-### 📚 **New Guides**
-- [RALPH_GUIDE.md](docs/RALPH_GUIDE.md) - Complete Ralph usage
-- [SPEC_FIRST.md](docs/SPEC_FIRST.md) - Spec-first workflow
+| Plugin | Status | Description |
+|--------|--------|-------------|
+| **core** | **REQUIRED** | Shared utilities, templates, validation schemas |
+| toolkit | Optional | Token optimization (75% savings) |
+| ralph | Optional | Multi-agent orchestrator |
+| mobs | Optional | Architect, Builder, Refactor, Note agents |
+| basics | Optional | Essential commands (oneshot, epct, debug, explore, commit) |
+| predator | Optional | Modular workflow system |
+| statusline | Optional | Session status display |
+| shell | Optional | Shell shortcuts |
+| auto-rename | Optional | Session renaming |
+
+### Dependency Graph
+
+```
+                    ┌─────────────┐
+                    │    core     │  ← REQUIRED for all plugins
+                    │  (v1.0.0)   │
+                    └──────┬──────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+    ┌────▼────┐      ┌────▼────┐      ┌────▼────┐
+    │  mobs   │      │ basics  │      │ ralph   │
+    │(v4.1.0) │      │(v3.2.0) │      │(v3.1.0) │
+    └────┬────┘      └────┬────┘      └────┬────┘
+         │                 │                 │
+         └─────────┬───────┴─────────┬───────┘
+                   │                 │
+              ┌────▼────┐      ┌────▼────┐
+              │toolkit* │      │predator │
+              │(optional)│      │(v1.0.0) │
+              └─────────┘      └─────────┘
+```
 
 ---
 
-## 🔧 v3.1.1 - Deep Refactoring
+## 🚀 What's New in v3.2
 
-### Code Quality Improvements
-- **~550 lines reduced** through decomposition
-- **10 new focused modules** following Single Responsibility Principle
-- **Test infrastructure** with Jest configs for all plugins
-- **Barrel exports** for clean import paths
+### ✨ **New Core Plugin System**
+- **`core` plugin** - Shared utilities for all SMITE plugins
+  - Standardized templates (command headers, warnings, metadata)
+  - JSON schemas for configuration validation
+  - Cross-platform utilities (Windows, macOS, Linux)
+  - Dependency resolution patterns
 
-### Ralph Plugin Refactoring
-- **TaskOrchestrator**: 377 → 187 lines (50% reduction)
-- **New services**: `StoryExecutor`, `AgentMapper`, `PromptBuilder`
-- **Eliminated duplication**: Single source of truth for skill mappings
-- **Test coverage**: 15 tests passing
+### 🔧 **Plugin Dependency Management**
+- **Required dependencies** - Plugin fails gracefully if missing with clear error
+- **Optional dependencies** - Automatic fallback to alternative implementations
+- **MCP tool declarations** - Explicit MCP tool requirements per plugin
+- **Graceful degradation** - Plugins work even when optional tools are missing
 
-### Toolkit Plugin Refactoring
-- **Surgeon class**: 440 → 185 lines (58% reduction)
-- **New extractors**: `signature-extractor`, `type-extractor`, `import-export-extractor`, `file-structure-analyzer`
-- **Facade pattern**: Clean separation of concerns
+### 📦 **Refactored Plugins**
+- **mobs v4.1.0** - Modular `note` command (write/format/search)
+- **basics v3.2.0** - Standardized command interfaces
+- **design-styles** - Modular configuration (base + 5 variants)
+
+### 🌍 **Cross-Platform Compatibility**
+- **Windows** (Git Bash, MSYS2, PowerShell)
+- **macOS** (Homebrew paths, BSD tools compatibility)
+- **Linux** (Distribution detection)
 
 ---
 
-## 🤖 Core Plugins (8)
+## 🤖 Core Plugins (9)
+
+### Foundation
+**[core](plugins/core)** ⚠️ **REQUIRED** - Shared utilities, templates, validation schemas
+```
+Provides: templates/, validation/schemas/, platform/, dependency-resolution/
+Required by: mobs, basics, and all future plugins
+```
 
 ### Orchestration
 **[ralph](plugins/ralph)** - Multi-agent orchestrator with parallel execution (2-3x speedup)
@@ -80,7 +123,7 @@ mgrep "authentication"                   # 2nd choice (semantic search)
 /architect "Design authentication system"
 /builder "Implement user dashboard"
 /refactor "Systematic refactoring"
-/note inbox "Quick note"
+/note write inbox "Quick note"
 ```
 
 ### Development
@@ -115,6 +158,93 @@ mgrep "authentication"                   # 2nd choice (semantic search)
 
 ---
 
+## 📁 Structure
+
+```
+smite/
+├── .claude-plugin/           # Marketplace manifest
+│   └── marketplace.json      # 9 plugins catalog
+├── .claude/
+│   └── .smite/              # State (PRD, spec, quality config)
+├── plugins/                  # 9 plugins
+│   ├── core/                # ⚠️ FOUNDATION - shared utilities
+│   │   ├── templates/       # Reusable templates
+│   │   ├── validation/      # JSON schemas
+│   │   └── platform/        # Cross-platform utilities
+│   ├── ralph/               # Orchestrator (parallel execution)
+│   ├── mobs/                # Multi-agent system
+│   ├── basics/              # Essential commands
+│   ├── predator/            # Modular workflow
+│   ├── toolkit/             # Token optimization
+│   ├── statusline/          # Status UI
+│   ├── shell/               # Shell shortcuts
+│   └── auto-rename/         # Session naming
+├── docs/                    # Documentation hub
+└── README.md                # This file
+```
+
+---
+
+## 🔧 Installation
+
+### Full Installation (Recommended)
+
+```bash
+# Add marketplace
+/plugin marketplace add Pamacea/smite
+
+# Install core first (REQUIRED)
+/plugin install core@smite
+
+# Install toolkit (highly recommended)
+/plugin install toolkit@smite
+
+# Install orchestration plugins
+/plugin install ralph@smite
+/plugin install mobs@smite
+
+# Install development commands
+/plugin install basics@smite
+/plugin install predator@smite
+
+# Install productivity tools
+/plugin install statusline@smite
+/plugin install auto-rename@smite
+/plugin install shell@smite
+```
+
+### Minimal Installation
+
+```bash
+/plugin marketplace add Pamacea/smite
+/plugin install core@smite
+/plugin install basics@smite    # Essential commands only
+```
+
+---
+
+## 🌍 Cross-Platform Compatibility
+
+SMITE works on all major operating systems with automatic platform detection:
+
+### Windows (Git Bash / MSYS2)
+- Automatic detection of Git Bash environment
+- Reserved device name filtering (nul, con, prn, aux, com1-9, lpt1-9)
+- PowerShell hook compatibility with automatic `--no-verify` fallback
+
+### macOS
+- Homebrew paths auto-detection (`/opt/homebrew/bin`)
+- BSD vs GNU tools compatibility
+- Apple Silicon (ARM64) support
+
+### Linux
+- Distribution detection (Debian, Ubuntu, Fedora, Arch, etc.)
+- Package manager compatibility (apt, dnf, pacman, etc.)
+
+**Platform detection is handled automatically by the `core` plugin.**
+
+---
+
 ## 📊 Ralph Parallel Execution
 
 ```json
@@ -137,25 +267,17 @@ mgrep "authentication"                   # 2nd choice (semantic search)
 
 ---
 
-## 📁 Structure
+## 🔄 Updating
 
-```
-smite/
-├── .claude-plugin/           # Marketplace manifest
-│   └── marketplace.json      # 8 plugins catalog
-├── .claude/
-│   └── .smite/              # State (PRD, spec, quality config)
-├── plugins/                  # 8 plugins
-│   ├── ralph/               # Orchestrator (parallel execution)
-│   ├── mobs/                # Multi-agent system (architect, builder, refactor, note)
-│   ├── basics/              # Essential commands (oneshot, epct, debug, explore, commit)
-│   ├── predator/            # Modular workflow (8-step systematic execution)
-│   ├── toolkit/             # Token optimization (semantic search, 75% savings)
-│   ├── statusline/          # Status UI
-│   ├── shell/               # Shell shortcuts
-│   └── auto-rename/         # Session naming
-├── docs/                    # Documentation hub
-└── README.md                # This file
+```bash
+# Update core first (REQUIRED)
+/plugin update core@smite
+
+# Update all plugins
+/plugin update --all
+
+# Or update from marketplace
+/plugin marketplace update smite
 ```
 
 ---
@@ -163,22 +285,37 @@ smite/
 ## 📚 Documentation
 
 - **[All docs](docs/INDEX.md)** - Complete documentation index
-- **[Plugins](plugins/README.md)** - 8 plugins catalog
+- **[Plugins](plugins/README.md)** - 9 plugins catalog
+- **[Core Plugin](plugins/core/README.md)** - Shared utilities documentation
 - **[Ralph Guide](docs/RALPH_GUIDE.md)** - Complete Ralph usage
 - **[Spec-First](docs/SPEC_FIRST.md)** - Spec-driven workflow
 - **[Decision Tree](docs/DECISION_TREE.md)** - Tool selection guide
 
 ---
 
-## 🔄 Updating
+## ⚠️ Troubleshooting
+
+### "Core plugin not found" error
 
 ```bash
-/plugin marketplace update smite
-/plugin update --all
+# Install the core plugin first
+/plugin install core@smite
+```
+
+### "MCP tool unavailable" warning
+
+Some plugins use optional MCP tools. If unavailable, plugins automatically fall back to alternative methods. For full functionality, ensure MCP servers are running.
+
+### Windows-specific issues
+
+```bash
+# If git hooks fail, the commit command automatically retries with --no-verify
+# For manual fixes:
+git commit --no-verify -m "your message"
 ```
 
 ---
 
-**SMITE v3.1.1** • **8 plugins** • **Official Anthropic schema** • **Deep refactoring** • **Zero-debt engineering**
+**SMITE v3.2.0** • **9 plugins** • **Core foundation** • **Modular architecture** • **Zero-debt engineering**
 
 **License:** MIT • **Repository:** [github.com/Pamacea/smite](https://github.com/Pamacea/smite)
