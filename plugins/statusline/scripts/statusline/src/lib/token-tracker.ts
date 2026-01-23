@@ -3,10 +3,9 @@ import { existsSync } from "node:fs";
 
 /**
  * Time to show token diff after activity stops.
- * 10 seconds balances visibility (long enough to see) with
- * recency (fades out before it becomes stale).
+ * 5 minutes - show insertions persistently so user can see accumulated changes.
  */
-const TOKEN_DIFF_TIMEOUT = 10000;
+const TOKEN_DIFF_TIMEOUT = 300000;
 
 /**
  * Session timeout for token tracker.
@@ -105,15 +104,16 @@ export class TokenTracker {
 
   /**
    * Get current token diff and whether it should be shown.
-   * Only shows positive diffs within timeout window.
+   * Shows positive diffs within timeout window, or if there's been recent activity.
    */
   getCurrentDiff(currentUsage: number): TokenDiff {
     const diff = currentUsage - this.data.lastUsage;
     const now = Date.now();
-    const timeSinceLastDiff = now - (this.data.lastDiffTime || 0);
+    const timeSinceLastActivity = now - this.data.timestamp;
 
-    // Only show positive diffs within timeout
-    const shouldShow = diff > 0 && timeSinceLastDiff < TOKEN_DIFF_TIMEOUT;
+    // Show diff if: (1) positive diff within timeout OR (2) recent session activity
+    const shouldShow = (diff > 0 && now - (this.data.lastDiffTime || 0) < TOKEN_DIFF_TIMEOUT) ||
+                       (diff > 0 && timeSinceLastActivity < SESSION_TIMEOUT);
 
     return { diff, shouldShow };
   }

@@ -17,11 +17,12 @@ export interface GitStatus {
 /**
  * Execute git command with timeout
  */
-async function execGit(cmd: string): Promise<string> {
+async function execGit(cmd: string, cwd?: string): Promise<string> {
   try {
     const { stdout } = await execAsync(cmd, {
       timeout: 500, // 500ms timeout
       windowsHide: true,
+      cwd: cwd || process.cwd(),
     });
     return stdout.toString().trim();
   } catch {
@@ -32,7 +33,7 @@ async function execGit(cmd: string): Promise<string> {
 /**
  * Get git status information
  */
-export async function getGitStatus(): Promise<GitStatus> {
+export async function getGitStatus(cwd?: string): Promise<GitStatus> {
   const result: GitStatus = {
     branch: null,
     changes: 0,
@@ -46,11 +47,11 @@ export async function getGitStatus(): Promise<GitStatus> {
 
   try {
     // Get branch name with timeout
-    const branchOutput = await execGit("git branch --show-current");
+    const branchOutput = await execGit("git branch --show-current", cwd);
     result.branch = branchOutput || null;
 
     // Get porcelain status with timeout
-    const statusOutput = await execGit("git status --porcelain");
+    const statusOutput = await execGit("git status --porcelain", cwd);
     if (statusOutput) {
       const statusLines = statusOutput.split("\n").filter(Boolean);
 
@@ -78,7 +79,7 @@ export async function getGitStatus(): Promise<GitStatus> {
     }
 
     // Get line additions/deletions with numstat (unstaged changes only)
-    const diffOutput = await execGit("git diff --numstat");
+    const diffOutput = await execGit("git diff --numstat", cwd);
     if (diffOutput) {
       const lines = diffOutput.split("\n").filter(Boolean);
 

@@ -11,4 +11,4 @@ export interface GitStatus {
 /**
  * Get git status information
  */
-export declare function getGitStatus(): Promise<GitStatus>;
+export declare function getGitStatus(cwd?: string): Promise<GitStatus>;

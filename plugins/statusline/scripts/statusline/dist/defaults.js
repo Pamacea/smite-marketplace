@@ -36,7 +36,7 @@ export const defaultConfigJson = {
         },
     },
     context: {
-        usePayloadContextWindow: true,
+        usePayloadContextWindow: false,
         maxContextTokens: 200000,
         autocompactBufferTokens: 45000,
         useUsableContextOnly: true,

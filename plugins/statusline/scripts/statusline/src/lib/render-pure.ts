@@ -33,8 +33,15 @@ export interface UsageLimit {
   resets_at: string;
 }
 
+export interface GitInsertions {
+  additions: number;
+  deletions: number;
+  modifications: number;
+}
+
 export interface StatuslineData {
   branch: string;
+  gitInsertions?: GitInsertions; // Raw git data for insertions display
   dirPath: string;
   modelName: string;
   sessionCost: string;
@@ -230,7 +237,7 @@ function renderDailySpend(data: StatuslineData, config: StatuslineConfig): strin
 /**
  * Render statusline output
  *
- * Order: Branch • Model • Path • Cost • Duration • Tokens • Separator • Progressbar • Percentage
+ * Order: Branch • INSERTIONS • Path • Model • Cost • Tokens • ProgressBar • Percentage • Duration
  */
 export function renderStatusline(
   data: StatuslineData,
@@ -238,57 +245,78 @@ export function renderStatusline(
 ): string {
   const parts: string[] = [];
 
-  // Git branch (keep it short - just the name)
+  // 1. Git branch (keep it short - just the name)
   if (config.git.enabled && data.branch) {
-    // Extract just branch name without changes
     const branchName = data.branch.split(/[•\s]/)[0];
     parts.push(`${colors.white}${branchName}${colors.reset}`);
   }
 
-  // Model name (short)
+  // 2. INSERTIONS (lignes ajoutées/modifiées/supprimées)
+  if (config.git.enabled && data.gitInsertions) {
+    const { additions, deletions, modifications } = data.gitInsertions;
+    const insertionParts: string[] = [];
+
+    if (additions > 0) {
+      insertionParts.push(`${colors.green}+${additions}${colors.reset}`);
+    }
+    if (deletions > 0) {
+      insertionParts.push(`${colors.red}-${deletions}${colors.reset}`);
+    }
+    if (modifications > 0 && additions === 0 && deletions === 0) {
+      insertionParts.push(`${colors.yellow}*${modifications}${colors.reset}`);
+    }
+
+    if (insertionParts.length > 0) {
+      parts.push(insertionParts.join(" "));
+    }
+  }
+
+  // 3. Path/repo name
+  parts.push(`${colors.cyan}${formatPath(data.dirPath, config.pathDisplayMode)}${colors.reset}`);
+
+  // 4. Model name (short)
   const modelDisplay =
     config.showSonnetModel || !data.modelName.includes("Sonnet")
       ? data.modelName
       : "Sonnet";
   parts.push(`${colors.orange}${modelDisplay}${colors.reset}`);
 
-  // Path/repo name (after model as requested)
-  parts.push(`${colors.cyan}${formatPath(data.dirPath, config.pathDisplayMode)}${colors.reset}`);
-
-  // Cost and duration
+  // 5. Cost
   if (config.session.cost.enabled) {
     parts.push(data.sessionCost);
   }
-  if (config.session.duration.enabled) {
-    parts.push(data.sessionDuration);
-  }
 
-  // Tokens + Progressbar + Percentage - with separator between tokens and bar
+  // 6. Tokens + ProgressBar + Percentage
   if (config.session.tokens.enabled && data.contextTokens !== null) {
     const maxTokens = config.context.maxContextTokens;
     const userTokens = data.userTokens ?? data.contextTokens;
     const totalTokens = data.contextTokens;
 
-    // Show just total tokens for compact display
     let tokensStr: string;
-    if (userTokens < 1000 && totalTokens >= 1000) {
-      tokensStr = formatTokens(totalTokens, config.session.tokens.showDecimals);
-    } else if (userTokens !== totalTokens) {
-      tokensStr = `${formatTokens(userTokens, config.session.tokens.showDecimals)}`;
+    // Display capped at maxTokens to show actual context window usage
+    const displayTokens = Math.min(totalTokens, maxTokens);
+    const displayUserTokens = Math.min(userTokens, maxTokens);
+
+    if (displayUserTokens < 1000 && displayTokens >= 1000) {
+      tokensStr = formatTokens(displayTokens, config.session.tokens.showDecimals);
+    } else if (displayUserTokens !== displayTokens) {
+      tokensStr = `${formatTokens(displayUserTokens, config.session.tokens.showDecimals)}`;
     } else {
-      tokensStr = formatTokens(userTokens, config.session.tokens.showDecimals);
+      tokensStr = formatTokens(displayUserTokens, config.session.tokens.showDecimals);
     }
     parts.push(`${colors.magenta}${tokensStr}${colors.reset}`);
 
-    // Progressbar + percentage with separator before bar
+    // 7. Progressbar + Percentage
     if (config.session.percentage.enabled) {
       const { progressBar, showValue } = config.session.percentage;
-      const maxTokensVal = config.context.maxContextTokens || 200000;
-      const percentage = maxTokensVal > 0 && totalTokens > 0
-        ? Math.min(100, Math.round((totalTokens / maxTokensVal) * 100))
-        : 0;
+      // Use pre-calculated percentage from context, or calculate as fallback
+      const percentage = data.contextPercentage ?? (
+        maxTokensVal > 0 && totalTokens > 0
+          ? Math.min(100, Math.round((totalTokens / maxTokensVal) * 100))
+          : 0
+      );
 
-      if (totalTokens > 0 && maxTokensVal > 0) {
+      if (totalTokens > 0 && percentage > 0) {
         if (progressBar.enabled) {
           const bar = formatProgressBar(
             percentage,
@@ -307,13 +335,9 @@ export function renderStatusline(
     }
   }
 
-  // Git changes (if any) - compact format
-  if (config.git.showChanges && data.branch) {
-    const changes = data.branch.split(/[•\s]+/).slice(1);
-    const filtered = changes.filter(c => c && c !== "•");
-    if (filtered.length > 0) {
-      parts.push(filtered.join(" "));
-    }
+  // 8. Duration (à la fin)
+  if (config.session.duration.enabled) {
+    parts.push(data.sessionDuration);
   }
 
   return parts.join(` ${colors.gray}${config.separator}${colors.reset} `);

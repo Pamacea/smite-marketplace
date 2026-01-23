@@ -26,9 +26,6 @@ export interface StatuslineData {
 /**
  * Render statusline output
  *
- * CRITICAL: Put tokens + progressbar + percentage FIRST after branch
- * so they're always visible even on narrow terminals
- *
- * Order: Branch • Tokens • Progressbar • Model • Cost • Duration • GitChanges • Path
+ * Order: Branch • Model • Path • Cost • Duration • Tokens • Separator • Progressbar • Percentage
  */
 export declare function renderStatusline(data: StatuslineData, config: StatuslineConfig): string;

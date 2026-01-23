@@ -1,4 +1,4 @@
-import { colors, formatCost, formatProgressBar, formatTokens } from "./formatters.js";
+import { colors, formatCost, formatPath, formatProgressBar, formatTokens } from "./formatters.js";
 /**
  * Get color for percentage based on value (matches progress bar colors)
  */
@@ -149,10 +149,7 @@ function renderDailySpend(data, config) {
 /**
  * Render statusline output
  *
- * CRITICAL: Put tokens + progressbar + percentage FIRST after branch
- * so they're always visible even on narrow terminals
- *
- * Order: Branch • Tokens • Progressbar • Model • Cost • Duration • GitChanges • Path
+ * Order: Branch • Model • Path • Cost • Duration • Tokens • Separator • Progressbar • Percentage
  */
 export function renderStatusline(data, config) {
     const parts = [];
@@ -162,24 +159,48 @@ export function renderStatusline(data, config) {
         const branchName = data.branch.split(/[•\s]/)[0];
         parts.push(`${colors.white}${branchName}${colors.reset}`);
     }
-    // CRITICAL: Tokens + Progressbar + Percentage - RIGHT AFTER BRANCH
+    // Model name (short)
+    const modelDisplay = config.showSonnetModel || !data.modelName.includes("Sonnet")
+        ? data.modelName
+        : "Sonnet";
+    parts.push(`${colors.orange}${modelDisplay}${colors.reset}`);
+    // Path/repo name (after model as requested)
+    parts.push(`${colors.cyan}${formatPath(data.dirPath, config.pathDisplayMode)}${colors.reset}`);
+    // Token diff (insertions) - show right after path before cost
+    if (data.tokenDiff && data.tokenDiff > 0) {
+        const diffK = (data.tokenDiff / 1000).toFixed(1);
+        const diffColor = data.tokenDiff > 50000 ? colors.red :
+            data.tokenDiff > 20000 ? colors.yellow : colors.green;
+        parts.push(`${diffColor}+${diffK}K${colors.reset}`);
+    }
+    // Cost and duration
+    if (config.session.cost.enabled) {
+        parts.push(data.sessionCost);
+    }
+    if (config.session.duration.enabled) {
+        parts.push(data.sessionDuration);
+    }
+    // Tokens + Progressbar + Percentage - with separator between tokens and bar
     if (config.session.tokens.enabled && data.contextTokens !== null) {
         const maxTokens = config.context.maxContextTokens;
         const userTokens = data.userTokens ?? data.contextTokens;
         const totalTokens = data.contextTokens;
-        // Show just total tokens for compact display
+        // Show total tokens including /context
+        // Display format: userTokens(totalTokens) if different, otherwise just userTokens
         let tokensStr;
         if (userTokens < 1000 && totalTokens >= 1000) {
+            // New session with just base context - show total only
             tokensStr = formatTokens(totalTokens, config.session.tokens.showDecimals);
         }
         else if (userTokens !== totalTokens) {
-            tokensStr = `${formatTokens(userTokens, config.session.tokens.showDecimals)}`;
+            // Show userTokens with totalTokens in parentheses (includes /context)
+            tokensStr = `${formatTokens(userTokens, config.session.tokens.showDecimals)}${colors.dim}(${formatTokens(totalTokens, false)})${colors.reset}`;
         }
         else {
             tokensStr = formatTokens(userTokens, config.session.tokens.showDecimals);
         }
         parts.push(`${colors.magenta}${tokensStr}${colors.reset}`);
-        // Progressbar + percentage RIGHT after tokens
+        // Progressbar + percentage with separator before bar
         if (config.session.percentage.enabled) {
             const { progressBar, showValue } = config.session.percentage;
             const maxTokensVal = config.context.maxContextTokens || 200000;
@@ -197,18 +218,6 @@ export function renderStatusline(data, config) {
                 }
             }
         }
-    }
-    // Model name (short)
-    const modelDisplay = config.showSonnetModel || !data.modelName.includes("Sonnet")
-        ? data.modelName
-        : "Sonnet";
-    parts.push(`${colors.orange}${modelDisplay}${colors.reset}`);
-    // Cost and duration
-    if (config.session.cost.enabled) {
-        parts.push(data.sessionCost);
-    }
-    if (config.session.duration.enabled) {
-        parts.push(data.sessionDuration);
     }
     // Git changes (if any) - compact format
     if (config.git.showChanges && data.branch) {

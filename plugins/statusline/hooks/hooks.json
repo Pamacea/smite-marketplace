@@ -1,13 +1,16 @@
 {
+  "description": "Statusline hooks configuration",
   "hooks": {
-    "PostPluginInstall": [
+    "SessionStart": [
       {
-        "description": "Auto-configure statusline after installation",
-        "matcher": "statusline@smite",
-        "hook": {
-          "type": "command",
-          "command": "node plugins/statusline/scripts/dist/install.js"
-        }
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/dist/install.js",
+            "description": "Auto-configure statusline on session start"
+          }
+        ]
       }
     ]
   }

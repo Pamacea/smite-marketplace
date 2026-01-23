@@ -4,11 +4,12 @@ const execAsync = promisify(exec);
 /**
  * Execute git command with timeout
  */
-async function execGit(cmd) {
+async function execGit(cmd, cwd) {
     try {
         const { stdout } = await execAsync(cmd, {
             timeout: 500, // 500ms timeout
             windowsHide: true,
+            cwd: cwd || process.cwd(),
         });
         return stdout.toString().trim();
     }
@@ -19,7 +20,7 @@ async function execGit(cmd) {
 /**
  * Get git status information
  */
-export async function getGitStatus() {
+export async function getGitStatus(cwd) {
     const result = {
         branch: null,
         changes: 0,
@@ -32,10 +33,10 @@ export async function getGitStatus() {
     };
     try {
         // Get branch name with timeout
-        const branchOutput = await execGit("git branch --show-current");
+        const branchOutput = await execGit("git branch --show-current", cwd);
         result.branch = branchOutput || null;
         // Get porcelain status with timeout
-        const statusOutput = await execGit("git status --porcelain");
+        const statusOutput = await execGit("git status --porcelain", cwd);
         if (statusOutput) {
             const statusLines = statusOutput.split("\n").filter(Boolean);
             for (const line of statusLines) {
@@ -57,7 +58,7 @@ export async function getGitStatus() {
             result.isDirty = result.changes > 0;
         }
         // Get line additions/deletions with numstat (unstaged changes only)
-        const diffOutput = await execGit("git diff --numstat");
+        const diffOutput = await execGit("git diff --numstat", cwd);
         if (diffOutput) {
             const lines = diffOutput.split("\n").filter(Boolean);
             for (const line of lines) {

@@ -22,6 +22,7 @@ import {
   renderStatusline,
   type StatuslineData,
   type UsageLimit,
+  type GitInsertions,
 } from "./lib/render-pure.js";
 import type { HookInput } from "./lib/types.js";
 
@@ -412,19 +413,16 @@ async function getContextInfo(
         (current.cache_read_input_tokens || 0);
     }
 
-    // If current_usage is 0, fall back to total_input_tokens (session total)
-    if (tokens === 0 && input.context_window.total_input_tokens) {
-      tokens = input.context_window.total_input_tokens;
-    }
-
-    // Only use payload context if it has valid data (>0 tokens)
-    // Otherwise fall back to transcript-based calculation
+    // IMPORTANT: Only use payload if current_usage has REAL data (> 0)
+    // NEVER use total_input_tokens as fallback - it's cumulative across all sessions!
+    // If current_usage is 0, we MUST fall back to transcript-based calculation
+    // which counts only the CURRENT discussion (resets on /clear or /new)
     if (tokens > 0) {
       const percentage = Math.min(
         100,
         Math.round((tokens / maxTokens) * 100)
       );
-      console.error(`[DEBUG] Using payload context: ${tokens} tokens (${percentage}%)`);
+      console.error(`[DEBUG] Using current_usage: ${tokens} tokens (${percentage}%)`);
 
       // Calculate base context for display breakdown
       // NOTE: We only count global ~/.claude/ files, NOT workspace .claude/
@@ -461,7 +459,7 @@ async function getContextInfo(
       contextCache = { timestamp: now, sessionId: actualTranscriptPath, data: result };
       return result;
     }
-    console.error(`[DEBUG] Payload context not available, falling back to transcript`);
+    console.error(`[DEBUG] current_usage is 0, falling back to transcript calculation`);
   }
 
   // Fallback to transcript ONLY if payload is not available
@@ -621,6 +619,11 @@ async function main() {
 
     const data: StatuslineData = {
       branch: formatBranch(git, config.git),
+      gitInsertions: {
+        additions: git.additions,
+        deletions: git.deletions,
+        modifications: git.modifications,
+      },
       dirPath: formatPath(workingDir, config.pathDisplayMode),
       modelName: input.model.display_name,
       sessionCost: formatCost(

@@ -29,7 +29,7 @@ export declare class TokenTracker {
     save(trackerPath: string): Promise<void>;
     /**
      * Get current token diff and whether it should be shown.
-     * Only shows positive diffs within timeout window.
+     * Shows positive diffs within timeout window, or if there's been recent activity.
      */
     getCurrentDiff(currentUsage: number): TokenDiff;
     /**
