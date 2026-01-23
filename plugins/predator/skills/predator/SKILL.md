@@ -6,6 +6,23 @@ version: 1.0.0
 
 # Predator Skills
 
+## 🔴 TOOL GATEKEEPER - NON-NEGOTIABLE
+
+═══════════════════════════════════════════════════════
+🚫 PROHIBITED WITHOUT EXCEPTION:
+   grep | egrep | find | ack | ag | ls | dir | glob
+
+✅ MANDATORY REPLACEMENT:
+   mgrep "pattern" | /toolkit search "query"
+
+🎯 DECISION TREE:
+   Need to search? → mgrep or /toolkit search
+   Need to explore? → mgrep "" (empty pattern)
+   Need to read?    → Read tool (NOT cat/head)
+═══════════════════════════════════════════════════════
+
+---
+
 ## Mission
 
 Provide modular step-based workflows for systematic development, debugging, and brainstorming with optimal token usage and maximum instruction adherence.

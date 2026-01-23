@@ -1,5 +1,22 @@
 # Builder Skill
 
+## 🔴 TOOL GATEKEEPER - NON-NEGOTIABLE
+
+═══════════════════════════════════════════════════════
+🚫 PROHIBITED WITHOUT EXCEPTION:
+   grep | egrep | find | ack | ag | ls | dir | glob
+
+✅ MANDATORY REPLACEMENT:
+   mgrep "pattern" | /toolkit search "query"
+
+🎯 DECISION TREE:
+   Need to search? → mgrep or /toolkit search
+   Need to explore? → mgrep "" (empty pattern)
+   Need to read?    → Read tool (NOT cat/head)
+═══════════════════════════════════════════════════════
+
+---
+
 ## Mission
 
 Systematic feature implementation through a 5-step workflow with technology-specific best practices, following Spec-Lock Policy to prevent architecture drift.

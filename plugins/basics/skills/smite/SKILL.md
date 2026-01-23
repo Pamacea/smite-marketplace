@@ -6,6 +6,23 @@ version: 3.1.0
 
 # SMITE Commands Skill
 
+## 🔴 TOOL GATEKEEPER - NON-NEGOTIABLE
+
+═══════════════════════════════════════════════════════
+🚫 PROHIBITED WITHOUT EXCEPTION:
+   grep | egrep | find | ack | ag | ls | dir | glob
+
+✅ MANDATORY REPLACEMENT:
+   mgrep "pattern" | /toolkit search "query"
+
+🎯 DECISION TREE:
+   Need to search? → mgrep or /toolkit search
+   Need to explore? → mgrep "" (empty pattern)
+   Need to read?    → Read tool (NOT cat/head)
+═══════════════════════════════════════════════════════
+
+---
+
 ## Mission
 
 Provide rapid development commands for quick iteration, debugging, and code management workflows.

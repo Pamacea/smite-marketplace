@@ -4,8 +4,6 @@ description: Cross-platform shell aliases for Claude Code (cc and ccc)
 version: 3.1.0
 ---
 
-# Shell Skill
-
 ## Mission
 
 Cross-platform shell aliases for Claude Code - `cc` for normal mode and `ccc` for bypass-permissions mode.
