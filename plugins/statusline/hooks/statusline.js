@@ -5,17 +5,38 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
+// ANSI color codes
+const COLORS = {
+  reset: '\x1b[0m',
+  dim: '\x1b[2m',
+  bright: '\x1b[1m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m',
+  magenta: '\x1b[35m',
+  red: '\x1b[31m',
+  white: '\x1b[37m'
+};
+
+const TOKENS_PER_CHAR = 0.15;
+const JSON_OVERHEAD = 4.0;
+
 class StatusLine {
   constructor() {
     this.homeDir = os.homedir();
     this.claudeDir = path.join(this.homeDir, '.claude');
-    this.sessionsDir = path.join(this.claudeDir, 'sessions');
+    this.projectsDir = path.join(this.claudeDir, 'projects');
+    this.contextLimits = {
+      'opus': 200000,
+      'sonnet': 200000,
+      'haiku': 200000,
+      'glm': 200000,
+      'default': 200000
+    };
   }
 
   run() {
-    const args = process.argv.slice(2);
-    const mode = args[0] || 'display';
-
     try {
       const status = this.buildStatus();
       console.log(status);
@@ -30,18 +51,23 @@ class StatusLine {
     const pathInfo = this.getPathInfo();
 
     const parts = [
-      gitInfo.branch,
-      gitInfo.insertions,
-      pathInfo.abbrevPath,
-      sessionInfo.model,
-      sessionInfo.cost,
-      sessionInfo.tokens,
+      this.colorize(gitInfo.branch, 'cyan'),
+      gitInfo.insertions, // Already colored
+      this.colorize(pathInfo.abbrevPath, 'dim'),
+      this.colorize(sessionInfo.model, 'blue'),
+      this.colorize(sessionInfo.cost, 'yellow'),
+      this.colorize(sessionInfo.tokens, 'magenta'),
       sessionInfo.progress,
-      sessionInfo.percentage,
-      sessionInfo.duration
+      this.colorize(sessionInfo.percentage, 'cyan'),
+      this.colorize(sessionInfo.duration, 'dim')
     ];
 
-    return parts.filter(Boolean).join(' • ');
+    return parts.filter(Boolean).join(` ${COLORS.dim}•${COLORS.reset} `);
+  }
+
+  colorize(text, color) {
+    if (!text) return '';
+    return `${COLORS[color]}${text}${COLORS.reset}`;
   }
 
   getGitInfo() {
@@ -51,17 +77,13 @@ class StatusLine {
     };
 
     try {
-      // Check if we're in a git repo
       execSync('git rev-parse --git-dir', { stdio: 'ignore' });
-
-      // Get branch name
       try {
         info.branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
       } catch {
         info.branch = 'HEAD';
       }
 
-      // Get insertions/deletions
       try {
         const diffStat = execSync('git diff --shortstat', { encoding: 'utf-8' }).trim();
         const match = diffStat.match(/(\d+) insertion[^,]*(?:, (\d+) deletion)?/);
@@ -69,11 +91,14 @@ class StatusLine {
           const insertions = parseInt(match[1]);
           const deletions = match[2] ? parseInt(match[2]) : 0;
           if (insertions > 0 || deletions > 0) {
-            info.insertions = deletions > 0 ? `+${insertions}/-${deletions}` : `+${insertions}`;
+            // Green for additions, red for deletions
+            const plus = insertions > 0 ? `${COLORS.green}+${insertions}${COLORS.reset}` : '';
+            const minus = deletions > 0 ? `${COLORS.red}/-${deletions}${COLORS.reset}` : '';
+            info.insertions = plus + minus;
           }
         }
       } catch {
-        // No changes or command failed
+        // No changes
       }
     } catch {
       // Not a git repo
@@ -99,31 +124,33 @@ class StatusLine {
       const sessionData = this.readSession(sessionPath);
       if (!sessionData || sessionData.length === 0) return info;
 
-      // Get latest entry with API data
+      // Get latest entry with model data
       const apiEntry = sessionData.slice().reverse().find(e =>
-        e.type === 'api_call_start' || e.type === 'completion_params'
+        (e.type === 'assistant' || e.type === 'api_call_start' || e.type === 'completion_params') &&
+        (e.message?.model || e.model)
       );
 
       if (apiEntry) {
-        // Model name
         info.model = this.extractModelName(apiEntry);
 
-        // Tokens and cost
-        const tokens = this.extractTokens(sessionData);
+        // Try actual tokens first, then estimate from file size
+        const tokens = this.extractTokens(sessionData, sessionPath);
         info.tokens = this.formatTokens(tokens);
 
         const cost = this.calculateCost(tokens, apiEntry);
         info.cost = cost ? `$${cost.toFixed(2)}` : '';
 
         // Context percentage
-        info.percentage = this.extractPercentage(apiEntry);
+        const contextLimit = this.getContextLimit(info.model);
+        const pct = Math.min(100, Math.round((tokens.total / contextLimit) * 100));
+        info.percentage = `${pct}%`;
         info.progress = this.renderProgress(info.percentage);
       }
 
       // Duration
       info.duration = this.calculateDuration(sessionData);
     } catch (error) {
-      // Session read failed, use defaults
+      // Session read failed
     }
 
     return info;
@@ -131,24 +158,74 @@ class StatusLine {
 
   findCurrentSession() {
     try {
-      const sessions = fs.readdirSync(this.sessionsDir);
-      // Sort by modified time, get most recent
-      const sessionPaths = sessions
-        .map(s => path.join(this.sessionsDir, s))
-        .filter(p => {
-          try {
-            return fs.statSync(p).isFile();
-          } catch {
-            return false;
-          }
-        })
-        .sort((a, b) => {
-          const statA = fs.statSync(a);
-          const statB = fs.statSync(b);
-          return statB.mtimeMs - statA.mtimeMs;
-        });
+      const cwd = process.cwd();
+      const projects = fs.readdirSync(this.projectsDir);
 
-      return sessionPaths[0] || null;
+      // Find matching project directory
+      let matchingProject = null;
+      for (const project of projects) {
+        const projectDir = path.join(this.projectsDir, project);
+        const stat = fs.statSync(projectDir);
+        if (!stat.isDirectory()) continue;
+
+        // Check sessions-index.json for project path
+        const indexPath = path.join(projectDir, 'sessions-index.json');
+        if (fs.existsSync(indexPath)) {
+          try {
+            const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
+            if (index.originalPath && cwd.startsWith(index.originalPath)) {
+              matchingProject = projectDir;
+              break;
+            }
+          } catch {
+            // Continue
+          }
+        }
+      }
+
+      // If no match, use the most recently modified session
+      if (!matchingProject) {
+        let newestSession = null;
+        let newestTime = 0;
+
+        for (const project of projects) {
+          const projectDir = path.join(this.projectsDir, project);
+          const stat = fs.statSync(projectDir);
+          if (!stat.isDirectory()) continue;
+
+          const sessions = fs.readdirSync(projectDir)
+            .filter(f => f.endsWith('.jsonl'))
+            .map(f => path.join(projectDir, f));
+
+          for (const sessionPath of sessions) {
+            const sessionStat = fs.statSync(sessionPath);
+            // Check if this session was modified in the last minute (active session)
+            const now = Date.now();
+            const timeSinceModified = now - sessionStat.mtimeMs;
+
+            // Prioritize very recently modified sessions (likely current)
+            if (timeSinceModified < 60000 && sessionStat.mtimeMs > newestTime) {
+              newestTime = sessionStat.mtimeMs;
+              newestSession = sessionPath;
+            }
+          }
+        }
+
+        return newestSession;
+      }
+
+      // Get most recent session from matching project
+      const sessions = fs.readdirSync(matchingProject)
+        .filter(f => f.endsWith('.jsonl'))
+        .map(f => path.join(matchingProject, f));
+
+      if (sessions.length === 0) return null;
+
+      return sessions.sort((a, b) => {
+        const statA = fs.statSync(a);
+        const statB = fs.statSync(b);
+        return statB.mtimeMs - statA.mtimeMs;
+      })[0];
     } catch {
       return null;
     }
@@ -171,22 +248,27 @@ class StatusLine {
   }
 
   extractModelName(entry) {
-    // Try various fields for model name
-    const model = entry.model || entry.model_name || entry.slate?.model;
+    const model = entry.message?.model || entry.model || entry.model_name || entry.slate?.model;
     if (model) {
-      // Format: "claude-opus-4-5-20251101" -> "Opus 4.5"
-      if (model.includes('opus')) return 'Opus 4.5';
-      if (model.includes('sonnet')) return 'Sonnet 4.5';
-      if (model.includes('haiku')) return 'Haiku 4.5';
+      const modelLower = model.toLowerCase();
+      if (modelLower.includes('opus')) return 'Opus 4.5';
+      if (modelLower.includes('sonnet')) return 'Sonnet 4.5';
+      if (modelLower.includes('haiku')) return 'Haiku 4.5';
+      if (modelLower.includes('glm')) {
+        if (modelLower.includes('4.5') || modelLower.includes('4-5')) return 'Glm 4.5';
+        if (modelLower.includes('4.7') || modelLower.includes('4-7')) return 'Glm 4.7';
+        return 'Glm';
+      }
       return model.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     }
     return 'N/A';
   }
 
-  extractTokens(sessionData) {
+  extractTokens(sessionData, sessionPath) {
     let inputTokens = 0;
     let outputTokens = 0;
 
+    // First, try to get actual tokens from session data
     for (const entry of sessionData) {
       if (entry.type === 'api_call_start') {
         inputTokens += entry.input_tokens || 0;
@@ -194,10 +276,38 @@ class StatusLine {
       } else if (entry.type === 'completion_params') {
         inputTokens += entry.prompt_tokens || 0;
         outputTokens += entry.completion_tokens || 0;
+      } else if (entry.type === 'assistant' && entry.message?.usage) {
+        inputTokens += entry.message.usage.input_tokens || 0;
+        outputTokens += entry.message.usage.output_tokens || 0;
+      }
+    }
+
+    // If no actual tokens found, estimate from file size
+    if (inputTokens === 0 && outputTokens === 0 && sessionPath) {
+      try {
+        const stats = fs.statSync(sessionPath);
+        const fileSize = stats.size;
+        const estimatedTotal = Math.round((fileSize * TOKENS_PER_CHAR) / JSON_OVERHEAD);
+        inputTokens = Math.round(estimatedTotal * 0.7);
+        outputTokens = Math.round(estimatedTotal * 0.3);
+      } catch {
+        const totalContent = sessionData.map(e => JSON.stringify(e)).join('');
+        const estimatedTotal = Math.round((totalContent.length * TOKENS_PER_CHAR) / JSON_OVERHEAD);
+        inputTokens = Math.round(estimatedTotal * 0.7);
+        outputTokens = Math.round(estimatedTotal * 0.3);
       }
     }
 
     return { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens };
+  }
+
+  getContextLimit(modelName) {
+    const modelLower = (modelName || '').toLowerCase();
+    if (modelLower.includes('opus')) return this.contextLimits.opus;
+    if (modelLower.includes('sonnet')) return this.contextLimits.sonnet;
+    if (modelLower.includes('haiku')) return this.contextLimits.haiku;
+    if (modelLower.includes('glm')) return this.contextLimits.glm;
+    return this.contextLimits.default;
   }
 
   formatTokens(tokens) {
@@ -207,29 +317,24 @@ class StatusLine {
   }
 
   calculateCost(tokens, entry) {
-    // Pricing per million tokens (approximate)
     const pricing = {
       opus: { input: 15, output: 75 },
       sonnet: { input: 3, output: 15 },
-      haiku: { input: 1, output: 5 }
+      haiku: { input: 1, output: 5 },
+      glm: { input: 0.5, output: 1 }
     };
 
     let model = 'opus';
-    const modelStr = (entry.model || entry.model_name || '').toLowerCase();
+    const modelStr = (entry.message?.model || entry.model || entry.model_name || '').toLowerCase();
     if (modelStr.includes('sonnet')) model = 'sonnet';
     else if (modelStr.includes('haiku')) model = 'haiku';
+    else if (modelStr.includes('glm')) model = 'glm';
 
     const rates = pricing[model];
     const inputCost = (tokens.input / 1_000_000) * rates.input;
     const outputCost = (tokens.output / 1_000_000) * rates.output;
 
     return inputCost + outputCost;
-  }
-
-  extractPercentage(entry) {
-    // Try to get context window percentage
-    const pct = entry.context_percentage || entry.percent || entry.usage?.percent;
-    return pct ? `${pct}%` : '';
   }
 
   renderProgress(percentage) {
@@ -241,14 +346,27 @@ class StatusLine {
     const filled = Math.round((pct / 100) * width);
     const empty = width - filled;
 
-    return '█'.repeat(filled) + '░'.repeat(empty);
+    // Color gradient based on percentage
+    let color = COLORS.green;
+    if (pct >= 80) color = COLORS.red;
+    else if (pct >= 50) color = COLORS.yellow;
+
+    return color + '█'.repeat(filled) + COLORS.dim + '░'.repeat(empty) + COLORS.reset;
   }
 
   calculateDuration(sessionData) {
     if (sessionData.length === 0) return '';
 
-    const start = sessionData[0].timestamp || sessionData[0].time;
-    const end = sessionData[sessionData.length - 1].timestamp || sessionData[sessionData.length - 1].time;
+    let start = null;
+    let end = null;
+
+    for (const entry of sessionData) {
+      const ts = entry.timestamp || entry.time;
+      if (ts) {
+        if (!start) start = ts;
+        end = ts;
+      }
+    }
 
     if (!start || !end) return '';
 
@@ -271,12 +389,10 @@ class StatusLine {
     const cwd = process.cwd();
     let abbrevPath = cwd;
 
-    // Replace home directory with ~
     if (cwd.startsWith(this.homeDir)) {
       abbrevPath = '~' + cwd.slice(this.homeDir.length);
     }
 
-    // Further abbreviate path components
     const parts = abbrevPath.split(path.sep);
     if (parts.length > 3) {
       const last = parts[parts.length - 1];
@@ -288,7 +404,6 @@ class StatusLine {
   }
 }
 
-// Run if executed directly
 if (require.main === module) {
   const statusline = new StatusLine();
   statusline.run();
