@@ -40,49 +40,16 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DocumentationAPI = exports.DocFormat = void 0;
+exports.DocumentationAPI = void 0;
 exports.createDocumentation = createDocumentation;
 const ts_morph_1 = require("ts-morph");
-/**
- * Documentation format
- */
-var DocFormat;
-(function (DocFormat) {
-    DocFormat["JSDOC"] = "jsdoc";
-    DocFormat["MARKDOWN"] = "markdown";
-    DocFormat["HTML"] = "html";
-    DocFormat["JSON"] = "json";
-})(DocFormat || (exports.DocFormat = DocFormat = {}));
-/**
- * Default templates
- */
-const DEFAULT_TEMPLATES = {
-    [DocFormat.JSDOC]: {
-        header: '/**\n * {{description}}\n */',
-        functionTemplate: '/**\n * {{description}}\n * {{params}}\n * {{returns}}\n */',
-        classTemplate: '/**\n * {{description}}\n * {{properties}}\n * {{methods}}\n */',
-        footer: '',
-    },
-    [DocFormat.MARKDOWN]: {
-        header: '# {{title}}\n\n{{description}}',
-        functionTemplate: '## {{name}}\n\n{{description}}\n\n**Parameters:**\n{{params}}\n\n**Returns:**\n{{returns}}',
-        classTemplate: '## {{name}}\n\n{{description}}\n\n**Properties:**\n{{properties}}\n\n**Methods:**\n{{methods}}',
-        footer: '',
-    },
-    [DocFormat.HTML]: {
-        header: '<h1>{{title}}</h1><p>{{description}}</p>',
-        functionTemplate: '<h2>{{name}}</h2><p>{{description}}</p><h3>Parameters</h3>{{params}}<h3>Returns</h3>{{returns}}',
-        classTemplate: '<h2>{{name}}</h2><p>{{description}}</p><h3>Properties</h3>{{properties}}<h3>Methods</h3>{{methods}}',
-        footer: '</body></html>',
-    },
-    [DocFormat.JSON]: {
-        header: '',
-        functionTemplate: '',
-        classTemplate: '',
-        footer: '',
-    },
-};
+const docs_types_1 = require("./docs-types");
+const docs_generators_1 = require("./docs-generators");
+const error_handler_1 = require("../core/utils/error-handler");
 /**
  * Documentation Generation API class
  */
@@ -101,47 +68,15 @@ class DocumentationAPI {
     async generateJSDoc(filePath, options) {
         try {
             const sourceFile = this.addSourceFile(filePath);
-            if (!sourceFile) {
-                return {
-                    format: DocFormat.JSDOC,
-                    content: '',
-                    files: [],
-                    success: false,
-                    error: 'Failed to load source file',
-                };
-            }
-            const docs = [];
-            // Document functions
-            const functions = sourceFile.getFunctions();
-            for (const func of functions) {
-                const jsdoc = this.generateFunctionJSDoc(func, options);
-                if (jsdoc) {
-                    docs.push(jsdoc);
-                }
-            }
-            // Document classes
-            const classes = sourceFile.getClasses();
-            for (const cls of classes) {
-                const jsdoc = this.generateClassJSDoc(cls, options);
-                if (jsdoc) {
-                    docs.push(jsdoc);
-                }
-            }
-            const content = docs.join('\n\n');
-            return {
-                format: DocFormat.JSDOC,
-                content,
-                files: [filePath],
-                success: true,
-            };
+            return (0, docs_generators_1.generateJSDocForFile)(sourceFile, filePath, options);
         }
         catch (error) {
             return {
-                format: DocFormat.JSDOC,
+                format: docs_types_1.DocFormat.JSDOC,
                 content: '',
                 files: [],
                 success: false,
-                error: error instanceof Error ? error.message : String(error),
+                error: (0, error_handler_1.errorMessage)(error),
             };
         }
     }
@@ -149,104 +84,35 @@ class DocumentationAPI {
      * Generate README for a project
      */
     async generateREADME(projectPath, options) {
-        try {
-            const fs = await Promise.resolve().then(() => __importStar(require('fs/promises')));
-            const path = await Promise.resolve().then(() => __importStar(require('path')));
-            // Read package.json if exists
-            const packageJsonPath = path.join(projectPath, 'package.json');
-            let projectName = 'Project';
-            let description = '';
-            let version = '1.0.0';
-            try {
-                const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
-                projectName = packageJson.name || projectName;
-                description = packageJson.description || description;
-                version = packageJson.version || version;
-            }
-            catch {
-                // No package.json found
-            }
-            // Generate README content
-            const lines = [];
-            lines.push(`# ${projectName}\n`);
-            if (description) {
-                lines.push(`${description}\n`);
-            }
-            lines.push('## Installation\n');
-            lines.push('```bash\n');
-            lines.push('npm install\n');
-            lines.push('```\n');
-            lines.push('## Usage\n');
-            lines.push('TODO: Add usage examples\n');
-            lines.push('## API\n');
-            lines.push('TODO: Add API documentation\n');
-            lines.push('## Contributing\n');
-            lines.push('TODO: Add contributing guidelines\n');
-            lines.push('## License\n');
-            lines.push('MIT\n');
-            const content = lines.join('\n');
-            // Save to file if requested
-            let outputPath;
-            if (options?.saveToFile) {
-                outputPath = path.join(projectPath, 'README.md');
-                await fs.writeFile(outputPath, content, 'utf-8');
-            }
-            return {
-                format: DocFormat.MARKDOWN,
-                content,
-                files: [projectPath],
-                success: true,
-                outputPath,
-            };
-        }
-        catch (error) {
-            return {
-                format: DocFormat.MARKDOWN,
-                content: '',
-                files: [],
-                success: false,
-                error: error instanceof Error ? error.message : String(error),
-            };
-        }
+        return (0, docs_generators_1.generateREADMEForProject)(projectPath, options);
     }
     /**
      * Generate API documentation
      */
     async generateAPIDocs(sourcePath, options) {
         try {
-            const format = options?.format || DocFormat.MARKDOWN;
+            const format = options?.format || docs_types_1.DocFormat.MARKDOWN;
             // Add source files to project
             const sourceFiles = this.project.addSourceFilesAtPaths(sourcePath);
-            const docs = [];
-            for (const sourceFile of sourceFiles) {
-                const fileDoc = await this.generateFileAPIDoc(sourceFile, format, options);
-                docs.push(fileDoc);
-            }
-            const content = docs.join('\n\n---\n\n');
+            const result = await (0, docs_generators_1.generateAPIDocsForFiles)(sourceFiles, format, options);
             // Save to file if requested
             let outputPath;
             if (options?.saveToFile && options?.outputDir) {
                 const path = await Promise.resolve().then(() => __importStar(require('path')));
                 const fs = await Promise.resolve().then(() => __importStar(require('fs/promises')));
-                outputPath = path.join(options.outputDir, `API.${format === DocFormat.MARKDOWN ? 'md' : format}`);
+                outputPath = path.join(options.outputDir, `API.${format === docs_types_1.DocFormat.MARKDOWN ? 'md' : format}`);
                 await fs.mkdir(path.dirname(outputPath), { recursive: true });
-                await fs.writeFile(outputPath, content, 'utf-8');
+                await fs.writeFile(outputPath, result.content, 'utf-8');
             }
-            return {
-                format,
-                content,
-                files: sourceFiles.map(f => f.getFilePath()),
-                success: true,
-                outputPath,
-            };
+            return { ...result, outputPath };
         }
         catch (error) {
             return {
-                format: options?.format || DocFormat.MARKDOWN,
+                format: options?.format || docs_types_1.DocFormat.MARKDOWN,
                 content: '',
                 files: [],
                 success: false,
-                error: error instanceof Error ? error.message : String(error),
+                error: (0, error_handler_1.errorMessage)(error),
             };
         }
     }
@@ -268,173 +134,6 @@ class DocumentationAPI {
             return null;
         }
     }
-    /**
-     * Generate JSDoc for a function
-     */
-    generateFunctionJSDoc(func, options) {
-        try {
-            const name = func.getName();
-            const params = func.getParameters();
-            const returnType = func.getReturnType().getText();
-            const lines = ['/**'];
-            // Description
-            lines.push(` * ${name} - TODO: Add description`);
-            // Parameters
-            if (params.length > 0) {
-                lines.push(' *');
-                lines.push(' * @param {...} args - Function parameters');
-            }
-            // Return type
-            if (returnType && returnType !== 'void') {
-                lines.push(' *');
-                lines.push(` * @returns {${returnType}} - Return value`);
-            }
-            lines.push(' */');
-            return lines.join('\n');
-        }
-        catch {
-            return null;
-        }
-    }
-    /**
-     * Generate JSDoc for a class
-     */
-    generateClassJSDoc(cls, options) {
-        try {
-            const name = cls.getName();
-            const properties = cls.getProperties();
-            const methods = cls.getMethods();
-            const lines = ['/**'];
-            // Description
-            lines.push(` * ${name} - TODO: Add description`);
-            // Properties
-            if (properties.length > 0) {
-                lines.push(' *');
-                lines.push(' * @property {...} props - Class properties');
-            }
-            // Methods
-            if (methods.length > 0) {
-                lines.push(' *');
-                lines.push(' * @method {...} methods - Class methods');
-            }
-            lines.push(' */');
-            return lines.join('\n');
-        }
-        catch {
-            return null;
-        }
-    }
-    /**
-     * Generate API documentation for a file
-     */
-    async generateFileAPIDoc(sourceFile, format, options) {
-        const filePath = sourceFile.getFilePath();
-        const template = DEFAULT_TEMPLATES[format];
-        const lines = [];
-        // File header
-        lines.push(`# ${filePath}\n`);
-        // Exported functions
-        const functions = sourceFile.getFunctions();
-        if (functions.length > 0) {
-            lines.push('## Functions\n');
-            for (const func of functions) {
-                const funcDoc = this.generateFunctionDoc(func, format, options);
-                lines.push(funcDoc);
-            }
-        }
-        // Exported classes
-        const classes = sourceFile.getClasses();
-        if (classes.length > 0) {
-            lines.push('\n## Classes\n');
-            for (const cls of classes) {
-                const classDoc = this.generateClassDoc(cls, format, options);
-                lines.push(classDoc);
-            }
-        }
-        // Exported interfaces
-        const interfaces = sourceFile.getInterfaces();
-        if (interfaces.length > 0) {
-            lines.push('\n## Interfaces\n');
-            for (const iface of interfaces) {
-                const interfaceDoc = this.generateInterfaceDoc(iface, format, options);
-                lines.push(interfaceDoc);
-            }
-        }
-        return lines.join('\n');
-    }
-    /**
-     * Generate documentation for a function
-     */
-    generateFunctionDoc(func, format, options) {
-        const name = func.getName() || 'anonymous';
-        const params = func.getParameters();
-        const returnType = func.getReturnType().getText();
-        if (format === DocFormat.MARKDOWN) {
-            const lines = [];
-            lines.push(`### ${name}`);
-            if (options?.includeTypes) {
-                const paramStr = params.map((p) => p.getType().getText()).join(', ');
-                lines.push(`\n\`${name}(${paramStr}): ${returnType}\`\n`);
-            }
-            if (options?.includeExamples) {
-                lines.push('```typescript');
-                lines.push(`// TODO: Add example for ${name}`);
-                lines.push('```\n');
-            }
-            return lines.join('\n');
-        }
-        return name;
-    }
-    /**
-     * Generate documentation for a class
-     */
-    generateClassDoc(cls, format, options) {
-        const name = cls.getName() || 'anonymous';
-        if (format === DocFormat.MARKDOWN) {
-            const lines = [];
-            lines.push(`### ${name}`);
-            const properties = cls.getProperties();
-            const methods = cls.getMethods();
-            if (properties.length > 0) {
-                lines.push('\n**Properties:**');
-                for (const prop of properties) {
-                    const propName = prop.getName();
-                    const propType = prop.getType().getText();
-                    lines.push(`- \`${propName}: ${propType}\``);
-                }
-            }
-            if (methods.length > 0) {
-                lines.push('\n**Methods:**');
-                for (const method of methods) {
-                    const methodName = method.getName();
-                    lines.push(`- \`${methodName}()\``);
-                }
-            }
-            return lines.join('\n');
-        }
-        return name;
-    }
-    /**
-     * Generate documentation for an interface
-     */
-    generateInterfaceDoc(iface, format, options) {
-        const name = iface.getName() || 'anonymous';
-        if (format === DocFormat.MARKDOWN) {
-            const lines = [];
-            lines.push(`### ${name}`);
-            const properties = iface.getProperties();
-            if (properties.length > 0) {
-                lines.push('\n**Properties:**');
-                for (const prop of properties) {
-                    const propName = prop.getName();
-                    const propType = prop.getType().getText();
-                    lines.push(`- \`${propName}: ${propType}\``);
-                }
-            }
-            return lines.join('\n');
-        }
-        return name;
-    }
 }
 exports.DocumentationAPI = DocumentationAPI;
 /**
@@ -443,4 +142,6 @@ exports.DocumentationAPI = DocumentationAPI;
 function createDocumentation() {
     return new DocumentationAPI();
 }
+// Re-export types for convenience
+__exportStar(require("./docs-types"), exports);
 //# sourceMappingURL=docs.js.map

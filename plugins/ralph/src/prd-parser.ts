@@ -3,18 +3,16 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import * as crypto from "crypto";
-import { PRD, UserStory } from "./types";
+import type { PRD, UserStory } from "./types";
 import { sanitizePath } from "./path-utils";
-import { createFileError, createParseError, createValidationError, wrapError } from "./error-utils";
+import { createFileError, createParseError, wrapError } from "./error-utils";
+import { PRDCache } from "./prd-parser-cache";
+import { PRDValidator, STANDARD_PRD_PATH } from "./prd-validator";
+import { PRDSerializer } from "./prd-serializer";
 
 export class PRDParser {
-  // Standard PRD location - SINGLE SOURCE OF TRUTH
-  private static readonly STANDARD_PRD_PATH = path.join(".claude", ".smite", "prd.json");
-
-  // PRD cache for I/O optimization (70-90% reduction in file reads)
-  private static prdCache = new Map<string, { prd: PRD; mtime: number }>();
-  private static readonly CACHE_TTL_MS = 5000; // 5 seconds cache TTL
+  // Re-export standard path for convenience
+  static readonly STANDARD_PRD_PATH = STANDARD_PRD_PATH;
 
   /**
    * Parse PRD from JSON file (async) with caching and path sanitization
@@ -24,33 +22,15 @@ export class PRDParser {
     const fullPath = sanitizePath(filePath, process.cwd());
 
     // Check cache first (70-90% I/O reduction)
-    const cached = this.prdCache.get(fullPath);
+    const cached = PRDCache.get(fullPath);
     if (cached) {
-      try {
-        const stats = await fs.promises.stat(fullPath);
-        const cacheAge = Date.now() - cached.mtime;
-
-        // Use cache if file hasn't been modified and cache is fresh
-        if (stats.mtimeMs <= cached.mtime && cacheAge < PRDParser.CACHE_TTL_MS) {
-          console.log(`✅ Cache hit for PRD: ${filePath}`);
-          return cached.prd;
-        }
-
-        // Cache stale or file modified, remove it
-        this.prdCache.delete(fullPath);
-        console.log(`🔄 Cache invalidation for PRD: ${filePath}`);
-      } catch {
-        // File doesn't exist, remove from cache
-        this.prdCache.delete(fullPath);
-      }
-    } else {
-      console.log(`❌ Cache miss for PRD: ${filePath}`);
+      return cached;
     }
 
     // SECURITY: Only allow .claude/.smite/prd.json or explicit user intent
-    if (!this.isValidPRDPath(fullPath)) {
+    if (!PRDValidator.isValidPRDPath(fullPath)) {
       console.warn(`⚠️  Warning: Non-standard PRD path detected: ${filePath}`);
-      console.warn(`   Standard path is: ${this.STANDARD_PRD_PATH}`);
+      console.warn(`   Standard path is: ${STANDARD_PRD_PATH}`);
       console.warn(`   Copying to standard location...`);
     }
 
@@ -59,8 +39,7 @@ export class PRDParser {
       const prd = this.parseFromString(content);
 
       // Add to cache
-      const stats = await fs.promises.stat(fullPath);
-      this.prdCache.set(fullPath, { prd, mtime: stats.mtimeMs });
+      await PRDCache.set(fullPath, prd);
 
       return prd;
     } catch (error) {
@@ -72,40 +51,12 @@ export class PRDParser {
   }
 
   /**
-   * Validate PRD file path - prevent phantom PRD files
-   * ONLY allows .claude/.smite/prd.json - everything else is rejected
-   */
-  private static isValidPRDPath(filePath: string): boolean {
-    const resolved = path.resolve(filePath);
-    const standard = path.resolve(this.STANDARD_PRD_PATH);
-
-    // Check if it's the standard PRD path
-    if (resolved === standard) {
-      return true;
-    }
-
-    // Check if it's a phantom PRD (prd-*.json, prd-fix.json, etc.)
-    const basename = path.basename(filePath);
-    if (basename.startsWith('prd') && basename !== 'prd.json') {
-      console.error(`❌ REJECTED: Phantom PRD file detected: ${filePath}`);
-      console.error(`   Ralph ONLY uses: ${this.STANDARD_PRD_PATH}`);
-      console.error(`   Please delete '${basename}' and use the standard PRD file.`);
-      throw new Error(
-        `Invalid PRD path: ${basename}. Ralph only supports .claude/.smite/prd.json. ` +
-        `Do not create alternate PRD files like prd-fix.json or prd-*.json.`
-      );
-    }
-
-    return false;
-  }
-
-  /**
    * Parse PRD from JSON string with enhanced error context
    */
   static parseFromString(json: string): PRD {
     try {
-      const prd = JSON.parse(json) as PRD;
-      this.validate(prd);
+      const prd = PRDSerializer.deserialize(json);
+      PRDValidator.validate(prd);
       return prd;
     } catch (error) {
       if (error instanceof SyntaxError) {
@@ -119,84 +70,24 @@ export class PRDParser {
   }
 
   /**
-   * Validate PRD structure with enhanced error messages
+   * Validate PRD structure
    */
   static validate(prd: PRD): void {
-    if (!prd.project) {
-      throw createValidationError("PRD", "missing project name", {
-        details: "The 'project' field is required",
-      });
-    }
-    if (!prd.branchName) {
-      throw createValidationError("PRD", "missing branch name", {
-        details: "The 'branchName' field is required",
-      });
-    }
-    if (!prd.description) {
-      throw createValidationError("PRD", "missing description", {
-        details: "The 'description' field is required",
-      });
-    }
-    if (!prd.userStories || !Array.isArray(prd.userStories)) {
-      throw createValidationError("PRD", "invalid user stories", {
-        details: "The 'userStories' field must be an array",
-      });
-    }
-    if (prd.userStories.length === 0) {
-      throw createValidationError("PRD", "no user stories", {
-        details: "PRD must have at least one user story",
-      });
-    }
-
-    // Validate each user story
-    prd.userStories.forEach((story, index) => {
-      this.validateUserStory(story, index);
-    });
-
-    // Validate dependencies exist
-    const storyIds = new Set(prd.userStories.map((s) => s.id));
-    prd.userStories.forEach((story) => {
-      story.dependencies.forEach((dep) => {
-        if (!storyIds.has(dep)) {
-          throw createValidationError("UserStory", `invalid dependency: ${dep}`, {
-            operation: "validateDependencies",
-            details: `Story ${story.id} depends on non-existent story ${dep}`,
-          });
-        }
-      });
-    });
+    PRDValidator.validate(prd);
   }
 
   /**
    * Validate individual user story
    */
   static validateUserStory(story: UserStory, index: number): void {
-    if (!story.id) throw new Error(`Story at index ${index} missing id`);
-    if (!story.title) throw new Error(`Story ${story.id} missing title`);
-    if (!story.description) throw new Error(`Story ${story.id} missing description`);
-    if (!story.acceptanceCriteria || !Array.isArray(story.acceptanceCriteria)) {
-      throw new Error(`Story ${story.id} must have acceptanceCriteria array`);
-    }
-    if (story.acceptanceCriteria.length === 0) {
-      throw new Error(`Story ${story.id} must have at least one acceptance criterion`);
-    }
-    if (typeof story.priority !== "number" || story.priority < 1 || story.priority > 10) {
-      throw new Error(`Story ${story.id} must have priority between 1-10`);
-    }
-    if (!story.agent) throw new Error(`Story ${story.id} must specify an agent`);
-    if (!Array.isArray(story.dependencies)) {
-      throw new Error(`Story ${story.id} must have dependencies array`);
-    }
-    if (typeof story.passes !== "boolean") {
-      throw new Error(`Story ${story.id} must have passes boolean`);
-    }
+    PRDValidator.validateUserStory(story, index);
   }
 
   /**
    * Load PRD from .smite directory (async)
    */
   static async loadFromSmiteDir(): Promise<PRD | null> {
-    const prdPath = path.join(process.cwd(), this.STANDARD_PRD_PATH);
+    const prdPath = path.join(process.cwd(), STANDARD_PRD_PATH);
     try {
       await fs.promises.access(prdPath, fs.constants.F_OK);
       return await this.parseFromFile(prdPath);
@@ -219,12 +110,12 @@ export class PRDParser {
       );
     }
 
-    const prdPath = path.join(process.cwd(), this.STANDARD_PRD_PATH);
+    const prdPath = path.join(process.cwd(), STANDARD_PRD_PATH);
     try {
-      await fs.promises.writeFile(prdPath, JSON.stringify(prd, null, 2), "utf-8");
+      await fs.promises.writeFile(prdPath, PRDSerializer.serialize(prd), "utf-8");
 
       // Invalidate cache after writing
-      this.prdCache.delete(prdPath);
+      PRDCache.invalidate(prdPath);
     } catch (error) {
       throw new Error(
         `Failed to write PRD file at ${prdPath}: ${error instanceof Error ? error.message : "Unknown error"}`
@@ -251,12 +142,7 @@ export class PRDParser {
     }
 
     // Merge: Keep existing stories, add new ones, update description
-    const mergedPrd: PRD = {
-      project: existingPrd.project, // Keep existing project name
-      branchName: existingPrd.branchName, // Keep existing branch
-      description: this.mergeDescriptions(existingPrd.description, newPrd.description),
-      userStories: this.mergeStories(existingPrd.userStories, newPrd.userStories),
-    };
+    const mergedPrd = PRDSerializer.merge(existingPrd, newPrd);
 
     console.log(`🔄 Merging PRDs:`);
     console.log(`   Existing: ${existingPrd.userStories.length} stories`);
@@ -264,68 +150,6 @@ export class PRDParser {
     console.log(`   Merged: ${mergedPrd.userStories.length} stories`);
 
     return await this.saveToSmiteDir(mergedPrd);
-  }
-
-  /**
-   * Merge descriptions intelligently
-   */
-  private static mergeDescriptions(existing: string, newDesc: string): string {
-    // If new description is significantly different, append it
-    if (existing.toLowerCase() === newDesc.toLowerCase()) {
-      return existing;
-    }
-
-    // Check if new description is already contained in existing
-    if (existing.toLowerCase().includes(newDesc.toLowerCase())) {
-      return existing;
-    }
-
-    // Append new description
-    return `${existing}\n\n${newDesc}`;
-  }
-
-  /**
-   * Merge story lists, avoiding duplicates by ID
-   * Preserves existing stories with their status (passes, notes)
-   */
-  private static mergeStories(existing: UserStory[], newStories: UserStory[]): UserStory[] {
-    const storyMap = new Map<string, UserStory>();
-
-    // Add existing stories first (preserves completed status)
-    existing.forEach((story) => {
-      storyMap.set(story.id, story);
-    });
-
-    // Add/update new stories
-    newStories.forEach((story) => {
-      const existingStory = storyMap.get(story.id);
-
-      if (!existingStory) {
-        // New story - add it
-        console.log(`   ➕ Adding new story: ${story.id}`);
-        storyMap.set(story.id, story);
-      } else {
-        // Story exists - update fields but preserve status
-        console.log(`   🔄 Updating existing story: ${story.id}`);
-        storyMap.set(story.id, {
-          ...existingStory, // Keep existing passes, notes, status
-          title: story.title,
-          description: story.description,
-          acceptanceCriteria: story.acceptanceCriteria,
-          priority: story.priority,
-          agent: story.agent,
-          dependencies: story.dependencies,
-        });
-      }
-    });
-
-    return Array.from(storyMap.values()).sort((a, b) => {
-      // Sort by priority, then by ID
-      if (a.priority !== b.priority) {
-        return a.priority - b.priority;
-      }
-      return a.id.localeCompare(b.id);
-    });
   }
 
   /**
@@ -353,8 +177,7 @@ export class PRDParser {
    * Generate hash for PRD content (for change detection)
    */
   static generateHash(prd: PRD): string {
-    const content = JSON.stringify(prd);
-    return crypto.createHash("md5").update(content).digest("hex");
+    return PRDSerializer.generateHash(prd);
   }
 
   /**
@@ -411,7 +234,7 @@ export class PRDParser {
    * Get the standard PRD path
    */
   static getStandardPRDPath(): string {
-    return path.join(process.cwd(), this.STANDARD_PRD_PATH);
+    return path.join(process.cwd(), STANDARD_PRD_PATH);
   }
 
   /**
@@ -434,7 +257,7 @@ export class PRDParser {
     if (!exists) {
       throw new Error(
         message ||
-          `PRD not found at ${this.getStandardPRDPath()}. Use '/ralph \"<prompt>\"' to create one.`
+          `PRD not found at ${this.getStandardPRDPath()}. Use '/ralph "<prompt>"' to create one.`
       );
     }
   }
@@ -443,18 +266,13 @@ export class PRDParser {
    * Get cache statistics
    */
   static getCacheStats(): { size: number; keys: string[] } {
-    return {
-      size: this.prdCache.size,
-      keys: Array.from(this.prdCache.keys()),
-    };
+    return PRDCache.getStats();
   }
 
   /**
    * Clear the PRD cache (useful for testing or force reload)
    */
   static clearCache(): void {
-    const size = this.prdCache.size;
-    this.prdCache.clear();
-    console.log(`🧹 Cleared PRD cache (${size} entries)`);
+    PRDCache.clear();
   }
 }

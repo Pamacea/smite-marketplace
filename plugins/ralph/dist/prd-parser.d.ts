@@ -1,23 +1,16 @@
-import { PRD, UserStory } from "./types";
+import type { PRD, UserStory } from "./types";
 export declare class PRDParser {
-    private static readonly STANDARD_PRD_PATH;
-    private static prdCache;
-    private static readonly CACHE_TTL_MS;
+    static readonly STANDARD_PRD_PATH: string;
     /**
      * Parse PRD from JSON file (async) with caching and path sanitization
      */
     static parseFromFile(filePath: string): Promise<PRD>;
     /**
-     * Validate PRD file path - prevent phantom PRD files
-     * ONLY allows .claude/.smite/prd.json - everything else is rejected
-     */
-    private static isValidPRDPath;
-    /**
      * Parse PRD from JSON string with enhanced error context
      */
     static parseFromString(json: string): PRD;
     /**
-     * Validate PRD structure with enhanced error messages
+     * Validate PRD structure
      */
     static validate(prd: PRD): void;
     /**
@@ -38,15 +31,6 @@ export declare class PRDParser {
      * This is the PREFERRED way to update a PRD.
      */
     static mergePRD(newPrd: PRD): Promise<string>;
-    /**
-     * Merge descriptions intelligently
-     */
-    private static mergeDescriptions;
-    /**
-     * Merge story lists, avoiding duplicates by ID
-     * Preserves existing stories with their status (passes, notes)
-     */
-    private static mergeStories;
     /**
      * Update specific story in PRD (e.g., mark as passed) - async
      */
