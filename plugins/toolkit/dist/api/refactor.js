@@ -18,44 +18,17 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RefactoringAPI = exports.RefactorType = void 0;
+exports.RefactoringAPI = void 0;
 exports.createRefactoring = createRefactoring;
 const ts_morph_1 = require("ts-morph");
 const error_handler_1 = require("../core/utils/error-handler");
-/**
- * Refactoring type
- */
-var RefactorType;
-(function (RefactorType) {
-    RefactorType["SIMPLIFY"] = "simplify";
-    RefactorType["REMOVE_DEAD_CODE"] = "remove_dead_code";
-    RefactorType["OPTIMIZE_STRUCTURE"] = "optimize_structure";
-    RefactorType["RENAME_VARIABLES"] = "rename_variables";
-    RefactorType["EXTRACT_FUNCTION"] = "extract_function";
-})(RefactorType || (exports.RefactorType = RefactorType = {}));
+const refactor_types_1 = require("./refactor-types");
+const refactor_utils_1 = require("./refactor-utils");
+const refactor_operations_1 = require("./refactor-operations");
 /**
  * Refactoring API class
  */
@@ -75,10 +48,10 @@ class RefactoringAPI {
         try {
             const dryRun = options?.dryRun ?? false;
             // Load source file
-            const sourceFile = this.addSourceFile(filePath);
+            const sourceFile = (0, refactor_utils_1.addSourceFile)(this.project, filePath);
             if (!sourceFile) {
                 return {
-                    type: RefactorType.SIMPLIFY,
+                    type: refactor_types_1.RefactorType.SIMPLIFY,
                     modifiedFiles: [],
                     changeCount: 0,
                     success: false,
@@ -88,19 +61,19 @@ class RefactoringAPI {
             // Create backup if needed
             let backupPath;
             if (options?.createBackup && !dryRun) {
-                backupPath = await this.createBackup(filePath);
+                backupPath = await (0, refactor_utils_1.createBackup)(filePath);
             }
             const oldText = sourceFile.getFullText();
             let changeCount = 0;
             // Simplify complex expressions
-            changeCount += this.simplifyExpressions(sourceFile);
+            changeCount += (0, refactor_operations_1.simplifyExpressions)(sourceFile);
             // Remove unnecessary braces
-            changeCount += this.removeUnnecessaryBraces(sourceFile);
+            changeCount += (0, refactor_operations_1.removeUnnecessaryBraces)(sourceFile);
             // Simplify conditionals
-            changeCount += this.simplifyConditionals(sourceFile);
+            changeCount += (0, refactor_operations_1.simplifyConditionals)(sourceFile);
             const newText = sourceFile.getFullText();
             // Generate diff
-            const diff = this.generateDiff(oldText, newText);
+            const diff = (0, refactor_utils_1.generateDiff)(oldText, newText);
             // Apply changes if not dry run
             if (!dryRun && changeCount > 0) {
                 if (options?.applyChanges !== false) {
@@ -108,7 +81,7 @@ class RefactoringAPI {
                 }
             }
             return {
-                type: RefactorType.SIMPLIFY,
+                type: refactor_types_1.RefactorType.SIMPLIFY,
                 modifiedFiles: changeCount > 0 ? [filePath] : [],
                 changeCount,
                 success: true,
@@ -117,7 +90,7 @@ class RefactoringAPI {
             };
         }
         catch (err) {
-            return (0, error_handler_1.refactorError)(RefactorType.SIMPLIFY, err);
+            return (0, error_handler_1.refactorError)(refactor_types_1.RefactorType.SIMPLIFY, err);
         }
     }
     /**
@@ -127,10 +100,10 @@ class RefactoringAPI {
         try {
             const dryRun = options?.dryRun ?? false;
             // Load source file
-            const sourceFile = this.addSourceFile(filePath);
+            const sourceFile = (0, refactor_utils_1.addSourceFile)(this.project, filePath);
             if (!sourceFile) {
                 return {
-                    type: RefactorType.REMOVE_DEAD_CODE,
+                    type: refactor_types_1.RefactorType.REMOVE_DEAD_CODE,
                     modifiedFiles: [],
                     changeCount: 0,
                     success: false,
@@ -140,19 +113,19 @@ class RefactoringAPI {
             // Create backup if needed
             let backupPath;
             if (options?.createBackup && !dryRun) {
-                backupPath = await this.createBackup(filePath);
+                backupPath = await (0, refactor_utils_1.createBackup)(filePath);
             }
             const oldText = sourceFile.getFullText();
             let changeCount = 0;
             // Remove unused imports
-            changeCount += this.removeUnusedImports(sourceFile);
+            changeCount += (0, refactor_operations_1.removeUnusedImports)(sourceFile);
             // Remove unused variables
-            changeCount += this.removeUnusedVariables(sourceFile);
+            changeCount += (0, refactor_operations_1.removeUnusedVariables)(sourceFile);
             // Remove unreachable code
-            changeCount += this.removeUnreachableCode(sourceFile);
+            changeCount += (0, refactor_operations_1.removeUnreachableCode)(sourceFile);
             const newText = sourceFile.getFullText();
             // Generate diff
-            const diff = this.generateDiff(oldText, newText);
+            const diff = (0, refactor_utils_1.generateDiff)(oldText, newText);
             // Apply changes if not dry run
             if (!dryRun && changeCount > 0) {
                 if (options?.applyChanges !== false) {
@@ -160,7 +133,7 @@ class RefactoringAPI {
                 }
             }
             return {
-                type: RefactorType.REMOVE_DEAD_CODE,
+                type: refactor_types_1.RefactorType.REMOVE_DEAD_CODE,
                 modifiedFiles: changeCount > 0 ? [filePath] : [],
                 changeCount,
                 success: true,
@@ -169,7 +142,7 @@ class RefactoringAPI {
             };
         }
         catch (err) {
-            return (0, error_handler_1.refactorError)(RefactorType.REMOVE_DEAD_CODE, err);
+            return (0, error_handler_1.refactorError)(refactor_types_1.RefactorType.REMOVE_DEAD_CODE, err);
         }
     }
     /**
@@ -179,10 +152,10 @@ class RefactoringAPI {
         try {
             const dryRun = options?.dryRun ?? false;
             // Load source file
-            const sourceFile = this.addSourceFile(filePath);
+            const sourceFile = (0, refactor_utils_1.addSourceFile)(this.project, filePath);
             if (!sourceFile) {
                 return {
-                    type: RefactorType.OPTIMIZE_STRUCTURE,
+                    type: refactor_types_1.RefactorType.OPTIMIZE_STRUCTURE,
                     modifiedFiles: [],
                     changeCount: 0,
                     success: false,
@@ -192,19 +165,19 @@ class RefactoringAPI {
             // Create backup if needed
             let backupPath;
             if (options?.createBackup && !dryRun) {
-                backupPath = await this.createBackup(filePath);
+                backupPath = await (0, refactor_utils_1.createBackup)(filePath);
             }
             const oldText = sourceFile.getFullText();
             let changeCount = 0;
             // Reorganize imports
-            changeCount += this.organizeImports(sourceFile);
+            changeCount += (0, refactor_operations_1.organizeImports)(sourceFile);
             // Sort class members
-            changeCount += this.sortClassMembers(sourceFile);
+            changeCount += (0, refactor_operations_1.sortClassMembers)(sourceFile);
             // Extract magic numbers to constants
-            changeCount += this.extractConstants(sourceFile);
+            changeCount += (0, refactor_operations_1.extractConstants)(sourceFile);
             const newText = sourceFile.getFullText();
             // Generate diff
-            const diff = this.generateDiff(oldText, newText);
+            const diff = (0, refactor_utils_1.generateDiff)(oldText, newText);
             // Apply changes if not dry run
             if (!dryRun && changeCount > 0) {
                 if (options?.applyChanges !== false) {
@@ -212,7 +185,7 @@ class RefactoringAPI {
                 }
             }
             return {
-                type: RefactorType.OPTIMIZE_STRUCTURE,
+                type: refactor_types_1.RefactorType.OPTIMIZE_STRUCTURE,
                 modifiedFiles: changeCount > 0 ? [filePath] : [],
                 changeCount,
                 success: true,
@@ -221,7 +194,7 @@ class RefactoringAPI {
             };
         }
         catch (err) {
-            return (0, error_handler_1.refactorError)(RefactorType.OPTIMIZE_STRUCTURE, err);
+            return (0, error_handler_1.refactorError)(refactor_types_1.RefactorType.OPTIMIZE_STRUCTURE, err);
         }
     }
     /**
@@ -239,7 +212,7 @@ class RefactoringAPI {
             const decisions = (body.match(/if|for|while|case|catch/g) || []).length;
             totalCyclomatic += decisions + 1;
             // Nesting depth
-            const maxDepth = this.calculateNestingDepth(body);
+            const maxDepth = (0, refactor_utils_1.calculateNestingDepth)(body);
             maxNestingDepth = Math.max(maxNestingDepth, maxDepth);
             // Function length
             const lines = body.split('\n').length;
@@ -255,143 +228,6 @@ class RefactoringAPI {
             parameterCount: maxParameterCount,
         };
     }
-    /**
-     * Add source file to project
-     */
-    addSourceFile(filePath) {
-        try {
-            return this.project.addSourceFileAtPath(filePath);
-        }
-        catch {
-            return null;
-        }
-    }
-    /**
-     * Create backup of file
-     */
-    async createBackup(filePath) {
-        const fs = await Promise.resolve().then(() => __importStar(require('fs/promises')));
-        const path = await Promise.resolve().then(() => __importStar(require('path')));
-        const backupPath = `${filePath}.backup`;
-        await fs.copyFile(filePath, backupPath);
-        return backupPath;
-    }
-    /**
-     * Generate diff between two texts
-     */
-    generateDiff(oldText, newText) {
-        const lines1 = oldText.split('\n');
-        const lines2 = newText.split('\n');
-        const diff = [];
-        for (let i = 0; i < Math.max(lines1.length, lines2.length); i++) {
-            const line1 = lines1[i];
-            const line2 = lines2[i];
-            if (line1 !== line2) {
-                if (line1 !== undefined) {
-                    diff.push(`- ${line1}`);
-                }
-                if (line2 !== undefined) {
-                    diff.push(`+ ${line2}`);
-                }
-            }
-        }
-        return diff.join('\n');
-    }
-    /**
-     * Calculate nesting depth
-     */
-    calculateNestingDepth(text) {
-        let maxDepth = 0;
-        let currentDepth = 0;
-        for (const char of text) {
-            if (char === '{') {
-                currentDepth++;
-                maxDepth = Math.max(maxDepth, currentDepth);
-            }
-            else if (char === '}') {
-                currentDepth--;
-            }
-        }
-        return maxDepth;
-    }
-    /**
-     * Simplify expressions
-     * Note: Not yet implemented - would use ts-morph to simplify complex expressions
-     */
-    simplifyExpressions(sourceFile) {
-        return 0;
-    }
-    /**
-     * Remove unnecessary braces
-     * Note: Not yet implemented - would identify single-statement blocks
-     */
-    removeUnnecessaryBraces(sourceFile) {
-        return 0;
-    }
-    /**
-     * Simplify conditionals
-     * Note: Not yet implemented - would simplify complex boolean expressions
-     */
-    simplifyConditionals(sourceFile) {
-        return 0;
-    }
-    /**
-     * Remove unused imports
-     */
-    removeUnusedImports(sourceFile) {
-        let count = 0;
-        // Get all imports
-        const imports = sourceFile.getImportDeclarations();
-        for (const imp of imports) {
-            // Check if import is used
-            const name = imp.getDefaultImport()?.getText() ||
-                imp.getNamedImports()[0]?.getText();
-            if (!name)
-                continue;
-            const usages = sourceFile.getDescendantsOfKind(ts_morph_1.SyntaxKind.Identifier)
-                .filter(id => id.getText() === name);
-            if (usages.length === 0) {
-                imp.remove();
-                count++;
-            }
-        }
-        return count;
-    }
-    /**
-     * Remove unused variables
-     * Note: Not yet implemented - would identify variables declared but never used
-     */
-    removeUnusedVariables(sourceFile) {
-        return 0;
-    }
-    /**
-     * Remove unreachable code
-     * Note: Not yet implemented - would identify code after return statements
-     */
-    removeUnreachableCode(sourceFile) {
-        return 0;
-    }
-    /**
-     * Organize imports
-     * Note: Not yet implemented - would group and sort imports
-     */
-    organizeImports(sourceFile) {
-        return 0;
-    }
-    /**
-     * Sort class members
-     * Note: Not yet implemented - would sort members by visibility and type
-     */
-    sortClassMembers(sourceFile) {
-        return 0;
-    }
-    /**
-     * Extract magic numbers to constants
-     * Note: Not yet implemented - would identify and extract magic numbers
-     */
-    extractConstants(sourceFile) {
-        return 0;
-    }
 }
 exports.RefactoringAPI = RefactoringAPI;
 /**
@@ -400,4 +236,6 @@ exports.RefactoringAPI = RefactoringAPI;
 function createRefactoring() {
     return new RefactoringAPI();
 }
+// Re-export types for convenience
+__exportStar(require("./refactor-types"), exports);
 //# sourceMappingURL=refactor.js.map

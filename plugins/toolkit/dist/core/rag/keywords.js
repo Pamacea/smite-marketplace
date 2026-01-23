@@ -10,18 +10,7 @@ exports.extractKeywords = extractKeywords;
 exports.extractKeywordSet = extractKeywordSet;
 exports.jaccardSimilarity = jaccardSimilarity;
 exports.cosineKeywordSimilarity = cosineKeywordSimilarity;
-/**
- * Default stop words list
- * Common words that should be excluded from keyword extraction
- */
-const DEFAULT_STOP_WORDS = new Set([
-    'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-    'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-    'should', 'may', 'might', 'must', 'shall', 'can', 'need', 'dare',
-    'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by',
-    'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above',
-    'below', 'between', 'under', 'again', 'further', 'then', 'once',
-]);
+const constants_1 = require("../constants");
 /**
  * Extract keywords from text
  *
@@ -36,7 +25,7 @@ const DEFAULT_STOP_WORDS = new Set([
  * ```
  */
 function extractKeywords(text, options = {}) {
-    const { minLength = 2, maxKeywords = 10, stopWords = DEFAULT_STOP_WORDS, } = options;
+    const { minLength = 2, maxKeywords = 10, stopWords = constants_1.STOP_WORDS, } = options;
     const words = text
         .toLowerCase()
         .replace(/[^\w\s]/g, ' ')
@@ -91,7 +80,7 @@ function jaccardSimilarity(text1, text2, options) {
  * @returns Similarity score between 0 and 1
  */
 function cosineKeywordSimilarity(text1, text2, options) {
-    const { minLength = 2, stopWords = DEFAULT_STOP_WORDS, } = options ?? {};
+    const { minLength = 2, stopWords = constants_1.STOP_WORDS, } = options ?? {};
     const words1 = new Set(text1
         .toLowerCase()
         .replace(/[^\w\s]/g, ' ')

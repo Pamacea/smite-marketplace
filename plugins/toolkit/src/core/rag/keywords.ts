@@ -5,18 +5,7 @@
  * used across semantic analysis and caching modules.
  */
 
-/**
- * Default stop words list
- * Common words that should be excluded from keyword extraction
- */
-const DEFAULT_STOP_WORDS = new Set([
-  'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-  'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-  'should', 'may', 'might', 'must', 'shall', 'can', 'need', 'dare',
-  'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by',
-  'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above',
-  'below', 'between', 'under', 'again', 'further', 'then', 'once',
-]);
+import { STOP_WORDS, ANALYSIS_THRESHOLD } from '../constants';
 
 /**
  * Keyword extraction options
@@ -50,7 +39,7 @@ export function extractKeywords(
   const {
     minLength = 2,
     maxKeywords = 10,
-    stopWords = DEFAULT_STOP_WORDS,
+    stopWords = STOP_WORDS,
   } = options;
 
   const words = text
@@ -130,7 +119,7 @@ export function cosineKeywordSimilarity(
 ): number {
   const {
     minLength = 2,
-    stopWords = DEFAULT_STOP_WORDS,
+    stopWords = STOP_WORDS,
   } = options ?? {};
 
   const words1 = new Set(
