@@ -337,7 +337,8 @@ class StatusLine {
       totalChars += countDir(path.join(projectClaudeDir, '.smite'));
     }
 
-    // 5. Plugins - check if plugins directory exists relative to project
+    // 5. Plugins - ONLY count command markdown files that are actually sent to the API
+    // Source code, hooks, skills docs are NOT included in API context
     const possiblePluginPaths = [
       path.join(cwd, 'plugins'),
       path.join(cwd, '..', 'plugins'),
@@ -351,33 +352,10 @@ class StatusLine {
           .map(d => path.join(pluginsPath, d.name));
 
         for (const pluginDir of pluginDirs) {
-          // Count README, command files, hooks
-          totalChars += countFile(path.join(pluginDir, 'README.md'));
-          totalChars += countFile(path.join(pluginDir, 'package.json'));
-
-          // Count commands
+          // Only count command markdown files (these are loaded into context)
+          // Skip: source code, skills docs, hooks (not sent to API)
           const commandsDir = path.join(pluginDir, 'commands');
           totalChars += countDir(commandsDir, /\.md$/);
-
-          // Count skills
-          const skillsDir = path.join(pluginDir, 'skills');
-          if (fs.existsSync(skillsDir)) {
-            const skillDirs = fs.readdirSync(skillsDir, { withFileTypes: true })
-              .filter(d => d.isDirectory());
-            for (const skillDir of skillDirs) {
-              const skillPath = path.join(skillsDir, skillDir.name);
-              totalChars += countFile(path.join(skillPath, 'SKILL.md'));
-              totalChars += countDir(skillPath, /\.md$/);
-            }
-          }
-
-          // Count hooks
-          const hooksDir = path.join(pluginDir, 'hooks');
-          totalChars += countDir(hooksDir, /\.js$/);
-
-          // Count .claude-plugin dir
-          const claudePluginDir = path.join(pluginDir, '.claude-plugin');
-          totalChars += countDir(claudePluginDir);
         }
       }
     }
@@ -416,25 +394,66 @@ class StatusLine {
       const baseContext = this.estimateBaseContextTokens();
       // Add base context to input tokens (it's sent with each request)
       inputTokens += baseContext;
-    } else if (sessionPath) {
-      // No actual tokens found, estimate from file size + base context
-      try {
-        const stats = fs.statSync(sessionPath);
-        const fileSize = stats.size;
-        const estimatedTotal = Math.round((fileSize * TOKENS_PER_CHAR) / JSON_OVERHEAD);
-        const baseContext = this.estimateBaseContextTokens();
-        inputTokens = Math.round(estimatedTotal * 0.7) + baseContext;
-        outputTokens = Math.round(estimatedTotal * 0.3);
-      } catch {
-        const totalContent = sessionData.map(e => JSON.stringify(e)).join('');
-        const estimatedTotal = Math.round((totalContent.length * TOKENS_PER_CHAR) / JSON_OVERHEAD);
-        const baseContext = this.estimateBaseContextTokens();
-        inputTokens = Math.round(estimatedTotal * 0.7) + baseContext;
-        outputTokens = Math.round(estimatedTotal * 0.3);
+    } else if (sessionData.length > 0) {
+      // No actual tokens found, estimate from actual message content
+      // Extract just the text content from messages, not JSON metadata
+
+      let userTextChars = 0;
+      let assistantTextChars = 0;
+
+      for (const entry of sessionData) {
+        try {
+          if (entry.type === 'user' && entry.message?.content) {
+            userTextChars += this.extractTextContent(entry.message.content);
+          } else if (entry.type === 'assistant' && entry.message?.content) {
+            assistantTextChars += this.extractTextContent(entry.message.content);
+          }
+        } catch {
+          // Skip malformed entries
+        }
       }
+
+      // Estimate tokens from actual text content (not JSON overhead)
+      // Text content is much closer to actual tokens than JSON structure
+      const estimatedInput = Math.round(userTextChars * TOKENS_PER_CHAR);
+      const estimatedOutput = Math.round(assistantTextChars * TOKENS_PER_CHAR);
+
+      // Add base context ONCE (sent with each API request)
+      const baseContext = this.estimateBaseContextTokens();
+
+      // Input = user text content + base context
+      inputTokens = estimatedInput + baseContext;
+      // Output = assistant text content
+      outputTokens = estimatedOutput;
     }
 
     return { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens };
+  }
+
+  extractTextContent(content) {
+    if (!content) return 0;
+    if (typeof content === 'string') {
+      return content.length;
+    }
+    if (Array.isArray(content)) {
+      return content.reduce((sum, item) => {
+        if (typeof item === 'string') return sum + item.length;
+        if (item?.type === 'text') return sum + (item.text?.length || 0);
+        if (item?.type === 'tool_use') {
+          // Count tool name and input params
+          let toolChars = (item.name?.length || 0);
+          if (item.input) {
+            toolChars += JSON.stringify(item.input).length;
+          }
+          return sum + toolChars;
+        }
+        if (item?.type === 'thinking' || item?.type === 'signature') {
+          return sum + (item.thinking?.length || item.signature?.length || 0);
+        }
+        return sum;
+      }, 0);
+    }
+    return 0;
   }
 
   getContextLimit(modelName) {
