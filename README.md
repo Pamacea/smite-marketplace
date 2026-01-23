@@ -1,4 +1,4 @@
-# 🔥 SMITE v3.1
+# 🔥 SMITE v3.1.1
 
 **Zero-debt engineering agents with multi-agent parallel orchestration (2-3x faster)**
 
@@ -42,6 +42,27 @@ mgrep "authentication"                   # 2nd choice (semantic search)
 ### 📚 **New Guides**
 - [RALPH_GUIDE.md](docs/RALPH_GUIDE.md) - Complete Ralph usage
 - [SPEC_FIRST.md](docs/SPEC_FIRST.md) - Spec-first workflow
+
+---
+
+## 🔧 v3.1.1 - Deep Refactoring
+
+### Code Quality Improvements
+- **~550 lines reduced** through decomposition
+- **10 new focused modules** following Single Responsibility Principle
+- **Test infrastructure** with Jest configs for all plugins
+- **Barrel exports** for clean import paths
+
+### Ralph Plugin Refactoring
+- **TaskOrchestrator**: 377 → 187 lines (50% reduction)
+- **New services**: `StoryExecutor`, `AgentMapper`, `PromptBuilder`
+- **Eliminated duplication**: Single source of truth for skill mappings
+- **Test coverage**: 15 tests passing
+
+### Toolkit Plugin Refactoring
+- **Surgeon class**: 440 → 185 lines (58% reduction)
+- **New extractors**: `signature-extractor`, `type-extractor`, `import-export-extractor`, `file-structure-analyzer`
+- **Facade pattern**: Clean separation of concerns
 
 ---
 
@@ -158,6 +179,6 @@ smite/
 
 ---
 
-**SMITE v3.1** • **8 plugins** • **Official Anthropic schema** • **Refactored documentation** • **Zero-debt engineering**
+**SMITE v3.1.1** • **8 plugins** • **Official Anthropic schema** • **Deep refactoring** • **Zero-debt engineering**
 
 **License:** MIT • **Repository:** [github.com/Pamacea/smite](https://github.com/Pamacea/smite)

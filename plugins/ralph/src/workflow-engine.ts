@@ -8,11 +8,11 @@ import {
   WorkflowStep,
   WorkflowStepResult,
   WorkflowStepId,
-  WorkflowExecutionContext,
 } from "./workflow-types";
 import { WorkflowConfigManager } from "./workflow-config";
 import { UserStory } from "./types";
 import { SpecGenerator } from "./spec-generator";
+import { mapAgentToSkill } from "./services/agent-mapper.js";
 import * as path from "path";
 
 export interface WorkflowEngineOptions {
@@ -196,7 +196,7 @@ export class WorkflowEngine {
   }
 
   private async executeExecuteStep(story: UserStory, step: WorkflowStep): Promise<string> {
-    const skill = this.mapAgentToSkill(story.agent);
+    const skill = mapAgentToSkill(story.agent);
     return `Executed story ${story.id} using skill: ${skill}`;
   }
 
@@ -224,31 +224,6 @@ export class WorkflowEngine {
 
   private async executeCompleteStep(story: UserStory, step: WorkflowStep): Promise<string> {
     return `Story ${story.id} marked as completed`;
-  }
-
-  private mapAgentToSkill(agent: string): string {
-    const cleanAgent = agent.trim();
-
-    const skillMapping: Record<string, string> = {
-      "builder:task": "builder:build",
-      "builder:builder": "builder:build",
-      "builder:constructor": "builder:build",
-      "builder:smite-constructor": "builder:build",
-      "builder": "builder:build",
-      "architect:task": "architect:design",
-      "architect:architect": "architect:design",
-      "architect:strategist": "architect:design",
-      "architect": "architect:design",
-      "explorer:task": "explorer:explore",
-      "explorer:explorer": "explorer:explore",
-      "explorer": "explorer:explore",
-      "simplifier:task": "simplifier:simplify",
-      "simplifier:simplifier": "simplifier:simplify",
-      "simplifier:surgeon": "simplifier:simplify",
-      "simplifier": "simplifier:simplify",
-    };
-
-    return skillMapping[cleanAgent] || cleanAgent;
   }
 
   getWorkflowSummary(state: WorkflowState): string {

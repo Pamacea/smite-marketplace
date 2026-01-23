@@ -1,14 +1,12 @@
 // SMITE Ralph - Task Orchestrator
 // Parallel execution engine using Claude Code Task tool
 
-import { PRD, UserStory, TaskResult, RalphState, StoryBatch } from "./types";
+import type { PRD, RalphState, StoryBatch, UserStory, TaskResult } from "./types";
 import { DependencyGraph } from "./dependency-graph";
 import { StateManager } from "./state-manager";
 import { PRDParser } from "./prd-parser";
-import { SpecGenerator } from "./spec-generator";
-import { WorkflowEngine, WorkflowEngineOptions } from "./workflow-engine";
-import { WorkflowOptions } from "./workflow-types";
-import * as path from "path";
+import { StoryExecutor } from "./services/story-executor.js";
+import type { WorkflowOptions } from "./workflow-types";
 
 export interface TaskOrchestratorOptions {
   workflow?: string;
@@ -16,37 +14,40 @@ export interface TaskOrchestratorOptions {
   mcpEnabled?: boolean;
 }
 
+/**
+ * Task Orchestrator - Main execution facade
+ *
+ * Orchestrates the execution of user stories in batches,
+ * delegating individual story execution to StoryExecutor.
+ */
 export class TaskOrchestrator {
   private prd: PRD;
   private dependencyGraph: DependencyGraph;
   private stateManager: StateManager;
-  private specGenerator: SpecGenerator;
-  private workflowEngine: WorkflowEngine;
+  private storyExecutor: StoryExecutor;
   private smiteDir: string;
   private workflowOptions?: TaskOrchestratorOptions;
 
+  private static readonly DEFAULT_MAX_ITERATIONS = Infinity;
+
   constructor(prd: PRD, smiteDir: string, options?: TaskOrchestratorOptions) {
     this.prd = prd;
-    this.dependencyGraph = new DependencyGraph(prd);
-    this.stateManager = new StateManager(smiteDir);
-    this.specGenerator = new SpecGenerator(smiteDir);
     this.smiteDir = smiteDir;
     this.workflowOptions = options;
 
-    const workflowEngineOptions: WorkflowEngineOptions = {
+    this.dependencyGraph = new DependencyGraph(prd);
+    this.stateManager = new StateManager(smiteDir);
+    this.storyExecutor = new StoryExecutor({
       smiteDir,
       mcpEnabled: options?.mcpEnabled ?? true,
-    };
-    this.workflowEngine = new WorkflowEngine(workflowEngineOptions);
+    });
   }
 
-  private static readonly DEFAULT_MAX_ITERATIONS = Infinity; // No limit by default - execute all stories
-
+  /**
+   * Execute all stories in dependency-optimized batches
+   */
   async execute(maxIterations = TaskOrchestrator.DEFAULT_MAX_ITERATIONS): Promise<RalphState> {
-    // Get PRD path before initialization
     const prdPath = PRDParser.getStandardPRDPath();
-
-    // Validate PRD exists before starting
     await PRDParser.assertPRDExists();
 
     const state = await this.stateManager.initialize(maxIterations, prdPath);
@@ -70,7 +71,6 @@ export class TaskOrchestrator {
   }
 
   private shouldStopExecution(state: RalphState, maxIterations: number): boolean {
-    // If infinite iterations, only stop when all stories are done
     if (maxIterations === Infinity) {
       const allStoriesCompleted = state.completedStories.length >= this.prd.userStories.length;
       if (allStoriesCompleted) {
@@ -80,7 +80,6 @@ export class TaskOrchestrator {
       return false;
     }
 
-    // If limited iterations, check if reached
     if (state.currentIteration >= state.maxIterations) {
       const completed = state.completedStories.length;
       const total = this.prd.userStories.length;
@@ -110,6 +109,42 @@ export class TaskOrchestrator {
     await this.stateManager.save(state);
   }
 
+  private async executeBatchParallel(stories: UserStory[], state: RalphState): Promise<void> {
+    console.log(`   → Stories can run in parallel:`);
+    const promises = stories.map((story) => this.executeStory(story, state));
+    await Promise.all(promises);
+  }
+
+  private async executeStory(story: UserStory, state: RalphState): Promise<void> {
+    const result = await this.storyExecutor.executeStory(
+      story,
+      state,
+      this.workflowOptions
+    );
+
+    await this.processStoryResult(story, state, result);
+
+    state.inProgressStory = null;
+    state.currentIteration++;
+  }
+
+  private async processStoryResult(
+    story: UserStory,
+    state: RalphState,
+    result: TaskResult
+  ): Promise<void> {
+    if (result.success) {
+      state.completedStories.push(story.id);
+      await this.storyExecutor.updateStoryStatus(story, true, result.output);
+      console.log("      ✅ PASSED");
+      return;
+    }
+
+    state.failedStories.push(story.id);
+    await this.storyExecutor.updateStoryStatus(story, false, result.error ?? "Unknown error");
+    console.log(`      ❌ FAILED: ${result.error}`);
+  }
+
   private async finalizeExecution(state: RalphState, maxIterations: number): Promise<void> {
     if (state.status === "running") {
       state.status = state.failedStories.length === 0 ? "completed" : "failed";
@@ -124,232 +159,7 @@ export class TaskOrchestrator {
   }
 
   /**
-   * Execute batch of stories in parallel
-   * This is where the magic happens - multiple agents running simultaneously
-   */
-  private async executeBatchParallel(stories: UserStory[], state: RalphState): Promise<void> {
-    // In a real implementation, this would launch multiple Claude Code agents in parallel
-    // For now, we simulate by marking them as ready for parallel execution
-    console.log(`   → Stories can run in parallel:`);
-
-    const promises = stories.map((story) => this.executeStory(story, state));
-    await Promise.all(promises);
-  }
-
-  private async executeStory(story: UserStory, state: RalphState): Promise<void> {
-    state.inProgressStory = story.id;
-    state.lastActivity = Date.now();
-
-    console.log(`   → Executing ${story.id}: ${story.title}`);
-    console.log(`      Agent: ${story.agent}`);
-
-    // Use workflow engine if workflow is specified
-    if (this.workflowOptions?.workflow) {
-      const workflowState = await this.workflowEngine.executeWorkflow(
-        story,
-        this.workflowOptions.workflow,
-        this.workflowOptions.workflowOptions || {}
-      );
-
-      const workflowSuccess = workflowState.failedSteps.length === 0;
-
-      await this.processStoryResult(story, state, {
-        storyId: story.id,
-        success: workflowSuccess,
-        output: this.workflowEngine.getWorkflowSummary(workflowState),
-        error: workflowSuccess ? undefined : `Workflow failed at steps: ${workflowState.failedSteps.join(", ")}`,
-        timestamp: Date.now(),
-      });
-    } else {
-      // Legacy execution path
-      const specResult = await this.generateAndValidateSpec(story);
-      if (!specResult.valid) {
-        await this.processStoryResult(story, state, {
-          storyId: story.id,
-          success: false,
-          output: "",
-          error: `Spec validation failed: ${specResult.gaps.join(", ")}`,
-          timestamp: Date.now(),
-        });
-        state.inProgressStory = null;
-        return;
-      }
-
-      const result = await this.invokeAgent(story, specResult.specPath);
-      await this.processStoryResult(story, state, result);
-    }
-
-    state.inProgressStory = null;
-    state.currentIteration++;
-  }
-
-  private async processStoryResult(
-    story: UserStory,
-    state: RalphState,
-    result: TaskResult
-  ): Promise<void> {
-    if (result.success) {
-      state.completedStories.push(story.id);
-      await this.updateStoryStatus(story, true, result.output);
-      console.log("      ✅ PASSED");
-      return;
-    }
-
-    state.failedStories.push(story.id);
-    await this.updateStoryStatus(story, false, result.error ?? "Unknown error");
-    console.log(`      ❌ FAILED: ${result.error}`);
-  }
-
-  /**
-   * Update story status in memory and persist to PRD file
-   * Consolidates duplicate PRD update logic
-   */
-  private async updateStoryStatus(story: UserStory, passes: boolean, notes: string): Promise<void> {
-    story.passes = passes;
-    story.notes = notes;
-    await PRDParser.updateStory(story.id, { passes, notes });
-  }
-
-  /**
-   * Map legacy agent names to correct SMITE skill format
-   * Converts: builder:task -> builder:build, architect:task -> architect:design, etc.
-   */
-  private mapAgentToSkill(agent: string): string {
-    // Remove any whitespace
-    const cleanAgent = agent.trim();
-
-    // Mapping of legacy agent names to correct SMITE skills
-    const skillMapping: Record<string, string> = {
-      // Builder agent mappings
-      "builder:task": "builder:build",
-      "builder:builder": "builder:build",
-      "builder:constructor": "builder:build",
-      "builder:smite-constructor": "builder:build",
-      "builder": "builder:build",
-
-      // Architect agent mappings
-      "architect:task": "architect:design",
-      "architect:architect": "architect:design",
-      "architect:strategist": "architect:design",
-      "architect": "architect:design",
-
-      // Explorer agent mappings
-      "explorer:task": "explorer:explore",
-      "explorer:explorer": "explorer:explore",
-      "explorer": "explorer:explore",
-
-      // Simplifier agent mappings
-      "simplifier:task": "simplifier:simplify",
-      "simplifier:simplifier": "simplifier:simplify",
-      "simplifier:surgeon": "simplifier:simplify",
-      "simplifier": "simplifier:simplify",
-    };
-
-    // Return mapped skill or original if no mapping found
-    return skillMapping[cleanAgent] || cleanAgent;
-  }
-
-  /**
-   * Invoke Claude Code agent for story execution
-   * In real implementation, this uses the Task tool
-   */
-  private async invokeAgent(story: UserStory, specPath?: string): Promise<TaskResult> {
-    // Map agent to correct SMITE skill format
-    const skill = this.mapAgentToSkill(story.agent);
-
-    console.log(`      🎯 Using skill: ${skill}`);
-
-    // This is a placeholder for the actual Task tool invocation
-    // In production, this would call Claude Code's Task tool like:
-    // Task(subagent_type=skill, prompt=this.buildPrompt(story, specPath))
-
-    const prompt = this.buildPrompt(story, specPath);
-
-    // Simulate execution
-    return {
-      storyId: story.id,
-      success: true,
-      output: `Executed: ${story.title} with skill: ${skill}${specPath ? ` and spec: ${specPath}` : ""}`,
-      timestamp: Date.now(),
-    };
-  }
-
-  /**
-   * Generate and validate specification before agent execution
-   */
-  private async generateAndValidateSpec(story: UserStory): Promise<{
-    valid: boolean;
-    specPath?: string;
-    gaps: string[];
-  }> {
-    try {
-      console.log(`      📋 Generating specification for ${story.id}...`);
-
-      const spec = await this.specGenerator.generateSpec(story);
-      const specPath = await this.specGenerator.writeSpec(spec);
-
-      console.log(`      ✅ Spec written to: ${specPath}`);
-
-      const validation = await this.specGenerator.validateSpec(spec);
-
-      if (validation.warnings.length > 0) {
-        console.log(`      ⚠️  Spec warnings: ${validation.warnings.join(", ")}`);
-      }
-
-      if (!validation.valid) {
-        console.log(`      ❌ Spec validation failed: ${validation.gaps.join(", ")}`);
-        return { valid: false, gaps: validation.gaps };
-      }
-
-      console.log(`      ✅ Spec validated successfully`);
-
-      return { valid: true, specPath, gaps: [] };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.log(`      ❌ Spec generation failed: ${errorMessage}`);
-      return { valid: false, gaps: [errorMessage] };
-    }
-  }
-
-  /**
-   * Build agent prompt from user story
-   */
-  private buildPrompt(story: UserStory, specPath?: string): string {
-    const parts = [
-      `Story ID: ${story.id}`,
-      `Title: ${story.title}`,
-      `Description: ${story.description}`,
-      "",
-    ];
-
-    if (specPath) {
-      parts.push("**SPEC-FIRST MODE ENABLED**");
-      parts.push("");
-      parts.push(`You MUST read the specification at: ${specPath}`);
-      parts.push("");
-      parts.push("Follow the specification EXACTLY:");
-      parts.push("1. Read the spec completely before starting");
-      parts.push("2. Implement steps in the order defined");
-      parts.push("3. DO NOT deviate from the spec without updating it first");
-      parts.push("4. If you find a logic gap: STOP, report it, wait for spec update");
-      parts.push("");
-    }
-
-    parts.push("Acceptance Criteria:");
-    parts.push(...story.acceptanceCriteria.map((c, i) => `  ${i + 1}. ${c}`));
-    parts.push("");
-
-    if (story.dependencies.length > 0) {
-      parts.push(`Dependencies: ${story.dependencies.join(", ")}`);
-    } else {
-      parts.push("No dependencies - can start immediately");
-    }
-
-    return parts.join("\n");
-  }
-
-  /**
-   * Get execution status (async)
+   * Get execution status
    */
   async getStatus(): Promise<string> {
     const state = await this.stateManager.load();
