@@ -42,7 +42,9 @@ class StatusLine {
   run() {
     try {
       const status = this.buildStatus();
-      console.log(status);
+      if (status) {
+        console.log(status);
+      }
     } catch (error) {
       console.error('Statusline Error:', error.message);
     }
@@ -52,6 +54,12 @@ class StatusLine {
     const gitInfo = this.getGitInfo();
     const sessionInfo = this.getSessionInfo();
     const pathInfo = this.getPathInfo();
+
+    // Hide statusline for empty/new sessions (no API calls yet)
+    // This prevents showing stale data from previous sessions
+    if (sessionInfo.model === 'N/A' && !sessionInfo.tokens) {
+      return '';
+    }
 
     const parts = [
       this.colorize(gitInfo.branch, 'cyan'),
