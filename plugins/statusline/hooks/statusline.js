@@ -505,6 +505,11 @@ class StatusLine {
       // No actual tokens found, estimate from actual message content
       // Extract just the text content from messages, not JSON metadata
 
+      // The NEXT API call will send:
+      // 1. Base context (system prompt, tools, rules) - ONCE
+      // 2. Entire conversation history - ONCE
+      // NOT cumulative across all API calls!
+
       let userTextChars = 0;
       let assistantTextChars = 0;
 
@@ -520,25 +525,26 @@ class StatusLine {
         }
       }
 
-      // Estimate tokens from actual text content (not JSON overhead)
-      // Text content is much closer to actual tokens than JSON structure
+      // Estimate tokens from actual text content
       const estimatedInput = Math.round(userTextChars * TOKENS_PER_CHAR);
       const estimatedOutput = Math.round(assistantTextChars * TOKENS_PER_CHAR);
 
-      // Add base context ONCE (sent with each API request)
+      // Add base context ONCE (sent with the next API call)
       const baseContext = this.estimateBaseContextTokens();
 
-      // Input = user text content + base context
+      // Input = all user messages (history) + base context
       inputTokens = estimatedInput + baseContext;
-      // Output = assistant text content
+      // Output = all assistant messages (generated so far)
       outputTokens = estimatedOutput;
 
-      this.log('Estimated tokens from content:', {
+      this.log('Estimated tokens (current context):', {
         userChars: userTextChars,
         assistantChars: assistantTextChars,
         estimatedInput,
         estimatedOutput,
-        baseContext
+        baseContext,
+        totalInput: inputTokens,
+        totalOutput: outputTokens
       });
     }
 
