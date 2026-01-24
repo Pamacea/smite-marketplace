@@ -11,6 +11,7 @@
   "license": "MIT",
   "keywords": ["statusline", "session", "git", "productivity", "display"],
   "commands": "./commands/",
+  "skills": "./skills/",
   "hooks": {
     "PostToolUse": [
       {
