@@ -30,6 +30,7 @@ class StatusLine {
     this.homeDir = os.homedir();
     this.claudeDir = path.join(this.homeDir, '.claude');
     this.projectsDir = path.join(this.claudeDir, 'projects');
+    this.debug = process.env.STATUSLINE_DEBUG === '1';
     this.contextLimits = {
       'opus': 200000,
       'sonnet': 200000,
@@ -37,6 +38,12 @@ class StatusLine {
       'glm': 200000,
       'default': 200000
     };
+  }
+
+  log(...args) {
+    if (this.debug) {
+      console.error('[STATUSLINE]', ...args);
+    }
   }
 
   run() {
@@ -136,10 +143,18 @@ class StatusLine {
 
     try {
       const sessionPath = this.findCurrentSession();
-      if (!sessionPath) return info;
+      if (!sessionPath) {
+        this.log('No session found');
+        return info;
+      }
+      this.log('Session path:', sessionPath);
 
       const sessionData = this.readSession(sessionPath);
-      if (!sessionData || sessionData.length === 0) return info;
+      if (!sessionData || sessionData.length === 0) {
+        this.log('Empty session or failed to read');
+        return info;
+      }
+      this.log('Session entries:', sessionData.length);
 
       // Get latest entry with model data
       const apiEntry = sessionData.slice().reverse().find(e =>
@@ -149,6 +164,7 @@ class StatusLine {
 
       if (apiEntry) {
         info.model = this.extractModelName(apiEntry);
+        this.log('Detected model:', info.model);
 
         // Try actual tokens first, then estimate from file size
         const tokens = this.extractTokens(sessionData, sessionPath);
@@ -162,12 +178,22 @@ class StatusLine {
         const pct = Math.min(100, Math.round((tokens.total / contextLimit) * 100));
         info.percentage = `${pct}%`;
         info.progress = this.renderProgress(info.percentage);
+
+        this.log('Token stats:', {
+          model: info.model,
+          contextLimit,
+          totalTokens: tokens.total,
+          percentage: pct + '%',
+          hasActualTokens: tokens.hasActualTokens
+        });
+      } else {
+        this.log('No api_call_start or completion_params entry found');
       }
 
       // Duration
       info.duration = this.calculateDuration(sessionData);
     } catch (error) {
-      // Session read failed
+      this.log('Session read error:', error.message);
     }
 
     return info;
@@ -203,7 +229,11 @@ class StatusLine {
         }
       }
 
-      if (!matchingProject) return null;
+      if (!matchingProject) {
+        this.log('No matching project found for cwd:', cwd);
+        return null;
+      }
+      this.log('Matching project:', matchingProject);
 
       // PRIMARY METHOD: Use session-env to find recently active sessions
       // The session-env directory is created when a session starts, so recent entries
@@ -221,6 +251,8 @@ class StatusLine {
           }))
           .filter(d => now - d.envMtime < recentThreshold); // Only very recent sessions
 
+        this.log('Recent session dirs (within 2min):', sessionDirs.length);
+
         // Find matching .jsonl files and get their modification times
         for (const sessionDir of sessionDirs) {
           const sessionPath = path.join(matchingProject, `${sessionDir.uuid}.jsonl`);
@@ -234,6 +266,8 @@ class StatusLine {
             });
           }
         }
+
+        this.log('Session candidates found:', sessionCandidates.size);
       }
 
       // Choose the best candidate:
@@ -258,6 +292,14 @@ class StatusLine {
         const envAge = now - candidate.envMtime;
         score += Math.max(0, 500000 - envAge);
 
+        this.log('Candidate score:', {
+          uuid: uuid.substring(0, 8),
+          score,
+          hasApiCalls: candidate.hasApiCalls,
+          fileAge: Math.round(fileAge / 1000) + 's',
+          envAge: Math.round(envAge / 1000) + 's'
+        });
+
         if (score > bestScore) {
           bestScore = score;
           bestSession = candidate.path;
@@ -265,6 +307,7 @@ class StatusLine {
       }
 
       if (bestSession) {
+        this.log('Selected session:', bestSession);
         return bestSession;
       }
 
@@ -276,11 +319,16 @@ class StatusLine {
           mtime: fs.statSync(path.join(matchingProject, f)).mtimeMs
         }));
 
-      if (sessions.length === 0) return null;
+      if (sessions.length === 0) {
+        this.log('No .jsonl files found in project');
+        return null;
+      }
 
       sessions.sort((a, b) => b.mtime - a.mtime);
+      this.log('Fallback: using most recent .jsonl:', sessions[0].path);
       return sessions[0].path;
-    } catch {
+    } catch (error) {
+      this.log('findCurrentSession error:', error.message);
       return null;
     }
   }
@@ -425,26 +473,34 @@ class StatusLine {
   extractTokens(sessionData, sessionPath) {
     let inputTokens = 0;
     let outputTokens = 0;
+    let hasActualTokens = false;
+    const tokenEntryTypes = new Set();
 
     // First, try to get actual tokens from session data
     for (const entry of sessionData) {
       if (entry.type === 'api_call_start') {
         inputTokens += entry.input_tokens || 0;
         outputTokens += entry.output_tokens || 0;
+        tokenEntryTypes.add('api_call_start');
       } else if (entry.type === 'completion_params') {
         inputTokens += entry.prompt_tokens || 0;
         outputTokens += entry.completion_tokens || 0;
+        tokenEntryTypes.add('completion_params');
       } else if (entry.type === 'assistant' && entry.message?.usage) {
         inputTokens += entry.message.usage.input_tokens || 0;
         outputTokens += entry.message.usage.output_tokens || 0;
+        tokenEntryTypes.add('assistant.usage');
       }
     }
+
+    this.log('Token entry types found:', Array.from(tokenEntryTypes));
 
     // If we have actual tokens, use them directly
     // Note: API-reported input_tokens already include base context (system prompt, tools, memory files)
     // So we don't add baseContext again - that would double-count
     if (inputTokens > 0 || outputTokens > 0) {
-      // Actual tokens from API are complete, no modification needed
+      hasActualTokens = true;
+      this.log('Using actual tokens from API:', { inputTokens, outputTokens });
     } else if (sessionData.length > 0) {
       // No actual tokens found, estimate from actual message content
       // Extract just the text content from messages, not JSON metadata
@@ -476,15 +532,26 @@ class StatusLine {
       inputTokens = estimatedInput + baseContext;
       // Output = assistant text content
       outputTokens = estimatedOutput;
+
+      this.log('Estimated tokens from content:', {
+        userChars: userTextChars,
+        assistantChars: assistantTextChars,
+        estimatedInput,
+        estimatedOutput,
+        baseContext
+      });
     }
 
     // Fallback: if no tokens at all, at least show base context
     // (even an empty session has base context sent to API)
     if (inputTokens === 0 && outputTokens === 0) {
       inputTokens = this.estimateBaseContextTokens();
+      this.log('Fallback: using base context only:', inputTokens);
     }
 
-    return { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens };
+    const result = { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens, hasActualTokens };
+    this.log('Final tokens:', result);
+    return result;
   }
 
   extractTextContent(content) {
