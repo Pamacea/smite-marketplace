@@ -162,16 +162,19 @@ class StatusLine {
   findCurrentSession() {
     try {
       const cwd = process.cwd();
-      const projects = fs.readdirSync(this.projectsDir);
+      const sessionEnvDir = path.join(this.claudeDir, 'session-env');
 
-      // Find matching project directory
+      // Candidate sessions: map UUID to project path
+      const sessionCandidates = new Map();
+
+      // Find matching project directory first
       let matchingProject = null;
+      const projects = fs.readdirSync(this.projectsDir);
       for (const project of projects) {
         const projectDir = path.join(this.projectsDir, project);
         const stat = fs.statSync(projectDir);
         if (!stat.isDirectory()) continue;
 
-        // Check sessions-index.json for project path
         const indexPath = path.join(projectDir, 'sessions-index.json');
         if (fs.existsSync(indexPath)) {
           try {
@@ -186,49 +189,83 @@ class StatusLine {
         }
       }
 
-      // If no match, use the most recently modified session
-      if (!matchingProject) {
-        let newestSession = null;
-        let newestTime = 0;
+      if (!matchingProject) return null;
 
-        for (const project of projects) {
-          const projectDir = path.join(this.projectsDir, project);
-          const stat = fs.statSync(projectDir);
-          if (!stat.isDirectory()) continue;
+      // PRIMARY METHOD: Use session-env to find recently active sessions
+      // The session-env directory is created when a session starts, so recent entries
+      // indicate sessions that were started recently (even if empty)
+      const recentThreshold = 2 * 60 * 1000; // 2 minutes
+      const now = Date.now();
 
-          const sessions = fs.readdirSync(projectDir)
-            .filter(f => f.endsWith('.jsonl'))
-            .map(f => path.join(projectDir, f));
+      if (fs.existsSync(sessionEnvDir)) {
+        const sessionDirs = fs.readdirSync(sessionEnvDir, { withFileTypes: true })
+          .filter(d => d.isDirectory())
+          .map(d => ({
+            uuid: d.name,
+            envPath: path.join(sessionEnvDir, d.name),
+            envMtime: fs.statSync(path.join(sessionEnvDir, d.name)).mtimeMs
+          }))
+          .filter(d => now - d.envMtime < recentThreshold); // Only very recent sessions
 
-          for (const sessionPath of sessions) {
+        // Find matching .jsonl files and get their modification times
+        for (const sessionDir of sessionDirs) {
+          const sessionPath = path.join(matchingProject, `${sessionDir.uuid}.jsonl`);
+          if (fs.existsSync(sessionPath)) {
             const sessionStat = fs.statSync(sessionPath);
-            // Check if this session was modified in the last minute (active session)
-            const now = Date.now();
-            const timeSinceModified = now - sessionStat.mtimeMs;
-
-            // Prioritize very recently modified sessions (likely current)
-            if (timeSinceModified < 60000 && sessionStat.mtimeMs > newestTime) {
-              newestTime = sessionStat.mtimeMs;
-              newestSession = sessionPath;
-            }
+            sessionCandidates.set(sessionDir.uuid, {
+              path: sessionPath,
+              envMtime: sessionDir.envMtime,
+              fileMtime: sessionStat.mtimeMs,
+              hasApiCalls: sessionStat.size > 1000 // Assume >1KB means has content
+            });
           }
         }
-
-        return newestSession;
       }
 
-      // Get most recent session from matching project
+      // Choose the best candidate:
+      // 1. Prefer sessions with API calls (content)
+      // 2. Among those, prefer the most recently modified file
+      // 3. If no content, prefer the most recent env (newest session)
+      let bestSession = null;
+      let bestScore = -1;
+
+      for (const [uuid, candidate] of sessionCandidates) {
+        let score = 0;
+        // Base score from file recency (more recent = higher)
+        const fileAge = now - candidate.fileMtime;
+        score += Math.max(0, 1000000 - fileAge);
+
+        // Big bonus for having API calls (this is likely the active session)
+        if (candidate.hasApiCalls) {
+          score += 10000000;
+        }
+
+        // Small bonus for recent env creation (newer sessions)
+        const envAge = now - candidate.envMtime;
+        score += Math.max(0, 500000 - envAge);
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestSession = candidate.path;
+        }
+      }
+
+      if (bestSession) {
+        return bestSession;
+      }
+
+      // FALLBACK: Use the most recently modified .jsonl file in the project
       const sessions = fs.readdirSync(matchingProject)
         .filter(f => f.endsWith('.jsonl'))
-        .map(f => path.join(matchingProject, f));
+        .map(f => ({
+          path: path.join(matchingProject, f),
+          mtime: fs.statSync(path.join(matchingProject, f)).mtimeMs
+        }));
 
       if (sessions.length === 0) return null;
 
-      return sessions.sort((a, b) => {
-        const statA = fs.statSync(a);
-        const statB = fs.statSync(b);
-        return statB.mtimeMs - statA.mtimeMs;
-      })[0];
+      sessions.sort((a, b) => b.mtime - a.mtime);
+      return sessions[0].path;
     } catch {
       return null;
     }
@@ -389,11 +426,11 @@ class StatusLine {
       }
     }
 
-    // If we have actual tokens, add base context estimation
+    // If we have actual tokens, use them directly
+    // Note: API-reported input_tokens already include base context (system prompt, tools, memory files)
+    // So we don't add baseContext again - that would double-count
     if (inputTokens > 0 || outputTokens > 0) {
-      const baseContext = this.estimateBaseContextTokens();
-      // Add base context to input tokens (it's sent with each request)
-      inputTokens += baseContext;
+      // Actual tokens from API are complete, no modification needed
     } else if (sessionData.length > 0) {
       // No actual tokens found, estimate from actual message content
       // Extract just the text content from messages, not JSON metadata
