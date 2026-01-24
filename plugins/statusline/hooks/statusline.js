@@ -427,6 +427,12 @@ class StatusLine {
       outputTokens = estimatedOutput;
     }
 
+    // Fallback: if no tokens at all, at least show base context
+    // (even an empty session has base context sent to API)
+    if (inputTokens === 0 && outputTokens === 0) {
+      inputTokens = this.estimateBaseContextTokens();
+    }
+
     return { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens };
   }
 
