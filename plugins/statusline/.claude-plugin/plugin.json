@@ -1,7 +1,7 @@
 {
   "name": "statusline",
   "description": "Lightweight session statusline display - git branch, insertions, path, model, cost, tokens, progress, percentage, duration",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": {
     "name": "Pamacea",
     "email": "contact@pamacea.com"
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/statusline.js post-tool",
+            "command": "cd ${CLAUDE_PLUGIN_ROOT} && bun run src/index.ts",
             "enabled": true
           }
         ]

@@ -7,7 +7,7 @@ Lightweight session statusline display for Claude Code.
 Display a compact statusline showing your current session information:
 
 ```
-main • +123/-45  • ~/Projects/smite • Opus 4.5 • $1.23 • 45K • ████████░░ • 78% • 1h 23m
+main • +14 -4036  • ~/plugins/statusline • Glm 4.7 • $0.0 • 0 • ████████░░ • 0% • (42m)
 ```
 
 ## Components
@@ -15,20 +15,40 @@ main • +123/-45  • ~/Projects/smite • Opus 4.5 • $1.23 • 45K • █�
 | Component | Description | Example |
 |-----------|-------------|---------|
 | **branch** | Git branch name | `main`, `feature-branch` |
-| **insertions** | Git changes (additions/deletions) | `+123/-45`, `+42` |
-| **path** | Abbreviated project path | `~/Projects/smite` |
-| **model** | AI model name | `Opus 4.5`, `Sonnet 4.5` |
-| **cost** | Estimated session cost | `$1.23` |
-| **tokens** | Total tokens used | `45K`, `123` |
+| **changes** | Git changes (additions/deletions) | `+14 -4036`, `+42` |
+| **path** | Abbreviated project path | `~/plugins/statusline` |
+| **model** | AI model name | `Opus 4.5`, `Sonnet 4.5`, `Glm 4.7` |
+| **cost** | Estimated session cost | `$0.0` |
+| **tokens** | Total tokens used | `0`, `45K` |
 | **progress** | Visual progress bar | `████████░░` |
-| **percentage** | Context window used | `78%` |
-| **duration** | Session duration | `1h 23m`, `15m` |
+| **percentage** | Context window used | `0%`, `78%` |
+| **duration** | Session duration | `42m`, `1h 23m` |
+
+## Features
+
+- **Bun Runtime**: Uses Bun for fast execution
+- **Modular Architecture**: Separate modules for git, formatters, rendering
+- **Real-time Updates**: Updates after each tool use via PostToolUse hook
+- **Cross-platform**: Works on Windows, macOS, and Linux
+- **Graceful Degradation**: Shows N/A for missing data
 
 ## Installation
 
+This plugin requires **Bun** runtime.
+
+### Prerequisites
+
 ```bash
-# Install via plugin system
-/plugin install statusline
+# Install Bun (if not already installed)
+curl -fsSL https://bun.sh/install | bash
+```
+
+### Setup
+
+```bash
+# Install dependencies
+cd plugins/statusline
+bun install
 ```
 
 ## Usage
@@ -43,51 +63,57 @@ main • +123/-45  • ~/Projects/smite • Opus 4.5 • $1.23 • 45K • █�
 
 **Active development session:**
 ```
-main • +123/-45  • ~/Projects/smite • Opus 4.5 • $1.23 • 45K • ████████░░ • 78% • 1h 23m
+main • +14 -4036  • ~/plugins/statusline • Glm 4.7 • $0.0 • 0 • ████████░░ • 0% • (42m)
 ```
 
 **New session with no changes:**
 ```
-main  • ~/Projects/myapp • Sonnet 4.5 • $0.05 • 3K • █░░░░░░░░░ • 12% • 2m
+main  • ~/Projects/myapp • Sonnet 4.5 • $0.05 • 3K • █░░░░░░░░░░ • 12% • (2m)
 ```
-
-**Non-git project:**
-```
-N/A  • ~/temp/script • Haiku 4.5 • $0.01 • 1K • ░░░░░░░░░░ • 5% • 1m
-```
-
-## Features
-
-- **Lightweight**: No external dependencies, uses Node.js built-ins
-- **Fast**: Executes in < 100ms
-- **Cross-platform**: Works on Windows, macOS, and Linux
-- **Graceful degradation**: Shows "N/A" for missing data
-- **Smart path abbreviation**: Long paths are shortened intelligently
 
 ## Configuration
 
-### Auto-display (Optional)
-
-The plugin includes an optional hook to auto-display status after tool use. Edit `plugins/statusline/.claude-plugin/plugin.json`:
+Edit `statusline.config.json` to customize the display:
 
 ```json
-"hooks": {
-  "PostToolUse": [
-    {
-      "matcher": "Edit|Write|Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/statusline.js post-tool",
-          "enabled": true
-        }
-      ]
+{
+  "oneLine": true,
+  "showSonnetModel": false,
+  "pathDisplayMode": "truncated",
+  "git": {
+    "enabled": true,
+    "showBranch": true,
+    "showDirtyIndicator": true,
+    "showChanges": true
+  },
+  "session": {
+    "cost": { "enabled": true, "format": "decimal1" },
+    "tokens": { "enabled": true, "showMax": false, "showDecimals": false },
+    "percentage": {
+      "enabled": true,
+      "showValue": true,
+      "progressBar": {
+        "enabled": true,
+        "length": 10,
+        "style": "filled",
+        "color": "progressive",
+        "background": "none"
+      }
     }
-  ]
+  }
 }
 ```
 
-Set `"enabled": true` to activate auto-display.
+### Progress Bar Styles
+
+- `filled`: Uses `█` and `░` characters
+- `rectangle`: Uses `▰` and `▱` characters
+- `braille`: Uses Braille patterns for finer resolution
+
+### Color Modes
+
+- `progressive`: Changes color based on percentage (gray → yellow → orange → red)
+- `green`, `yellow`, `red`, `peach`, `black`, `white`: Fixed colors
 
 ## Cost Calculation
 
@@ -98,24 +124,34 @@ Cost is estimated based on model pricing (per million tokens):
 | Opus 4.5 | $15 | $75 |
 | Sonnet 4.5 | $3 | $15 |
 | Haiku 4.5 | $1 | $5 |
+| Glm | $0.50 | $1 |
 
-*Note: These are approximate prices and may vary by region.*
+## Architecture
+
+Based on [AIBlueprint](https://github.com/Melvynx/aiblueprint) statusline with session file reading adapter for Claude Code hooks.
+
+```
+src/
+├── index.ts           # Main entry point with session adapter
+├── lib/
+│   ├── config.ts      # Configuration loader
+│   ├── config-types.ts# Type definitions
+│   ├── context.ts     # Token/context calculation
+│   ├── formatters.ts  # All formatting functions
+│   ├── git.ts         # Git status (Bun shell)
+│   ├── render-pure.ts # Pure rendering logic
+│   ├── types.ts       # Hook input types
+│   ├── utils.ts       # Utilities
+│   └── features/      # Optional premium features
+│       ├── limits.ts  # Usage limits (stub)
+│       └── spend.ts   # Cost tracking (stub)
+```
 
 ## Requirements
 
-- Node.js (for hook script)
+- **Bun** runtime
 - Git (for branch/changes info)
 - Claude Code session directory (`~/.claude/sessions/`)
-
-## Troubleshooting
-
-**"N/A" for branch**: Not in a git repository
-
-**Empty cost/tokens**: No API calls in current session yet
-
-**Incorrect model**: Session data format may vary, defaults to entry model field
-
-**Path not abbreviated**: Path is short enough to display fully
 
 ## License
 
@@ -123,4 +159,4 @@ MIT License - see [SMITE repository](https://github.com/Pamacea/smite) for detai
 
 ## Version
 
-1.0.0
+2.0.0 - Adapted from AIBlueprint
