@@ -244,6 +244,17 @@ function extractModelName(entry: SessionLine): string {
 }
 
 function extractTokens(sessionData: SessionLine[]): { input: number; output: number; total: number } {
+	// Find the most recent assistant message with actual token usage
+	// This gives us CURRENT context window usage, not cumulative session total
+	for (let i = sessionData.length - 1; i >= 0; i--) {
+		const e = sessionData[i];
+		if (e.type === "assistant" && e.message?.usage) {
+			const input = e.message.usage.input_tokens || 0;
+			const output = e.message.usage.output_tokens || 0;
+			return { input, output, total: input + output };
+		}
+	}
+	// Fallback: cumulative (only for sessions without assistant messages yet)
 	let input = 0, output = 0;
 	for (const e of sessionData) {
 		if (e.message?.usage) {
