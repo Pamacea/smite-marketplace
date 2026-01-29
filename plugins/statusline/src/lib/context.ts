@@ -88,7 +88,8 @@ export async function getContextData({
 	let totalTokens = contextLength + overheadTokens;
 
 	// If useUsableContextOnly is true, add the autocompact buffer to displayed tokens
-	if (useUsableContextOnly) {
+	// Only add buffer if we have actual token data (not for empty/new sessions)
+	if (useUsableContextOnly && contextLength > 0) {
 		totalTokens += autocompactBufferTokens;
 	}
 
