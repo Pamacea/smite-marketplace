@@ -34,3 +34,6 @@ export interface HookInput {
   };
   exceeds_200k_tokens?: boolean;
 }
+
+// Re-export from session-finder for convenience
+export type { SessionSearchResult, SessionIndexEntry, SessionIndexJson } from "./session-finder";

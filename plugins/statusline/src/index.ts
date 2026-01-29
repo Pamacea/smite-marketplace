@@ -18,6 +18,7 @@ import {
 	type UsageLimit,
 } from "./lib/render-pure";
 import type { HookInput } from "./lib/types";
+import { findCurrentSession, type SessionSearchResult } from "./lib/session-finder";
 
 // Optional feature imports - just delete the folder to disable!
 let getUsageLimits: any = null;
@@ -172,61 +173,43 @@ function calculateDuration(sessionData: SessionLine[]): number {
 	return Date.now() - new Date(firstTimestamp).getTime();
 }
 
-// Complete partial HookInput with data from transcript
-async function completeHookInput(partial: Partial<HookInput>): Promise<HookInput> {
-	// CRITICAL: Always use payload paths if provided - NEVER search for sessions!
-	// The payload from Claude Code has the CORRECT transcript_path and cwd
-	const transcriptPath = partial.transcript_path || "";
-	const workingDir = partial.cwd || "";
+// Build HookInput from session search result and optional payload
+async function buildHookInput(
+	sessionResult: SessionSearchResult,
+	payload?: Partial<HookInput>,
+): Promise<HookInput> {
+	// Use the session result paths (reliable, not stale)
+	const transcriptPath = sessionResult.transcriptPath;
+	const workingDir = sessionResult.projectPath;
 
-	// Debug: log what we received
-	const debugInfo = {
-		partial_session_id: partial.session_id,
-		partial_transcript: partial.transcript_path,
-		partial_cwd: partial.cwd,
-		using_transcript: !!transcriptPath,
-		using_cwd: !!workingDir,
-		process_cwd: process.cwd(),
-	};
-
-	// If no paths provided, we can't do anything useful
-	if (!transcriptPath && !workingDir) {
-		return {
-			session_id: partial.session_id || "unknown",
-			transcript_path: "",
-			cwd: process.cwd(),
-			model: { id: "unknown", display_name: "N/A" },
-			workspace: { current_dir: process.cwd(), project_dir: process.cwd() },
-			version: "1.0.0",
-			output_style: { name: "Explanatory" },
-			cost: { total_cost_usd: 0, total_duration_ms: 0, total_api_duration_ms: 0, total_lines_added: 0, total_lines_removed: 0 },
-			context_window: {
-				total_input_tokens: 0,
-				total_output_tokens: 0,
-				context_window_size: 200000
-			}
-		};
-	}
-
-	// Read session data
-	const sessionData = transcriptPath ? await readSession(transcriptPath) : [];
+	// Read session data from the found transcript
+	const sessionData = await readSession(transcriptPath);
 
 	// Extract data from session
-	const latestEntry = sessionData.slice().reverse().find(e => e.type === "assistant" || e.type === "api_call_start");
+	const latestEntry = sessionData
+		.slice()
+		.reverse()
+		.find((e) => e.type === "assistant" || e.type === "api_call_start");
 	const model = extractModelName(latestEntry || {});
 	const tokens = extractTokens(sessionData);
 	const cost = calculateCost(tokens, model);
 	const durationMs = calculateDuration(sessionData);
 
 	return {
-		session_id: partial.session_id || "current",
+		session_id: sessionResult.sessionId,
 		transcript_path: transcriptPath,
 		cwd: workingDir,
 		model: { id: model.toLowerCase().replace(/\s+/g, "-"), display_name: model },
 		workspace: { current_dir: workingDir, project_dir: workingDir },
-		version: partial.version || "1.0.0",
-		output_style: partial.output_style || { name: "Explanatory" },
-		cost: { total_cost_usd: cost, total_duration_ms: durationMs, total_api_duration_ms: 0, total_lines_added: 0, total_lines_removed: 0 },
+		version: payload?.version || "1.0.0",
+		output_style: payload?.output_style || { name: "Explanatory" },
+		cost: {
+			total_cost_usd: cost,
+			total_duration_ms: durationMs,
+			total_api_duration_ms: 0,
+			total_lines_added: 0,
+			total_lines_removed: 0,
+		},
 		context_window: {
 			total_input_tokens: tokens.input,
 			total_output_tokens: tokens.output,
@@ -235,16 +218,16 @@ async function completeHookInput(partial: Partial<HookInput>): Promise<HookInput
 				input_tokens: tokens.input,
 				output_tokens: tokens.output,
 				cache_read_input_tokens: tokens.cacheRead,
-				cache_creation_input_tokens: tokens.cacheCreation
-			}
-		}
+				cache_creation_input_tokens: tokens.cacheCreation,
+			},
+		},
 	};
 }
 
 async function main() {
 	try {
 		// Try to read JSON from stdin first (aiblueprint format)
-		let input: HookInput;
+		let payload: Partial<HookInput> | undefined;
 		const stdinData: Buffer[] = [];
 
 		// Read all available stdin with timeout
@@ -261,18 +244,27 @@ async function main() {
 			try {
 				const stdinText = Buffer.concat(stdinData).toString();
 				if (stdinText.trim()) {
-					const partialInput = JSON.parse(stdinText) as Partial<HookInput>;
-					// Complete partial input with data from transcript
-					input = await completeHookInput(partialInput);
-				} else {
-					input = await completeHookInput({});
+					payload = JSON.parse(stdinText) as Partial<HookInput>;
 				}
 			} catch {
-				input = await completeHookInput({});
+				// Payload invalide, on continuera sans payload
 			}
-		} else {
-			input = await completeHookInput({});
 		}
+
+		// TROUVER LA SESSION ACTUELLE (NOUVELLE LOGIQUE)
+		// Utilise session-finder avec stratégie hybride:
+		// 1. Payload si récent (< 2 min)
+		// 2. sessions-index.json (rapide)
+		// 3. Scan .jsonl avec optimisation (arrêt si fichier récent trouvé)
+		const sessionResult = await findCurrentSession(payload);
+
+		if (!sessionResult) {
+			console.log("No active session");
+			return;
+		}
+
+		// Build HookInput from the found session (not from potentially stale payload)
+		const input = await buildHookInput(sessionResult, payload);
 
 		// Save last payload for debugging
 		await writeFile(LAST_PAYLOAD_PATH, JSON.stringify(input, null, 2));
@@ -290,13 +282,13 @@ async function main() {
 			await saveSessionV2(input, currentResetsAt);
 		}
 
-		// Get git status from the actual project directory
+		// Get git status from the actual project directory (via session-finder)
 		const git = await getGitStatus(input.workspace.current_dir);
 
 		let contextTokens: number | null;
 		let contextPercentage: number | null;
 
-		// Always use getContextData from transcript (payload doesn't have reliable context data)
+		// Always use getContextData from transcript
 		const contextData = await getContextData({
 			transcriptPath: input.transcript_path,
 			maxContextTokens: config.context.maxContextTokens,
