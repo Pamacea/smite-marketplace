@@ -1,0 +1,49 @@
+{
+  "name": "@smite/explore",
+  "version": "1.0.0",
+  "description": "Unified code exploration agent with semantic search",
+  "author": {
+    "name": "Pamacea",
+    "email": "contact@pamacea.dev",
+    "url": "https://github.com/pamacea"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/pamacea/smite#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pamacea/smite.git",
+    "directory": "plugins/explore"
+  },
+  "bugs": {
+    "url": "https://github.com/pamacea/smite/issues"
+  },
+  "smite": {
+    "type": "agent",
+    "minVersion": "3.1.0",
+    "configFile": ".claude/.smite/explore.json"
+  },
+  "keywords": [
+    "smite",
+    "smite-plugin",
+    "explore",
+    "code-exploration",
+    "semantic-search"
+  ],
+  "dependencies": {
+    "grepai-cli": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
