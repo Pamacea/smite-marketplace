@@ -1,0 +1,20 @@
+# Bun configuration for SMITE
+# This configuration ensures compatibility across all platforms, especially Windows
+
+[install]
+# Windows compatibility: Use 'copy' strategy instead of symlinks
+# On Windows, symlinks require special permissions (Developer Mode or Admin)
+# Using 'copy' avoids EPERM errors during Claude Code plugin installation
+#
+# Valid values:
+#   - 'auto' (default): Bun chooses strategy (uses symlinks on Windows)
+#   - 'copy': Copy files (works everywhere, slightly slower)
+#   - 'hardlink': Use hard links (Unix-only, requires same filesystem)
+#   - 'clonefile': Use copy-on-write (macOS only)
+nodeLinker = "copy"
+
+# Enable lockfile for consistent installs
+lockfile = true
+
+# Use Bun's cache for faster installs
+cache = true

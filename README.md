@@ -314,6 +314,32 @@ Some plugins use optional MCP tools. If unavailable, plugins automatically fall 
 git commit --no-verify -m "your message"
 ```
 
+#### EPERM: Symlink Error on Windows
+
+**Error:** `EPERM: operation not permitted, symlink`
+
+This occurs when Bun tries to create symlinks on Windows, which requires special permissions.
+
+**Solution 1: Use npm instead of bun (Recommended)**
+```bash
+cd ~/.claude/plugins/marketplaces/smite
+npm install --legacy-peer-deps
+```
+
+**Solution 2: Enable Developer Mode on Windows**
+1. Go to Settings → Update & Security → For developers
+2. Enable "Developer Mode"
+3. Restart terminal and try installation again
+
+**Solution 3: Configure Bun to use copy strategy**
+The `bunfig.toml` file in this repository is pre-configured to use `nodeLinker = "copy"` instead of symlinks. This prevents the EPERM error on Windows.
+
+If you still encounter issues, ensure your local marketplace copy has this configuration:
+```bash
+cat ~/.claude/plugins/marketplaces/smite/bunfig.toml
+# Should contain: nodeLinker = "copy"
+```
+
 ---
 
 **SMITE v3.2.0** • **9 plugins** • **Core foundation** • **Modular architecture** • **Zero-debt engineering**
