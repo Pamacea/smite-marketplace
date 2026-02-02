@@ -27,7 +27,69 @@ version: 1.0.0
 
 Provide unified code exploration through deep analysis, native semantic search, and multi-source research.
 
-## Core Principles
+## 📋 Plan Mode First (OBLIGATOIRE)
+
+**TOUJOURS** créer un plan avant toute exploration complexe.
+
+### Quand Plan Mode est requis
+
+- Mode deep
+- Lancer des subagents pour exploration
+- Recherche multi-source
+- Impact analysis
+
+### Exception
+
+Recherche simple: mode quick/semantic, 1-2 fichiers
+
+### Template de Plan
+
+```markdown
+## Plan: Explorer [Sujet]
+
+### Objectifs
+- [ ] [Comprendre X, trouver Y, analyser Z]
+
+### Sources
+- Codebase: [quelles parties]
+- Documentation: [quels fichiers]
+- Web: [quelles recherches]
+
+### Subagents (si applicable)
+1. **Recherche codebase**: "[Question précise]"
+2. **Recherche web**: "[Question précise]"
+3. **Analyse patterns**: "[Question précise]"
+
+### Résultat attendu
+- [ ] Liste de fichiers pertinents
+- [ ] Diagramme d'architecture (si applicable)
+- [ ] Explication du fonctionnement
+
+### Sortie
+- Fichier: `.claude/.smite/explore-[topic].md`
+
+**Confirmer pour procéder ?**
+```
+
+## ⚡ Auto-Parallel (DEFAULT)
+
+**Le parallélisme s'active AUTOMATIQUEMENT** pour les explorations complexes.
+
+### Critères d'Auto-Activation
+
+| Critère | Seuil | Parallel |
+|---------|-------|----------|
+| Mode | deep | 2-3 |
+| Sources nécessaires | ≥ 3 (code + web + docs) | 3 |
+| Complexité de la requête | architecture/patterns | 2 |
+
+### Désactiver
+
+```bash
+/explore --mode=deep --no-parallel "Simple question"
+```
+
+---
 
 - **Deep Understanding** - Analyze architecture, patterns, and conventions
 - **Native Semantic Search** - Direct grepai integration (75% token savings)
@@ -161,6 +223,55 @@ Output: .claude/.smite/explore-impact.md
 
 Output: Terminal (or --output=files)
 ```
+
+### --parallel=N / AUTO (Multi-Angle Exploration)
+
+**Purpose:** Explore from multiple angles simultaneously
+
+**⚡ AUTO-ACTIVÉ** pour mode deep (multi-source requis)
+
+**Désactiver avec:** `--no-parallel`
+
+**How it works:**
+```
+1. Create N Git worktrees alongside main repo
+2. Each worktree explores different aspect
+3. Results merged for comprehensive understanding
+4. Worktrees cleaned up after completion
+```
+
+**Parallel Strategies by Mode:**
+
+| Mode | --parallel=2 | --parallel=3 | --parallel=4 |
+|------|--------------|--------------|--------------|
+| `--deep` | wt-1: Codebase, wt-2: Web | wt-1: Codebase, wt-2: Web, wt-3: Docs | wt-1: Codebase, wt-2: Web, wt-3: Docs, wt-4: Patterns |
+| `--quick` | wt-1: Semantic, wt-2: Literal | wt-1: Semantic, wt-2: Literal, wt-3: File-search | N/A |
+| `--pattern` | wt-1: Design patterns, wt-2: Code patterns | wt-1: Design, wt-2: Code, wt-3: Architecture | N/A |
+| `--impact` | wt-1: Upstream deps, wt-2: Downstream consumers | wt-1: Upstream, wt-2: Downstream, wt-3: Config | N/A |
+| `--semantic` | wt-1: Code search, wt-2: Docs search | wt-1: Code, wt-2: Docs, wt-3: Web | N/A |
+
+**Examples:**
+```bash
+# Deep exploration with codebase + web research
+/explore --mode=deep --parallel=2 "How does the payment system work?"
+
+# Comprehensive multi-source research
+/explore --mode=deep --parallel=4 "Authentication architecture"
+
+# Pattern search from multiple angles
+/explore --mode=pattern --parallel=2 "Repository pattern usage"
+
+# Complete impact analysis
+/explore --mode=impact --parallel=3 "Impact of changing JWT library"
+```
+
+**Merge Strategy:**
+- Consolidate findings from all worktrees
+- Deduplicate file references
+- Merge architecture diagrams
+- Create unified exploration report
+
+**Best for:** Complex topics, multi-source research, comprehensive understanding
 
 ## Type Flags
 

@@ -1,6 +1,6 @@
 # /implement - Unified Implementation Command
 
-> **UNIFIED** implementation entry point - consollates all implementation approaches
+> **UNIFIED** implementation entry point - consolidates all implementation approaches
 
 ## Usage
 

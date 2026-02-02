@@ -27,7 +27,67 @@ version: 1.0.0
 
 Provide unified, systematic code refactoring through comprehensive validation, ensuring safe improvements while preserving functionality.
 
-## Core Principles
+## 📋 Plan Mode First (OBLIGATOIRE)
+
+**TOUJOURS** créer un plan avant toute refactorisation significative.
+
+### Quand Plan Mode est requis
+
+- Modifier plus de 2 fichiers
+- Restructurer un module
+- Lancer des subagents (classifier, validator, resolver)
+- Mode analyze/full/resolve
+
+### Template de Plan
+
+```markdown
+## Plan: Refactor [Module/Fichier]
+
+### Objectifs
+- [ ] [Objectif principal: réduire complexité, éliminer duplication, etc.]
+
+### Fichiers
+À analyser: `path/to/file`
+À modifier: `path/to/file` - [raison]
+
+### Approche
+1. Analyser l'état actuel
+2. Identifier les améliorations
+3. Appliquer les changements incrémentalement
+4. Valider après chaque changement
+
+### Risques
+- [Regression] → Tests après chaque changement
+- [Casser l'API] → Vérifier les appels
+
+### Validation
+- [ ] Tous les tests passent
+- [ ] Aucune régression
+- [ ] Complexité réduite
+
+**Confirmer pour procéder ?**
+```
+
+## ⚡ Auto-Parallel (DEFAULT)
+
+**Le parallélisme s'active AUTOMATIQUEMENT** pour les refactors complexes.
+
+### Critères d'Auto-Activation
+
+| Critère | Seuil | Parallel |
+|---------|-------|----------|
+| Fichiers à analyser | ≥ 5 | 2 |
+| Modes | analyze/full | 2 |
+| Complexité détectée | haute | 2-3 |
+
+### Désactiver
+
+```bash
+/refactor --full --no-parallel
+/refactor --analyze --no-parallel
+```
+
+---
 
 - **Safety First** - Validate all changes before implementation
 - **Incremental** - Small, verifiable steps
@@ -159,6 +219,50 @@ Debug and fix specific bugs.
 # With adversarial review
 /refactor --scope=bug --examine "Critical production bug"
 ```
+
+### --parallel=N / AUTO (Worktree Parallel Mode)
+
+**Purpose:** Execute multiple refactoring strategies simultaneously
+
+**⚡ AUTO-ACTIVÉ** pour modes analyze/full (≥5 fichiers ou complexité haute)
+
+**Désactiver avec:** `--no-parallel`
+
+**How it works:**
+```
+1. Create N Git worktrees alongside main repo
+2. Each worktree analyzes different aspect
+3. Results merged for comprehensive refactoring plan
+4. Worktrees cleaned up after completion
+```
+
+**Parallel Strategies by Mode:**
+
+| Mode | --parallel=2 | --parallel=3 |
+|------|--------------|--------------|
+| `--quick` | N/A (too fast) | N/A |
+| `--full` | wt-1: Analyze+Review, wt-2: Resolve | wt-1: Analyze, wt-2: Review, wt-3: Resolve |
+| `--analyze` | wt-1: Code smells, wt-2: Complexity | wt-1: Code smells, wt-2: Complexity, wt-3: Security |
+| `--resolve` | wt-1: Low-risk, wt-2: High-risk | wt-1: Low-risk, wt-2: Medium-risk, wt-3: High-risk |
+
+**Examples:**
+```bash
+# Full refactoring with 2-way split
+/refactor --full --parallel=2
+
+# Deep analysis with 3 perspectives
+/refactor --analyze --parallel=3
+
+# Risk-tiered resolution
+/refactor --resolve --parallel=3
+```
+
+**Merge Strategy:**
+- Merge analysis reports from all worktrees
+- Consolidate review items by priority
+- Apply refactorings in dependency order
+
+**Best for:** Comprehensive refactoring, risk assessment, multi-angle analysis
 
 ## Common Patterns
 

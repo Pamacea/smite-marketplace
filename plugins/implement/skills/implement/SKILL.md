@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Unified implementation agent - consollates all implementation approaches
+description: Unified implementation agent - consolidates all implementation approaches
 version: 1.0.0
 ---
 
@@ -30,11 +30,98 @@ version: 1.0.0
 
 Provide unified implementation entry point while **CONSERVING THE UNIQUE UTILITY OF EACH APPROACH**:
 
+## 📋 Plan Mode First (OBLIGATOIRE)
+
+**TOUJOURS** créer un plan avant toute implémentation significative.
+
+### Quand Plan Mode est requis
+
+- Modifier plus de 2 fichiers
+- Créer de nouveaux fichiers
+- Lancer des subagents
+- Mode builder/predator/ralph
+
+### Exception
+
+Tâches triviales: 1 fichier, 1-2 lignes, évident
+
+### Template de Plan
+
+```markdown
+## Plan: [Tâche]
+
+### Objectifs
+- [ ] [Objectif principal]
+
+### Fichiers
+À lire: `path/to/file`
+À modifier: `path/to/file` - [raison]
+À créer: `path/to/new-file` - [description]
+
+### Approche
+1. [Étape 1]
+2. [Étape 2]
+3. [Étape 3]
+
+### Risques
+- [Risque] → [Mitigation]
+
+### Validation
+- [ ] lint + typecheck
+- [ ] tests liés passent
+
+### Critères de succès
+- [ ] [Critère 1]
+```
+
+### Avant de lancer des subagents
+
+```markdown
+## Plan: Subagents pour [Tâche]
+
+### Pourquoi
+[Description de la nécessité]
+
+### Subagents
+1. **Agent A**: [Tâche] - "[Prompt précis]" - X min
+2. **Agent B**: [Tâche] - "[Prompt précis]" - X min
+
+### Fusion
+- Comparer les résultats
+- Synthétiser
+
+**Confirmer pour procéder ?**
+```
+
+---
+
 - **Quick Mode** (`--quick`) - Like `/oneshot` - Ultra-fast, no planning
 - **EPCT Mode** (`--epct`) - Like `/epct` - 4 structured phases
 - **Builder Mode** (`--builder`) - Like `/builder` - 5 steps + technical subagents
 - **Predator Mode** (`--predator`) - Like `/predator` - 8 modular steps
+- **Adversarial Mode** (`--adversarial`) - Quality challenge via second agent
 - **Ralph Mode** (`--ralph`) - Like `/ralph/feature` - Parallel orchestration
+
+## ⚡ Auto-Parallel (DEFAULT)
+
+**Le parallélisme s'active AUTOMATIQUEMENT** selon la complexité.
+
+### Critères d'Auto-Activation
+
+| Critère | Seuil | Parallel |
+|---------|-------|----------|
+| Fichiers à créer | ≥ 4 | 2 |
+| Sous-tâches indépendantes | ≥ 3 | 2-3 |
+| Mode choisi | predator/builder | 2 |
+| Temps estimé | ≥ 30min | 2 |
+
+### Désactiver
+
+```bash
+/implement --epct --no-parallel "Task simple"
+```
+
+---
 
 ## Core Principles
 
@@ -256,6 +343,55 @@ TEST (validate quality)
 
 **Time:** Variable (2-3x faster than sequential)
 
+### --parallel=N / AUTO (Worktree Parallel Mode)
+
+**Like:** Running multiple Claude sessions in parallel via Git worktrees
+
+**Purpose:** Execute multiple implementation strategies simultaneously, then merge
+
+**⚡ AUTO-ACTIVÉ** pour les tâches complexes (≥4 fichiers ou mode predator/builder)
+
+**Désactiver avec:** `--no-parallel`
+
+**How it works:**
+```
+1. Create N Git worktrees alongside main repo
+2. Each worktree runs same mode with different focus
+3. Results compared and best implementation merged
+4. Worktrees cleaned up after completion
+```
+
+**Parallel Strategies by Mode:**
+
+| Mode | --parallel=2 | --parallel=3 | --parallel=4 |
+|------|--------------|--------------|--------------|
+| `--quick` | N/A (too fast) | N/A | N/A |
+| `--epct` | wt-1: Explore+Plan, wt-2: Code+Test | wt-1: Explore, wt-2: Plan+Code, wt-3: Test | wt-1: Explore, wt-2: Plan, wt-3: Code, wt-4: Test |
+| `--builder` | wt-1: Design, wt-2: Implement | wt-1: Design, wt-2: Implement+Test, wt-3: Verify | wt-1: Design, wt-2: Implement, wt-3: Test, wt-4: Verify |
+| `--predator` | wt-1: Standard, wt-2: Adversarial | wt-1: Standard, wt-2: Performance-focus, wt-3: Security-focus | wt-1: Standard, wt-2: Performance, wt-3: Security, wt-4: Edge-cases |
+| `--ralph` | Already parallel internally | Already parallel internally | Already parallel internally |
+
+**Examples:**
+```bash
+# Predator with adversarial review
+/implement --predator --parallel=2 "Build authentication system"
+
+# EPCT with phase parallelization
+/implement --epct --parallel=3 "Build dashboard with charts"
+
+# Builder with 4-way verification
+/implement --builder --tech=nextjs --parallel=4 "Add user settings"
+```
+
+**Merge Strategy:**
+- Compare implementations across worktrees
+- Select best approach (or merge best parts)
+- Generate comparison report in `.claude/.smite/parallel/comparison.md`
+
+**Best for:** Critical features, multiple approaches to compare, quality assurance
+
+**Time:** Similar to single mode, but with multiple perspectives
+
 ## Technical Subagents
 
 ### impl-nextjs Subagent
@@ -349,19 +485,20 @@ Need to implement?
 ├─ Is it complex/multi-file? → /implement --epct
 ├─ Is it tech-specific? → /implement --builder --tech=nextjs|rust|python|go
 ├─ Is it quality-critical? → /implement --predator
+├─ Need multiple perspectives? → /implement --MODE --parallel=N
 └─ Is it a large project? → /implement --ralph
 ```
 
 ### Comparison Table
 
-| Aspect | Quick | EPCT | Builder | Predator | Ralph |
-|--------|-------|------|---------|----------|-------|
-| Planning | None | Detailed | Detailed | Detailed | Auto-PRD |
-| Exploration | Surgical | Deep | Pattern | Deep | Per story |
-| Implementation | Immediate | Structured | Tech-specific | Modular | Orchestrated |
-| Testing | Lint+Typecheck | Full suite | 80%+ | Quality gates | Per story |
-| Time | 5-10 min | 60-90 min | 60-90 min | 60-120 min | Variable |
-| Best For | Small fixes | Complex features | Tech-specific | Systematic | Large projects |
+| Aspect | Quick | EPCT | Builder | Predator | Ralph | Parallel |
+|--------|-------|------|---------|----------|-------|----------|
+| Planning | None | Detailed | Detailed | Detailed | Auto-PRD | Per worktree |
+| Exploration | Surgical | Deep | Pattern | Deep | Per story | Multi-angle |
+| Implementation | Immediate | Structured | Tech-specific | Modular | Orchestrated | N× parallel |
+| Testing | Lint+Typecheck | Full suite | 80%+ | Quality gates | Per story | Compared |
+| Time | 5-10 min | 60-90 min | 60-90 min | 60-120 min | Variable | ~Single + merge |
+| Best For | Small fixes | Complex features | Tech-specific | Systematic | Large projects | Quality/multi-view |
 
 ## Integration
 

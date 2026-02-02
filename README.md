@@ -184,6 +184,70 @@ SMITE v3.5.0 (REFACTORISÉ)
 - **Native Grepai:** Integrated directly in `/explore` (75% token savings)
 - **Technical Subagents:** Reused from MOBS (impl-nextjs, impl-rust, impl-python, impl-go)
 - **Workflow Integration:** All workflows (ralph, predator, epct, builder) available as modes in `/implement`
+- **🆓 Parallel Execution:** Git worktree-based parallel mode with `--parallel=N` flag
+
+### ⚡ Parallel Mode (NEW)
+
+Execute multiple agents simultaneously via Git worktrees:
+
+```bash
+# Implementation with adversarial review
+/implement --predator --parallel=2 "Build authentication system"
+
+# Refactoring from multiple angles
+/refactor --full --parallel=3 "Analyze and refactor auth module"
+
+# Multi-source exploration
+/explore --mode=deep --parallel=4 "Research payment architecture"
+```
+
+**🚀 AUTO-ACTIVÉ** pour les tâches complexes (≥4 fichiers, mode deep/full/predator)
+
+**Désactiver avec:** `--no-parallel`
+
+**Benefits:**
+- **2-3x speedup** for independent tasks
+- **Multiple perspectives** on the same problem
+- **Quality assurance** through adversarial comparison
+
+### 🎓 New Capabilities (Boris Cherny Edition)
+
+#### Auto-Learning
+
+```bash
+/learn --recent    # Extract learnings from last session
+/learn --show      # Show accumulated project knowledge
+```
+
+Captures patterns, decisions, and solutions automatically into `rules/project/learnings.md`.
+
+#### Adversarial Mode
+
+```bash
+/implement --MODE --adversarial "Build critical feature"
+```
+
+Second agent challenges the first with edge cases, security, performance checks.
+
+#### Data Query via CLI
+
+```bash
+/data query "SELECT COUNT(*) FROM users"
+/data analyze schema
+/data analyze performance
+```
+
+Direct database access with auto-detection (Prisma, Supabase, PostgreSQL, MongoDB).
+
+#### Teaching Mode
+
+```bash
+/teach "Explain JWT authentication"
+/teach --level=junior "How does React work?"
+/teach --diagram "Show architecture"
+```
+
+Multi-level explanations with ASCII diagrams.
 
 ---
 
@@ -223,6 +287,7 @@ SMITE v3.5.0 (REFACTORISÉ)
 - `--resolve` - Apply specific changes
 - `--verify` - Verify results
 - `--scope=bug` - Bug investigation
+- `--parallel=N` - Parallel execution via Git worktrees
 
 **Best for:** Code improvement, bug fixes, quality assurance
 

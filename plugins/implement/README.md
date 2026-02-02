@@ -1,6 +1,6 @@
 # @smite/implement - Unified Implementation Agent
 
-> **UNIFIED** implementation agent - consollates ALL implementation approaches (internal workflows included)
+> **UNIFIED** implementation agent - consolidates ALL implementation approaches (internal workflows included)
 
 ## 🎯 Purpose
 
