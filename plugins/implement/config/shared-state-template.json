@@ -1,0 +1,51 @@
+# Shared State Template for Parallel Agent Coordination
+
+This directory contains templates and utilities for managing shared state during parallel agent execution.
+
+## Files
+
+- `shared-state-template.json` - Template for initializing new sessions
+- `shared-state-schema.json` - JSON Schema for validation
+
+## Usage
+
+### Initialize State
+```bash
+# Copy template to active state
+cp shared-state-template.json .claude/.smite/shared-state.json
+```
+
+### Read State
+```markdown
+Always read before any operation:
+1. Check session status
+2. Verify lock availability
+3. Read relevant context
+```
+
+### Write State
+```markdown
+Always write after any operation:
+1. Update relevant fields
+2. Set updated_at timestamp
+3. Release lock if held
+```
+
+## State Lifecycle
+
+```
+initializing → running → completed
+                  ↓
+                failed/cancelled
+```
+
+## Cleanup
+
+After session completion:
+```bash
+# Archive state
+mv .claude/.smite/shared-state.json .claude/.smite/history/${session_id}.json
+
+# Create summary
+echo '{"status":"archived","archived_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}' > .claude/.smite/shared-state.json
+```

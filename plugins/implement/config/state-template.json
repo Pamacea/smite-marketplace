@@ -1,0 +1,42 @@
+{
+  "session_id": null,
+  "parent_session": null,
+  "timestamp": null,
+  "updated_at": null,
+  "status": "initializing",
+  "mode": null,
+  "phase": null,
+  "agents": {
+    "active": [],
+    "completed": [],
+    "failed": [],
+    "pending": []
+  },
+  "context": {
+    "task": "",
+    "files": [],
+    "dependencies": {},
+    "flags": {}
+  },
+  "results": {},
+  "shared": {
+    "patterns": {},
+    "types": {},
+    "components": {},
+    "imports": {},
+    "errors": []
+  },
+  "messages": [],
+  "lock": {
+    "held_by": null,
+    "acquired_at": null,
+    "expires_at": null
+  },
+  "metrics": {
+    "agents_launched": 0,
+    "agents_completed": 0,
+    "agents_failed": 0,
+    "total_duration_ms": 0,
+    "parallel_speedup": 1.0
+  }
+}

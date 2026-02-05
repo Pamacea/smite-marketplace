@@ -197,6 +197,48 @@ Steps loaded on-demand for token optimization
 
 **Time:** Variable (2-3x faster than sequential)
 
+### --coordinator (Parallel Agent Coordination)
+
+**NEW: v1.0.0** - Shared state management for parallel agent execution
+
+**Purpose:** Coordinate multiple agents with shared state for efficient parallel execution
+
+**Features:**
+- Shared state file (`.claude/.smite/shared-state.json`)
+- Agent lifecycle management
+- Result aggregation
+- Message passing between agents
+- Lock mechanism for concurrent access
+
+**When to use:**
+- Mode `--epct`: 2-3 parallel explore agents
+- Mode `--predator`: Parallel validation (lint + typecheck + tests)
+- Mode `--ralph`: Already uses coordinator internally
+- Any mode with `--parallel=N` flag
+
+**Usage:**
+```bash
+# Initialize shared state
+node scripts/state-utils.js init --mode=epct --task="Build feature"
+
+# Launch agents in parallel (using Task tool)
+Task("explore-patterns", "Find code patterns", subagent_type="Explore")
+Task("explore-types", "Find type definitions", subagent_type="Explore")
+Task("web-research", "Check latest docs", subagent_type="general-purpose")
+
+# Check status
+node scripts/state-utils.js status
+
+# Archive session
+node scripts/state-utils.js archive
+```
+
+**State Schema:** See `config/shared-state-schema.json`
+
+**Best for:** Complex tasks with multiple independent subtasks
+
+**Time:** 2-3x speedup through parallel execution
+
 ## 🔧 Technical Subagents
 
 | Subagent | Tech Stack | Purpose |

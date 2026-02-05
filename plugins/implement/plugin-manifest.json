@@ -26,8 +26,15 @@
     "minVersion": "3.1.0",
     "configFile": ".claude/.smite/implement.json",
     "skills": [
-      "skills/implement/SKILL.md"
-    ]
+      "skills/implement/SKILL.md",
+      "skills/coordinator/SKILL.md"
+    ],
+    "subagents": {
+      "coordinator": {
+        "skill": "skills/coordinator/SKILL.md",
+        "purpose": "Parallel agent orchestration with shared state"
+      }
+    }
   },
   "commands": [
     {
