@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SMITE Implement Configuration",
+  "description": "Configuration for the implement plugin with 4-flag system",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Configuration version"
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default behavior settings",
+      "properties": {
+        "autoDetect": {
+          "type": "boolean",
+          "description": "Enable auto-detection when no flags provided",
+          "default": true
+        },
+        "flags": {
+          "type": "array",
+          "description": "Default flags to apply when auto-detecting",
+          "items": {
+            "type": "string",
+            "enum": ["speed", "scale", "quality", "team"]
+          }
+        },
+        "techStack": {
+          "type": "string",
+          "description": "Default tech stack (or 'detect' for auto-detection)",
+          "enum": ["detect", "nextjs", "rust", "python", "go"]
+        },
+        "timeLimit": {
+          "type": "string",
+          "description": "Default time limit per session",
+          "default": "60m"
+        },
+        "autoCommit": {
+          "type": "boolean",
+          "description": "Auto-commit after successful implementation",
+          "default": false
+        }
+      }
+    },
+    "flags": {
+      "type": "object",
+      "description": "Flag-specific configurations",
+      "properties": {
+        "speed": {
+          "type": "object",
+          "description": "Speed flag configuration",
+          "properties": {
+            "explorationBudget": {
+              "type": "string",
+              "description": "Time budget for exploration phase",
+              "default": "5m"
+            },
+            "skipPlanning": {
+              "type": "boolean",
+              "description": "Skip planning phase in speed mode",
+              "default": true
+            },
+            "testLevel": {
+              "type": "string",
+              "description": "Testing level in speed mode",
+              "enum": ["basic", "standard", "full"],
+              "default": "basic"
+            }
+          }
+        },
+        "scale": {
+          "type": "object",
+          "description": "Scale flag configuration",
+          "properties": {
+            "phases": {
+              "type": "array",
+              "description": "EPCT phases to execute",
+              "items": {
+                "type": "string",
+                "enum": ["explore", "plan", "code", "test"]
+              },
+              "default": ["explore", "plan", "code", "test"]
+            },
+            "coverageTarget": {
+              "type": "number",
+              "description": "Test coverage target percentage",
+              "default": 80
+            }
+          }
+        },
+        "quality": {
+          "type": "object",
+          "description": "Quality flag configuration",
+          "properties": {
+            "steps": {
+              "type": "array",
+              "description": "Quality workflow steps",
+              "items": {
+                "type": "string",
+                "enum": ["init", "analyze", "plan", "execute", "validate", "examine", "resolve", "finish"]
+              },
+              "default": ["init", "analyze", "plan", "execute", "validate", "examine", "resolve", "finish"]
+            },
+            "adversarial": {
+              "type": "boolean",
+              "description": "Enable adversarial review step",
+              "default": true
+            },
+            "coverageTarget": {
+              "type": "number",
+              "description": "Test coverage target percentage",
+              "default": 90
+            }
+          }
+        },
+        "team": {
+          "type": "object",
+          "description": "Team flag configuration",
+          "properties": {
+            "maxTeammates": {
+              "type": "number",
+              "description": "Maximum number of teammates to spawn",
+              "default": 5,
+              "minimum": 2,
+              "maximum": 10
+            },
+            "displayMode": {
+              "type": "string",
+              "description": "Teammate display mode",
+              "enum": ["auto", "in-process", "tmux"],
+              "default": "auto"
+            },
+            "delegateMode": {
+              "type": "boolean",
+              "description": "Enable delegate mode (lead coordinates only)",
+              "default": false
+            },
+            "envRequired": {
+              "type": "string",
+              "description": "Required environment variable",
+              "default": "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS"
+            }
+          }
+        }
+      }
+    },
+    "autoDetection": {
+      "type": "object",
+      "description": "Auto-detection rules",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "rules": {
+          "type": "array",
+          "description": "Detection rules in order of evaluation",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Rule name"
+              },
+              "condition": {
+                "type": "object",
+                "description": "Condition to match",
+                "properties": {
+                  "maxLength": {
+                    "type": "number",
+                    "description": "Task description max length"
+                  },
+                  "minLength": {
+                    "type": "number",
+                    "description": "Task description min length"
+                  },
+                  "contains": {
+                    "type": "array",
+                    "description": "Keywords that trigger this rule",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "notContains": {
+                    "type": "array",
+                    "description": "Keywords that exclude this rule",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "filesCount": {
+                    "type": "object",
+                    "description": "File count conditions"
+                  }
+                }
+              },
+              "detectedAs": {
+                "type": "array",
+                "description": "Flags to apply when matched",
+                "items": {
+                  "type": "string",
+                  "enum": ["speed", "scale", "quality", "team"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "deprecations": {
+      "type": "object",
+      "description": "Deprecation notices for old flags",
+      "properties": {
+        "showNotice": {
+          "type": "boolean",
+          "description": "Show deprecation notice for old flags",
+          "default": true
+        },
+        "oldFlags": {
+          "type": "object",
+          "description": "Mapping of old flags to new flags",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": ["version"],
+  "additionalProperties": false
+}

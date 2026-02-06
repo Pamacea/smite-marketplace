@@ -1,27 +1,53 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "smite",
-  "version": "3.6.0",
-  "description": "Zero-debt engineering with unified agents (refactor, explore, implement) and multi-agent orchestration (agents). Features token optimization (75% savings), parallel execution (2-3x speedup), and auto-learning.",
+  "version": "4.0.0",
+  "description": "Zero-debt engineering with 4-flag composable system (speed, scale, quality, team). Features auto-detection, Claude Code Agent Teams integration, token optimization (75% savings), and parallel execution (2-3x speedup).",
   "owner": {
     "name": "Pamacea",
     "email": "[email protected]"
   },
   "metadata": {
-    "description": "SMITE v3.6.0 - Unified agent architecture with core agents (refactor, explore, implement) and specialized agents (architect, builder, note). Reorganized mobs→agents with cleaner structure.",
+    "description": "SMITE v4.0.0 - 4-flag composable system with auto-detection and native Agent Teams integration. Simplified architecture: 5 core plugins + 3 utility plugins.",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
       "name": "core",
       "source": "./plugins/core",
-      "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes parallel execution, plan-mode-first, and auto-learning infrastructure.",
-      "version": "3.6.0",
+      "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes shell aliases installation scripts.",
+      "version": "4.0.0",
       "author": { "name": "Pamacea" },
       "category": "utilities",
-      "tags": ["utilities", "templates", "validation", "schemas", "platform", "parallel", "learning"],
-      "keywords": ["core", "utilities", "templates", "validation", "schemas", "cross-platform"],
+      "tags": ["utilities", "templates", "validation", "schemas", "shell", "aliases"],
+      "keywords": ["core", "utilities", "templates", "validation", "shell", "aliases"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/core",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "implement",
+      "source": "./plugins/implement",
+      "description": "Unified implementation with 4-flag composable system: speed, scale, quality, team. Auto-detection, Claude Code Agent Teams integration, and technical subagents. Consolidates all implementation workflows including basics essential commands (commit, note, learn, data, teach).",
+      "version": "2.0.0",
+      "author": { "name": "Pamacea" },
+      "category": "development",
+      "tags": ["implementation", "workflow", "unified", "4-flag", "composable", "teams", "auto-detection"],
+      "keywords": ["implement", "speed", "scale", "quality", "team", "4-flag", "composable", "epct", "oneshot"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/implement",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "agents",
+      "source": "./plugins/agents",
+      "description": "Multi-agent orchestration system with spec-first workflow - Architect, Builder, Refactor agents. Tech-specific subagents for Next.js, Rust, Python, Go. Includes session renaming automation.",
+      "version": "4.2.0",
+      "author": { "name": "Pamacea" },
+      "category": "agents",
+      "tags": ["agents", "workflow", "spec-first", "orchestration", "architecture", "implementation", "qa"],
+      "keywords": ["agents", "architect", "builder", "refactor", "auto-rename"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/agents",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"
     },
@@ -52,53 +78,14 @@
       "license": "MIT"
     },
     {
-      "name": "implement",
-      "source": "./plugins/implement",
-      "description": "Unified implementation agent consolidating all workflows: quick, epct, builder, predator, ralph. Auto-parallel, adversarial mode, and technical subagents.",
-      "version": "1.0.0",
-      "author": { "name": "Pamacea" },
-      "category": "development",
-      "tags": ["implementation", "workflow", "unified", "parallel", "adversarial"],
-      "keywords": ["implement", "epct", "builder", "predator", "ralph", "parallel", "adversarial"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/implement",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "agents",
-      "source": "./plugins/agents",
-      "description": "Multi-agent orchestration system with spec-first workflow - Architect, Builder, Refactor agents. Tech-specific subagents for Next.js, Rust, Python, Go.",
-      "version": "4.2.0",
-      "author": { "name": "Pamacea" },
-      "category": "agents",
-      "tags": ["agents", "workflow", "spec-first", "orchestration", "architecture", "implementation", "qa"],
-      "keywords": ["agents", "architect", "builder", "refactor"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/agents",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "basics",
-      "source": "./plugins/basics",
-      "description": "Essential commands: commit, cleanup, explore, learn, data, teach, smite, note. Includes AI-powered Obsidian note management with templates.",
-      "version": "4.0.0",
-      "author": { "name": "Pamacea" },
-      "category": "development",
-      "tags": ["commands", "workflow", "development", "productivity", "learning", "notes"],
-      "keywords": ["smite", "commands", "commit", "cleanup", "learn", "data", "teach", "note"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/basics",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
       "name": "shell",
       "source": "./plugins/shell",
-      "description": "Shell shortcuts (cc, ccc) for quick Claude Code access from terminal. Cross-platform support for bash, zsh.",
+      "description": "Shell aliases for Claude Code (cc, ccc) - cross-platform installation scripts. Works on Windows (PowerShell, cmd), macOS (Bash, Zsh), and Linux.",
       "version": "3.1.0",
       "author": { "name": "Pamacea" },
       "category": "productivity",
-      "tags": ["shell", "aliases", "shortcuts", "cli"],
-      "keywords": ["shell", "aliases", "shortcuts", "bash", "zsh"],
+      "tags": ["shell", "aliases", "shortcuts", "cli", "utilities"],
+      "keywords": ["shell", "aliases", "shortcuts", "bash", "zsh", "powershell"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/shell",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"

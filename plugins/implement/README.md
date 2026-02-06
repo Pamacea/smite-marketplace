@@ -1,506 +1,287 @@
-# @smite/implement - Unified Implementation Agent
+# @smite/implement - Unified Implementation Agent v2.0
 
-> **UNIFIED** implementation agent - consolidates ALL implementation approaches (internal workflows included)
+> **ONE command, FOUR flags, INFINITE possibilities**
 
-## 🎯 Purpose
+## 🎯 What's New in v2.0
 
-Provides THE unified entry point for ALL implementation tasks with **BUILT-IN WORKFLOWS** (no external plugins needed):
+**Simplified from 10+ modes to 4 composable flags:**
 
-- **Quick Mode** (`--quick`) - Like `/oneshot` - Ultra-fast implementation
-- **EPCT Mode** (`--epct`) - 4 phases structurées
-- **Builder Mode** (`--builder`) - 5 steps with technical subagents
-- **Predator Mode** (`--predator`) - 8 modular steps (internal workflow)
-- **Ralph Mode** (`--ralph`) - Parallel orchestration (internal workflow)
+| Old Way | New Way |
+|---------|---------|
+| `/implement --quick` | `/implement --speed` |
+| `/implement --epct` | `/implement --scale` |
+| `/implement --predator` | `/implement --quality` |
+| `/implement --ralph` | `/implement --team` |
+| `/implement --builder` | `/implement --scale --tech=*` |
 
-**Goal:** ONE command (`/implement`) with ALL workflows built-in - no external dependencies.
+**Key improvements:**
+- **4 flags** instead of 10+ modes
+- **Auto-detection** for zero-configuration
+- **Composable** - combine flags for custom behavior
+- **Claude Code Agent Teams** integration
+
+---
 
 ## 🚀 Quick Start
 
 ```bash
-# 1. Install plugin
-/plugin install implement@smite
+# Auto-detection (smart default)
+/implement "fix login button"
 
-# 2. Quick implementation (like /oneshot)
-/implement --quick "Add user profile page"
+# Explicit flags
+/implement --speed "quick fix"
+/implement --scale "build feature"
+/implement --quality "critical system"
+/implement --team "large project"
 
-# 3. Structured 4-phase (like /epct)
-/implement --epct "Build a complete dashboard"
-
-# 4. Technical 5-step (like /builder)
-/implement --builder --tech=nextjs "Add authentication"
-
-# 5. Modular 8-step (like /predator)
-/implement --predator "Implement shopping cart"
-
-# 6. Parallel orchestration (like /ralph)
-/implement --ralph "Build full SaaS platform"
+# Combine flags
+/implement --speed --team "quick parallel"
+/implement --scale --quality "thorough + validated"
+/implement --scale --quality --team "maximum power"
 ```
 
-## 📖 Usage
+---
 
-### Mode Selection
+## 🎯 The 4 Flags
 
-| Mode | Description | Like | Best For | Speed |
-|------|-------------|-------|----------|-------|
-| `--quick` | Ultra-fast, no planning | `/oneshot` | Quick features, bug fixes | ⚡⚡⚡ |
-| `--epct` | 4 phases: Explore → Plan → Code → Test | `/epct` | Complex features, thorough | ⚡⚡ |
-| `--builder` | 5 steps: Explore → Design → Implement → Test → Verify | `/builder` | Tech-specific implementation | ⚡ |
-| `--predator` | 8 modular steps (internal workflow) | `/predator` | Systematic workflow, quality gates | ⚡ |
-| `--ralph` | Parallel orchestration (internal workflow) | `/ralph/feature` | Large projects, multiple stories | ⚡⚡ |
+### --speed (Fast Mode)
 
-### --quick (Quick Mode)
+Optimized for velocity with minimal overhead.
 
-**Like:** `/oneshot` - Ultra-fast implementation
+**Best for:** Bug fixes, UI tweaks, small features
 
-**Workflow:**
-```
-EXPLORE (5-10 min max)
-  - 1-2 parallel subagents max
-  - Be surgical - know exactly what to search for
-  - NO PLANNING PHASE
+**Time:** 5-10 minutes
 
-CODE (implement immediately)
-  - Start coding as soon as basic context available
-  - Follow existing codebase patterns
-  - STRICTLY in scope
-  - NO comments unless necessary
-  - NO refactoring beyond requirements
-  - Run autoformatting
-
-TEST (validate quality)
-  - Run: lint + typecheck (or equivalent)
-  - Fix errors immediately
-  - Stay in scope
+```bash
+/implement --speed "fix button alignment"
+/implement --fast "add dark mode toggle"
 ```
 
-**Best for:** Well-defined, small features, bug fixes, UI tweaks
+### --scale (Thorough Mode)
 
-**Time:** 5-10 minutes max
+Comprehensive 4-phase workflow (EPCT).
 
-### --epct (4-Phase Structured Mode)
-
-**Like:** `/epct` - Systematic 4-phase implementation
-
-**Workflow:**
-```
-1. EXPLORE (15-20 min)
-   - Deep codebase exploration
-   - Multi-source research
-   - Parallel subagents
-   - Output: exploration.md
-
-2. PLAN (20-30 min)
-   - Detailed implementation plan
-   - File structure
-   - Types and interfaces
-   - Testing strategy
-   - Output: plan.md
-
-3. CODE (30-60 min)
-   - Implement following plan
-   - Best practices
-   - Barrel exports
-   - Output: implementation
-
-4. TEST (15-30 min)
-   - Full test suite
-   - Unit, integration, E2E
-   - Coverage measurement
-   - Output: test-results.md
-```
-
-**Best for:** Complex features (3-5 files), thorough implementation
+**Best for:** Complex features, multi-file changes, production code
 
 **Time:** 60-90 minutes
 
-### --builder (Technical 5-Step Mode)
-
-**Like:** `/builder` - 5 steps with technical specialization
-
-**Workflow:**
-```
-1. EXPLORE (5-10 min)
-   - Use /explore --mode=quick
-   - Document patterns
-   - Output: builder-exploration.md
-
-2. DESIGN (15-20 min)
-   - File structure
-   - Type definitions
-   - Zod validation schemas
-   - Data flow
-   - Architecture
-   - Output: builder-design.md
-
-3. IMPLEMENT (30-45 min)
-   - Follow tech-specific subagent:
-     - impl-nextjs - React 19, RSC, Prisma
-     - impl-rust - Ownership, async/await
-     - impl-python - Type hints, FastAPI
-     - impl-go - Goroutines, interfaces
-   - Barrel exports
-   - Output: implementation
-
-4. TEST (15-30 min)
-   - Unit tests
-   - Integration tests
-   - Coverage 80%+
-   - Output: test suite
-
-5. VERIFY (10-15 min)
-   - Linting
-   - Type checking
-   - Build verification
-   - Smoke tests
-   - Output: builder-verification.md
+```bash
+/implement --scale "build user dashboard"
+/implement --thorough "refactor authentication module"
 ```
 
-**Tech Stacks:**
-- `--tech=nextjs` - React 19, RSC, Prisma, Server Actions
-- `--tech=rust` - Ownership, async/await, zero-copy
-- `--tech=python` - Type hints, FastAPI, SQLAlchemy 2.0
-- `--tech=go` - Goroutines, interfaces, standard library
+### --quality (Quality Mode)
 
-**Best for:** Tech-specific implementation, framework best practices
+Full workflow with comprehensive quality gates (Predator).
 
-**Time:** 60-90 minutes
-
-### --predator (Modular 8-Step Mode)
-
-**Internal workflow - 8 modular steps loaded on-demand**
-
-**Workflow:**
-```
-00_INIT → 01_ANALYZE → 02_PLAN → 03_EXECUTE → 04_VALIDATE → 05_EXAMINE → 06_RESOLVE → 07_FINISH
-
-Steps loaded on-demand for token optimization
-```
-
-**Best for:** Systematic workflow, quality gates, comprehensive validation
+**Best for:** Critical systems, security-sensitive code
 
 **Time:** 60-120 minutes
 
-### --ralph (Parallel Orchestration Mode)
-
-**Internal workflow - Parallel execution of independent stories**
-
-**Workflow:**
-```
-1. Generate PRD from natural language
-2. Parse into user stories
-3. Build dependency graph
-4. Execute independent stories in parallel (2-3x speedup)
-5. Track progress and commit
-```
-
-**Best for:** Large projects, multiple independent components, SaaS platforms
-
-**Time:** Variable (2-3x faster than sequential)
-
-### --coordinator (Parallel Agent Coordination)
-
-**NEW: v1.0.0** - Shared state management for parallel agent execution
-
-**Purpose:** Coordinate multiple agents with shared state for efficient parallel execution
-
-**Features:**
-- Shared state file (`.claude/.smite/shared-state.json`)
-- Agent lifecycle management
-- Result aggregation
-- Message passing between agents
-- Lock mechanism for concurrent access
-
-**When to use:**
-- Mode `--epct`: 2-3 parallel explore agents
-- Mode `--predator`: Parallel validation (lint + typecheck + tests)
-- Mode `--ralph`: Already uses coordinator internally
-- Any mode with `--parallel=N` flag
-
-**Usage:**
 ```bash
-# Initialize shared state
-node scripts/state-utils.js init --mode=epct --task="Build feature"
-
-# Launch agents in parallel (using Task tool)
-Task("explore-patterns", "Find code patterns", subagent_type="Explore")
-Task("explore-types", "Find type definitions", subagent_type="Explore")
-Task("web-research", "Check latest docs", subagent_type="general-purpose")
-
-# Check status
-node scripts/state-utils.js status
-
-# Archive session
-node scripts/state-utils.js archive
+/implement --quality "implement payment processing"
+/implement --validate "add user permissions"
 ```
 
-**State Schema:** See `config/shared-state-schema.json`
+### --team (Team Mode)
 
-**Best for:** Complex tasks with multiple independent subtasks
+Parallel agent orchestration using Claude Code Agent Teams.
 
-**Time:** 2-3x speedup through parallel execution
+**Best for:** Large projects, multi-domain features
 
-## 🔧 Technical Subagents
-
-| Subagent | Tech Stack | Purpose |
-|----------|-----------|---------|
-| `impl-nextjs` | React 19, RSC, Prisma, Server Actions | Next.js implementation |
-| `impl-rust` | Ownership, async/await, zero-copy | Rust implementation |
-| `impl-python` | Type hints, FastAPI, SQLAlchemy 2.0 | Python implementation |
-| `impl-go` | Goroutines, interfaces, standard library | Go implementation |
-
-## 🔍 Integration
-
-### With Explore
-
-All modes use `/explore` for context gathering:
+**Time:** 2-3x faster than sequential
 
 ```bash
-# Quick exploration
-/implement --quick
-  -> Uses: /explore --mode=quick
-
-# Deep exploration
-/implement --epct
-  -> Uses: /explore --mode=deep
-
-# Pattern search
-/implement --builder
-  -> Uses: /explore --type=code
+/implement --team "build full SaaS platform"
+/implement --swarm "create multi-feature system"
 ```
 
-### With Refactor
+**Requirements:**
+- Claude Code v2.1.32+
+- `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
 
-After implementation, use `/refactor` for quality:
+---
+
+## 🤖 Auto-Detection
+
+No flags? The system analyzes your task and chooses:
 
 ```bash
-# Quick refactor
-/refactor --quick
+# Auto-detects --speed
+/implement "fix button"
 
-# Full refactor
-/refactor --full
+# Auto-detects --scale
+/implement "build dashboard with charts"
+
+# Auto-detects --team
+/implement "create full SaaS platform"
+
+# Auto-detects --quality
+/implement "implement payment system"
 ```
+
+### Detection Rules
+
+| Signal | Detected As |
+|--------|-------------|
+| Short, simple task | `--speed` |
+| "feature/build/create" | `--scale` |
+| "SaaS/platform/system" | `--team` |
+| "critical/security/payment" | `--quality` |
+| "refactor/cleanup" | `--scale --quality` |
+
+---
+
+## 📋 Flag Combinations
+
+Flags are **modifiers, not modes** - they combine naturally:
+
+| Command | Behavior |
+|---------|----------|
+| `/implement --speed` | Quick fix |
+| `/implement --scale` | Full EPCT |
+| `/implement --quality` | Quality gates |
+| `/implement --team` | Parallel agents |
+| `/implement --speed --team` | Quick parallel (NEW!) |
+| `/implement --scale --quality` | Thorough + validated |
+| `/implement --scale --team` | Parallel thorough |
+| `/implement --scale --quality --team` | Everything |
+
+---
+
+## 🔧 Tech Stack Support
+
+Works with ANY flag combination:
+
+```bash
+/implement --scale --tech=nextjs "..."
+/implement --speed --tech=rust "..."
+/implement --quality --tech=python --team "..."
+```
+
+**Available:** `nextjs`, `rust`, `python`, `go`
+
+---
+
+## 🔄 Migration Guide
+
+### For Users
+
+Old commands still work (with deprecation notice):
+
+| Old Command | New Command |
+|-------------|-------------|
+| `/oneshot` | `/implement --speed` |
+| `/epct` | `/implement --scale` |
+| `/predator` | `/implement --quality` |
+| `/ralph` | `/implement --scale --team` |
+| `/builder --tech=nextjs` | `/implement --scale --tech=nextjs` |
+
+### For Developers
+
+Update your workflows:
+
+```javascript
+// Old
+await implement({ mode: 'quick', task: 'fix bug' })
+
+// New
+await implement({ flags: ['speed'], task: 'fix bug' })
+
+// Composable
+await implement({ flags: ['scale', 'quality'], task: 'feature' })
+```
+
+---
 
 ## 📊 Comparison Table
 
-| Aspect | Quick | EPCT | Builder | Predator | Ralph |
-|--------|-------|------|---------|----------|-------|
-| Planning | None | Detailed | Detailed | Steps 1-2 | Auto-PRD |
-| Exploration | Surgical | Deep | Pattern | Steps 1-2 | Per story |
-| Implementation | Immediate | Structured | Tech-specific | Step 3 | Parallel |
-| Testing | Lint+Typecheck | Full suite | 80%+ | Step 4 | Per story |
-| Speed | ⚡⚡⚡ | ⚡⚡ | ⚡ | ⚡ | ⚡ |
-| Quality | Good | Excellent | High | High | High |
-| Scope | Small | Medium | Large | Large | Very Large |
+| Aspect | v1.0 | v2.0 |
+|--------|------|------|
+| Modes | 10+ | 4 flags |
+| Composable | No | Yes |
+| Auto-detection | No | Yes |
+| Agent Teams | Ralph only | Native integration |
+| Learning curve | Steep | Gentle |
 
-## 📝 Examples
-
-### Quick Implementation
-
-```bash
-# Like /oneshot
-/implement --quick "Add dark mode toggle to settings"
-
-# Bug fix
-/implement --quick "Fix login button alignment"
-```
-
-### Structured 4-Phase
-
-```bash
-# Like /epct
-/implement --epct "Build a complete dashboard with charts and filters"
-```
-
-### Technical Implementation
-
-```bash
-# Like /builder with Next.js
-/implement --builder --tech=nextjs "Add authentication"
-
-# Like /builder with Rust
-/implement --builder --tech=rust "Build high-performance processor"
-```
-
-### Modular 8-Step
-
-```bash
-# Like /predator
-/implement --predator "Implement shopping cart with persistence"
-
-# With adversarial review
-/implement --predator --examine "Critical payment system"
-```
-
-### Parallel Orchestration
-
-```bash
-# Like /ralph
-/implement --ralph "Build full SaaS platform"
-```
-
-## 🔧 Configuration
-
-Config file: `.claude/.smite/implement.json`
-
-```json
-{
-  "defaults": {
-    "mode": "builder",
-    "techStack": "detect",
-    "timeLimit": "60m",
-    "autoCommit": true
-  },
-  "modes": {
-    "quick": {
-      "timeLimit": "10m",
-      "skipPlanning": true
-    },
-    "epct": {
-      "phases": ["explore", "plan", "code", "test"],
-      "timePerPhase": "20m"
-    },
-    "builder": {
-      "steps": ["explore", "design", "implement", "test", "verify"],
-      "techStacks": ["nextjs", "rust", "python", "go"]
-    },
-    "predator": {
-      "steps": ["init", "analyze", "plan", "execute", "validate", "examine", "resolve", "finish"],
-      "loadOnDemand": true
-    },
-    "ralph": {
-      "parallel": true,
-      "maxParallel": 3,
-      "autoGeneratePRD": true
-    }
-  },
-  "techStacks": {
-    "nextjs": {
-      "description": "React 19, RSC, Prisma, Server Actions",
-      "patterns": ["app/", "components/ui/", "lib/", "validation/"]
-    },
-    "rust": {
-      "description": "Ownership, async/await, zero-copy",
-      "patterns": ["src/models/", "src/services/", "src/handlers/", "src/repositories/", "src/error.rs"]
-    },
-    "python": {
-      "description": "Type hints, FastAPI, SQLAlchemy 2.0",
-      "patterns": ["src/models/", "src/services/", "src/api/", "src/repositories/", "src/main.py"]
-    },
-    "go": {
-      "description": "Goroutines, interfaces, standard library",
-      "patterns": ["src/models/", "src/services/", "src/handlers/", "src/repository/", "src/main.go"]
-    },
-    "detect": {
-      "description": "Auto-detect from package.json and file patterns",
-      "patterns": {
-        "nextjs": ["package.json", "next.config.js", "src/app/", "components/"],
-        "rust": ["Cargo.toml", "src/main.rs", "src/lib.rs"],
-        "python": ["requirements.txt", "setup.py", "src/main.py", "src/api/"],
-        "go": ["go.mod", "src/main.go", "src/lib/"]
-      }
-    }
-  }
-}
-```
-
-## 📝 Migration Guide
-
-### From /oneshot
-
-**Old:**
-```bash
-/oneshot "Add user profile page"
-```
-
-**New:**
-```bash
-/implement --quick "Add user profile page"
-```
-
-### From /epct
-
-**Old:**
-```bash
-/epct "Build a complete dashboard"
-```
-
-**New:**
-```bash
-/implement --epct "Build a complete dashboard"
-```
-
-### From /builder
-
-**Old:**
-```bash
-/builder --tech=nextjs --feature="authentication"
-```
-
-**New:**
-```bash
-/implement --builder --tech=nextjs "Add authentication"
-```
-
-### From /predator
-
-**Old:**
-```bash
-/predator "Implement shopping cart"
-```
-
-**New:**
-```bash
-/implement --predator "Implement shopping cart"
-```
-
-### From /ralph/feature
-
-**Old:**
-```bash
-/ralph "Build full SaaS platform"
-```
-
-**New:**
-```bash
-/implement --ralph "Build full SaaS platform"
-```
-
-## 🚨 Removed Plugins
-
-The following plugins have been **DELETED** as they are now fully integrated into `/implement`:
-
-| Plugin | Reason | Replacement |
-|--------|--------|------------|
-| `/oneshot` | Simple quick implementation | `/implement --quick` |
-| `/epct` | 4-phase structured implementation | `/implement --epct` |
-| `/builder` | Technical 5-step implementation | `/implement --builder` |
-| `/predator` | Modular 8-step workflow | `/implement --predator` |
-| `/ralph` | Parallel orchestration | `/implement --ralph` |
+---
 
 ## 🎯 Decision Guide
 
-### Quick Decision Tree
-
 ```
 Need to implement?
-├─ Quick fix/small feature? → /implement --quick
-├─ Complex feature (3-5 files)? → /implement --epct
-├─ Tech-specific implementation? → /implement --builder --tech=nextjs|rust|python|go
-├─ Quality-critical feature? → /implement --predator
-└─ Large project (multiple stories)? → /implement --ralph
+├─ Simple/quick? → /implement --speed
+├─ Complex/multi-file? → /implement --scale
+├─ Quality-critical? → /implement --quality
+├─ Large/multi-domain? → /implement --team
+├─ Not sure? → /implement (auto-detect)
+└─ Combine flags for custom behavior!
 ```
+
+---
+
+## 📁 Project Structure
+
+```
+plugins/implement/
+├── commands/
+│   └── implement.md          # Command reference
+├── skills/
+│   ├── implement/
+│   │   └── SKILL.md          # Main skill (v2.0)
+│   ├── teams/
+│   │   └── SKILL.md          # Agent Teams integration
+│   ├── coordinator/
+│   │   └── SKILL.md          # Shared state management
+│   ├── adversarial/
+│   │   └── SKILL.md          # Quality challenge mode
+│   └── speed/
+│       └── SKILL.md          # Quick workflows
+├── config/
+│   ├── shared-state-schema.json
+│   └── shared-state-template.json
+└── README.md
+```
+
+---
+
+## 🚨 Breaking Changes
+
+### Renamed Flags
+
+| v1.0 | v2.0 | Status |
+|------|------|--------|
+| `--quick` | `--speed` | Alias supported |
+| `--epct` | `--scale` | Alias supported |
+| `--predator` | `--quality` | Alias supported |
+| `--ralph` | `--team` | Alias supported |
+| `--builder` | `--scale --tech=*` | Alias supported |
+
+### Deprecated Commands
+
+These still work but show deprecation notice:
+- `/oneshot`
+- `/epct`
+- `/predator`
+- `/ralph`
+- `/builder`
+
+---
 
 ## 📚 Documentation
 
-- **[Complete Guide](../../docs/IMPLEMENT_GUIDE.md)** - Complete implementation guide
-- **[Mode Documentation](MODES.md)** - Detailed mode documentation
-- **[Examples](examples/)** - Sample implementations
-- **[Migration Guide](MIGRATION.md)** - Migrating from all old agents
+- **[Skill Reference](skills/implement/SKILL.md)** - Complete skill documentation
+- **[Teams Integration](skills/teams/SKILL.md)** - Agent Teams guide
+- **[Command Reference](commands/implement.md)** - Quick reference
+
+---
 
 ## 🤝 Contributing
 
 Found a bug or have a suggestion? Open an issue at:
 https://github.com/Pamacea/smite/issues
+
+---
 
 ## 📄 License
 
@@ -508,7 +289,4 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Version:** 1.0.0
-**Last Updated:** 2025-02-01
-**SMITE Version:** 3.2.0
-**Author:** Pamacea
+**Version:** 2.0.0 | **Last Updated:** 2026-02-06 | **SMITE Version:** 4.0.0

@@ -1,7 +1,7 @@
 {
   "name": "smite",
-  "version": "3.5.0",
-  "description": "SMITE - Multi-agent orchestration and code quality toolkit with unified agents",
+  "version": "4.0.0",
+  "description": "SMITE - Multi-agent orchestration with 4-flag composable system",
   "private": true,
   "workspaces": [
     "plugins/*"

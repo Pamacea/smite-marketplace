@@ -1,8 +1,8 @@
 {
   "id": "implement",
   "name": "Implement",
-  "version": "1.0.0",
-  "description": "Unified implementation agent - consolidates all implementation approaches",
+  "version": "2.0.0",
+  "description": "Unified implementation agent with 4-flag composable system (speed, scale, quality, team) + auto-detection",
   "author": "Pamacea",
   "license": "MIT",
   "homepage": "https://github.com/pamacea/smite/tree/main/plugins/implement",
@@ -19,20 +19,94 @@
     "smite-plugin",
     "implement",
     "code-implementation",
-    "development"
+    "4-flag",
+    "composable",
+    "agent-teams"
   ],
   "smite": {
     "type": "agent",
-    "minVersion": "3.1.0",
+    "minVersion": "4.0.0",
     "configFile": ".claude/.smite/implement.json",
     "skills": [
       "skills/implement/SKILL.md",
-      "skills/coordinator/SKILL.md"
+      "skills/teams/SKILL.md",
+      "skills/coordinator/SKILL.md",
+      "skills/adversarial/SKILL.md"
     ],
+    "flags": {
+      "speed": {
+        "aliases": ["fast", "quick"],
+        "description": "Fast, surgical implementation for quick fixes and small features",
+        "workflow": "EXPLORE → CODE → TEST (minimal)",
+        "time": "5-10 minutes"
+      },
+      "scale": {
+        "aliases": ["thorough", "epct"],
+        "description": "Comprehensive 4-phase workflow (EPCT) for complex features",
+        "workflow": "EXPLORE → PLAN → CODE → TEST",
+        "time": "60-90 minutes"
+      },
+      "quality": {
+        "aliases": ["validate", "predator"],
+        "description": "Full workflow with comprehensive quality gates",
+        "workflow": "ANALYZE → PLAN → EXECUTE → VALIDATE → EXAMINE → RESOLVE → FINISH",
+        "time": "60-120 minutes"
+      },
+      "team": {
+        "aliases": ["swarm", "ralph"],
+        "description": "Parallel agent orchestration using Claude Code Agent Teams",
+        "workflow": "Team creation → Task assignment → Parallel execution → Synthesis",
+        "time": "2-3x faster than sequential",
+        "requires": "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
+      }
+    },
+    "autoDetection": {
+      "enabled": true,
+      "rules": [
+        {
+          "signal": "short task (<100 chars, no 'and/with')",
+          "detectedAs": "speed"
+        },
+        {
+          "signal": "contains 'feature/build/create'",
+          "detectedAs": "scale"
+        },
+        {
+          "signal": "contains 'SaaS/platform/system'",
+          "detectedAs": "team"
+        },
+        {
+          "signal": "contains 'critical/security/payment'",
+          "detectedAs": "quality"
+        },
+        {
+          "signal": "contains 'refactor/cleanup'",
+          "detectedAs": "scale --quality"
+        }
+      ]
+    },
     "subagents": {
       "coordinator": {
         "skill": "skills/coordinator/SKILL.md",
         "purpose": "Parallel agent orchestration with shared state"
+      },
+      "technical": {
+        "impl-nextjs": {
+          "skill": "../agents/skills/technical/impl-nextjs/SKILL.md",
+          "purpose": "Next.js implementation specialist"
+        },
+        "impl-rust": {
+          "skill": "../agents/skills/technical/impl-rust/SKILL.md",
+          "purpose": "Rust implementation specialist"
+        },
+        "impl-python": {
+          "skill": "../agents/skills/technical/impl-python/SKILL.md",
+          "purpose": "Python implementation specialist"
+        },
+        "impl-go": {
+          "skill": "../agents/skills/technical/impl-go/SKILL.md",
+          "purpose": "Go implementation specialist"
+        }
       }
     }
   },
@@ -40,14 +114,15 @@
     {
       "name": "implement",
       "file": "commands/implement.md",
-      "description": "Unified implementation command"
+      "description": "Unified implementation command with 4-flag system"
     }
   ],
   "hooks": {
     "install": "hooks/install.js"
   },
   "dependencies": {
-    "@smite/explore": "^1.0.0"
+    "@smite/explore": "^1.0.0",
+    "@smite/core": "^4.0.0"
   },
   "integrations": {
     "explore": {
@@ -58,10 +133,10 @@
       "supported": true,
       "description": "Quality assurance after implementation"
     },
-    "ralph": {
+    "agent-teams": {
       "supported": true,
-      "workflows": ["feature"],
-      "description": "Used by Ralph for parallel execution"
+      "description": "Claude Code Agent Teams native integration",
+      "requires": "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
     },
     "subagents": {
       "supported": true,
@@ -76,29 +151,54 @@
   },
   "deprecations": {
     "/oneshot": {
-      "replacedBy": "/implement --quick",
-      "migration": "Use /implement --quick instead of /oneshot",
-      "version": "3.2.0"
+      "replacedBy": "/implement --speed",
+      "migration": "Use /implement --speed instead of /oneshot",
+      "version": "4.0.0"
     },
     "/epct": {
-      "replacedBy": "/implement --epct",
-      "migration": "Use /implement --epct instead of /epct",
-      "version": "3.2.0"
+      "replacedBy": "/implement --scale",
+      "migration": "Use /implement --scale instead of /epct",
+      "version": "4.0.0"
     },
     "/builder": {
-      "replacedBy": "/implement --builder --tech=nextjs|rust|python|go",
-      "migration": "Use /implement --builder --tech=nextjs|rust|python|go instead of /builder",
-      "version": "3.2.0"
+      "replacedBy": "/implement --scale --tech=*",
+      "migration": "Use /implement --scale --tech=nextjs|rust|python|go instead of /builder",
+      "version": "4.0.0"
     },
     "/predator": {
-      "replacedBy": "/implement --predator",
-      "migration": "Use /implement --predator instead of /predator",
-      "version": "3.2.0"
+      "replacedBy": "/implement --quality",
+      "migration": "Use /implement --quality instead of /predator",
+      "version": "4.0.0"
     },
-    "/ralph/feature": {
-      "replacedBy": "/implement --ralph",
-      "migration": "Use /implement --ralph instead of /ralph",
-      "version": "3.2.0"
+    "/ralph": {
+      "replacedBy": "/implement --scale --team",
+      "migration": "Use /implement --scale --team instead of /ralph",
+      "version": "4.0.0"
+    },
+    "/implement --quick": {
+      "replacedBy": "/implement --speed",
+      "migration": "Use /implement --speed instead of /implement --quick",
+      "version": "4.0.0"
+    },
+    "/implement --epct": {
+      "replacedBy": "/implement --scale",
+      "migration": "Use /implement --scale instead of /implement --epct",
+      "version": "4.0.0"
+    },
+    "/implement --predator": {
+      "replacedBy": "/implement --quality",
+      "migration": "Use /implement --quality instead of /implement --predator",
+      "version": "4.0.0"
+    },
+    "/implement --ralph": {
+      "replacedBy": "/implement --scale --team",
+      "migration": "Use /implement --scale --team instead of /implement --ralph",
+      "version": "4.0.0"
+    },
+    "/implement --builder": {
+      "replacedBy": "/implement --scale --tech=*",
+      "migration": "Use /implement --scale --tech=nextjs|rust|python|go instead of /implement --builder",
+      "version": "4.0.0"
     }
   }
 }
