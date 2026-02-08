@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "autoRename": {
+    "enabled": true,
+    "triggers": [
+      "user_prompt_start",
+      "conversation_end"
+    ],
+    "maxNameLength": 50,
+    "format": "title-case",
+    "filters": [
+      "remove-emojis",
+      "remove-special-chars",
+      "truncate"
+    ],
+    "patterns": {
+      "feature": ["build", "create", "implement", "add"],
+      "bugfix": ["fix", "debug", "resolve"],
+      "refactor": ["refactor", "cleanup", "optimize"],
+      "docs": ["document", "readme", "guide"]
+    }
+  },
+  "shell": {
+    "enabled": true,
+    "aliases": {
+      "cc": "claude",
+      "ccc": "claude-code"
+    },
+    "installPaths": {
+      "powershell": "$PROFILE",
+      "bash": "~/.bashrc",
+      "zsh": "~/.zshrc",
+      "cmd": "%USERPROFILE%\\cc.bat"
+    }
+  }
+}

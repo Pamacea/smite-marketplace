@@ -1,0 +1,55 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "smite",
+  "version": "1.5.0",
+  "description": "Zero-debt engineering with unified development workflow. Features 3-plugin architecture (core, studio, essentials) with 4-flag composable system, semantic search with 75% token savings, and parallel execution (2-3x speedup).",
+  "owner": {
+    "name": "Pamacea",
+    "email": "[email protected]"
+  },
+  "metadata": {
+    "description": "SMITE v1.5.0 - Unified 4-flag architecture with 3-plugin system. Core infrastructure + Studio (complete dev workflow) + Essentials (productivity tools).",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "core",
+      "source": "./plugins/core",
+      "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes platform detection, cross-platform utilities, and parallel execution infrastructure.",
+      "version": "1.0.0",
+      "author": { "name": "Pamacea" },
+      "category": "infrastructure",
+      "tags": ["utilities", "templates", "validation", "schemas", "platform"],
+      "keywords": ["core", "utilities", "templates", "validation", "infrastructure"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/core",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "studio",
+      "source": "./plugins/studio",
+      "description": "Complete development workflow - explore, architect, build, refactor. Unified command namespace with 4 exploration modes, architecture design with creative workflow, 4-flag implementation system (speed, scale, quality, team), and systematic refactoring. Merged from agents, implement, explore, refactor.",
+      "version": "1.0.0",
+      "author": { "name": "Pamacea" },
+      "category": "development",
+      "tags": ["workflow", "exploration", "architecture", "implementation", "refactoring", "4-flag", "unified"],
+      "keywords": ["studio", "explore", "architect", "build", "refactor", "speed", "scale", "quality", "team"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/studio",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "essentials",
+      "source": "./plugins/essentials",
+      "description": "Productivity utilities - automatic session renaming and cross-platform shell aliases (cc, ccc). Smart session naming based on context with customizable triggers and filters. Merged from shell and auto-rename.",
+      "version": "1.0.0",
+      "author": { "name": "Pamacea" },
+      "category": "productivity",
+      "tags": ["productivity", "session", "rename", "shell", "aliases", "cli"],
+      "keywords": ["essentials", "rename", "session", "shell", "aliases", "shortcuts"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/essentials",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    }
+  ]
+}

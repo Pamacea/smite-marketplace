@@ -1,0 +1,236 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://smite.dev/schemas/design-styles.json",
+  "title": "Design Styles Configuration",
+  "description": "Schema for design-styles.json configuration file",
+  "type": "object",
+  "required": ["version", "lastUpdated", "styles"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version in semver format"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date",
+      "description": "Last update date in YYYY-MM-DD format"
+    },
+    "styles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/style"
+      }
+    },
+    "commonComponents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/component"
+      }
+    }
+  },
+  "definitions": {
+    "style": {
+      "type": "object",
+      "required": ["id", "name", "description", "complexity", "colorPalette", "typography", "spacing", "borderRadius", "shadows", "layout"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique style identifier (kebab-case)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable style name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Style description"
+        },
+        "mood": {
+          "type": "string",
+          "description": "Emotional tone of the style"
+        },
+        "bestFor": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Use cases this style is best suited for"
+        },
+        "complexity": {
+          "type": "string",
+          "enum": ["Low", "Medium", "High"],
+          "description": "Implementation complexity level"
+        },
+        "characteristics": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key characteristics of this style"
+        },
+        "colorPalette": {
+          "$ref": "#/definitions/colorPalette"
+        },
+        "typography": {
+          "$ref": "#/definitions/typography"
+        },
+        "spacing": {
+          "$ref": "#/definitions/spacing"
+        },
+        "borderRadius": {
+          "$ref": "#/definitions/borderRadius"
+        },
+        "shadows": {
+          "$ref": "#/definitions/shadows"
+        },
+        "effects": {
+          "type": "object",
+          "description": "Special effects (e.g., backdrop blur for glassmorphism)"
+        },
+        "layout": {
+          "$ref": "#/definitions/layout"
+        },
+        "cardVariants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "gridSpan": { "type": "string" },
+              "minHeight": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "colorPalette": {
+      "type": "object",
+      "required": ["primary", "secondary", "background", "text"],
+      "properties": {
+        "primary": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}|rgba?\\(.+\\)|linear-gradient\\(.+\\)$" },
+        "secondary": { "type": "string" },
+        "accent": { "type": "string" },
+        "background": { "type": "string" },
+        "surface": { "type": "string" },
+        "border": { "type": "string" },
+        "text": {
+          "type": "object",
+          "properties": {
+            "primary": { "type": "string" },
+            "secondary": { "type": "string" },
+            "muted": { "type": "string" }
+          }
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "string" },
+            "warning": { "type": "string" },
+            "error": { "type": "string" },
+            "info": { "type": "string" }
+          }
+        }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "required": ["fontFamily", "scale"],
+      "properties": {
+        "fontFamily": {
+          "type": "object",
+          "properties": {
+            "heading": { "type": "string" },
+            "body": { "type": "string" }
+          }
+        },
+        "scale": {
+          "type": "object",
+          "properties": {
+            "display": { "$ref": "#/definitions/typeScale" },
+            "h1": { "$ref": "#/definitions/typeScale" },
+            "h2": { "$ref": "#/definitions/typeScale" },
+            "h3": { "$ref": "#/definitions/typeScale" },
+            "h4": { "$ref": "#/definitions/typeScale" },
+            "body": { "$ref": "#/definitions/typeScale" },
+            "small": { "$ref": "#/definitions/typeScale" },
+            "caption": { "$ref": "#/definitions/typeScale" }
+          }
+        }
+      }
+    },
+    "typeScale": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "string" },
+        "weight": { "type": "string" },
+        "lineHeight": { "type": "string" }
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "properties": {
+        "baseUnit": { "type": "string" },
+        "scale": {
+          "type": "array",
+          "items": { "type": "number" }
+        }
+      }
+    },
+    "borderRadius": {
+      "type": "object",
+      "properties": {
+        "sm": { "type": "string" },
+        "md": { "type": "string" },
+        "lg": { "type": "string" },
+        "full": { "type": "string" }
+      }
+    },
+    "shadows": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "grid": { "type": "string" },
+        "containerMaxWidth": { "type": "string" },
+        "gutter": { "type": "string" },
+        "cardGap": { "type": "string" },
+        "gridTemplate": {
+          "type": "object",
+          "properties": {
+            "mobile": { "type": "string" },
+            "tablet": { "type": "string" },
+            "desktop": { "type": "string" }
+          }
+        },
+        "breakpoints": {
+          "type": "object",
+          "properties": {
+            "sm": { "type": "string" },
+            "md": { "type": "string" },
+            "lg": { "type": "string" },
+            "xl": { "type": "string" }
+          }
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "variants": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "sizes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "states": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

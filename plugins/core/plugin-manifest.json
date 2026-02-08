@@ -1,0 +1,21 @@
+{
+  "id": "core",
+  "name": "core",
+  "version": "3.6.0",
+  "description": "Shared utilities, templates, and schemas for all SMITE plugins",
+  "smite": "3.6.0",
+  "repository": "https://github.com/Pamacea/smite",
+  "provides": [
+    "schemas",
+    "templates",
+    "validation",
+    "platform-detection",
+    "manifest-loader",
+    "hook-registry",
+    "config-manager",
+    "error-handler"
+  ],
+  "tags": ["foundation", "utilities", "shared"],
+  "author": "Pamacea",
+  "license": "MIT"
+}

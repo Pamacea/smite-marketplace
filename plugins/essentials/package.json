@@ -1,0 +1,48 @@
+{
+  "name": "essentials",
+  "version": "1.0.0",
+  "description": "Productivity utilities - auto-rename, shell aliases",
+  "author": {
+    "name": "Pamacea",
+    "email": "contact@pamacea.dev",
+    "url": "https://github.com/pamacea"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Pamacea/smite#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pamacea/smite.git",
+    "directory": "plugins/essentials"
+  },
+  "bugs": {
+    "url": "https://github.com/Pamacea/smite/issues"
+  },
+  "smite": {
+    "type": "hook",
+    "minVersion": "4.0.0",
+    "configFile": ".claude/.smite/essentials.json"
+  },
+  "keywords": [
+    "smite",
+    "smite-plugin",
+    "essentials",
+    "productivity"
+  ],
+  "dependencies": {
+    "/core": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

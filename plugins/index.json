@@ -1,0 +1,88 @@
+{
+  "version": "4.0.0",
+  "lastUpdated": "2026-02-08",
+  "plugins": [
+    {
+      "id": "core",
+      "name": "core",
+      "version": "3.6.0",
+      "description": "Shared utilities, templates, and validation schemas",
+      "category": "infrastructure",
+      "required": true,
+      "dependencies": [],
+      "features": [
+        "Markdown templates for commands",
+        "JSON validation schemas",
+        "Cross-platform utilities",
+        "Platform detection",
+        "Parallel execution infrastructure"
+      ],
+      "installation": {
+        "command": "/plugin install core",
+        "postInstall": null
+      },
+      "compatibility": {
+        "smiteVersion": ">=3.1.0",
+        "nodeVersion": ">=18.0.0"
+      }
+    },
+    {
+      "id": "studio",
+      "name": "studio",
+      "version": "1.0.0",
+      "description": "Complete development workflow - explore, architect, build, refactor",
+      "category": "development",
+      "required": true,
+      "dependencies": ["/core"],
+      "features": [
+        "Code exploration (4 modes: deep, quick, semantic, impact)",
+        "Architecture design (init, design, strategy, creative workflow)",
+        "Feature implementation (4 flags: speed, scale, quality, team)",
+        "Code refactoring (quick, full, bug fix)",
+        "Tech stack support (Next.js, Rust, Python, Go)"
+      ],
+      "commands": {
+        "explore": "/studio explore [--mode=deep|quick|semantic|impact]",
+        "architect": "/studio architect [--mode=init|design|strategy] [-b -w -v -x]",
+        "build": "/studio build [--speed|--scale|--quality|--team]",
+        "refactor": "/studio refactor [--quick|--full|--scope=bug]"
+      },
+      "installation": {
+        "command": "/plugin install studio",
+        "postInstall": null
+      },
+      "compatibility": {
+        "smiteVersion": ">=4.0.0",
+        "nodeVersion": ">=18.0.0",
+        "externalDependencies": ["grepai-cli (optional for semantic search)"]
+      }
+    },
+    {
+      "id": "essentials",
+      "name": "essentials",
+      "version": "1.0.0",
+      "description": "Productivity utilities - auto-rename, shell aliases",
+      "category": "productivity",
+      "required": false,
+      "dependencies": ["/core"],
+      "features": [
+        "Automatic session renaming",
+        "Manual rename command",
+        "Cross-platform shell aliases (cc/ccc)",
+        "Smart triggers and filters"
+      ],
+      "commands": {
+        "rename": "/rename [custom-name]",
+        "install-aliases": "/install-aliases"
+      },
+      "installation": {
+        "command": "/plugin install essentials",
+        "postInstall": "/install-aliases"
+      },
+      "compatibility": {
+        "smiteVersion": ">=4.0.0",
+        "nodeVersion": ">=18.0.0"
+      }
+    }
+  ]
+}

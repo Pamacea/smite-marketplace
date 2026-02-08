@@ -1,0 +1,12 @@
+{
+  "name": "studio",
+  "version": "1.0.0",
+  "description": "Complete development workflow - explore, architect, build, refactor",
+  "author": {
+    "name": "Pamacea",
+    "email": "[email protected]"
+  },
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/studio",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT"
+}

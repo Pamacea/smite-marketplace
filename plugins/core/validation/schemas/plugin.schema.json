@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://smite.dev/schemas/plugin.json",
+  "title": "SMITE Plugin Manifest",
+  "description": "Schema for .claude-plugin/plugin.json manifest files",
+  "type": "object",
+  "required": ["name", "description", "version", "author", "license", "commands"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Plugin identifier (kebab-case)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the plugin"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Plugin version in semver format"
+    },
+    "author": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri"
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri"
+    },
+    "license": {
+      "type": "string",
+      "enum": ["MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause", "ISC"]
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "commands": {
+      "type": "string",
+      "description": "Path to commands directory (relative to plugin root)"
+    },
+    "skills": {
+      "type": "string",
+      "description": "Path to skills directory (relative to plugin root)"
+    },
+    "hooks": {
+      "type": "object",
+      "description": "Event hooks configuration",
+      "properties": {
+        "SessionStart": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "hooks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "enum": ["command"] },
+                    "command": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "PostPluginInstall": {
+          "type": "array"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Plugin dependencies",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required plugins (command fails if missing)"
+        },
+        "optional": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional plugins (graceful degradation)"
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "description": "MCP tool dependencies",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required MCP tools (e.g., 'mcp__web-search-prime__webSearchPrime')"
+        },
+        "optional": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "description": "Plugin configuration schema",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "description": "Path to JSON schema for plugin config"
+        },
+        "defaults": {
+          "type": "object",
+          "description": "Default configuration values"
+        }
+      }
+    }
+  }
+}
