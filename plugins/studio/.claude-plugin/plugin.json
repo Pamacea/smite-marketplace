@@ -2,48 +2,11 @@
   "name": "@smite/studio",
   "version": "1.0.0",
   "description": "Complete development workflow - explore, architect, build, refactor",
-  "type": "agent",
-  "smiteVersion": ">=4.0.0",
-  "commands": {
-    "studio": {
-      "file": "commands/studio.md",
-      "description": "Main orchestration command for Studio workflow"
-    },
-    "explore": {
-      "file": "commands/explore.md",
-      "description": "Code exploration with 4 modes: deep, quick, semantic, impact"
-    },
-    "architect": {
-      "file": "commands/architect.md",
-      "description": "Architecture and design system creation"
-    },
-    "build": {
-      "file": "commands/build.md",
-      "description": "Feature implementation with 4 flags: speed, scale, quality, team"
-    },
-    "refactor": {
-      "file": "commands/refactor.md",
-      "description": "Systematic code refactoring"
-    }
+  "author": {
+    "name": "Pamacea",
+    "email": "[email protected]"
   },
-  "skills": {
-    "explore": {
-      "file": "skills/explore/SKILL.md",
-      "description": "Unified code exploration with native semantic search"
-    },
-    "architect": {
-      "file": "skills/architect/SKILL.md",
-      "description": "Architecture design and creative workflow"
-    },
-    "build": {
-      "file": "skills/build/SKILL.md",
-      "description": "Feature implementation with 4-flag system"
-    },
-    "refactor": {
-      "file": "skills/refactor/SKILL.md",
-      "description": "Systematic code refactoring with validation"
-    }
-  },
-  "config": "config/studio.json",
-  "dependencies": ["@smite/core"]
+  "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/studio",
+  "repository": "https://github.com/Pamacea/smite",
+  "license": "MIT"
 }
