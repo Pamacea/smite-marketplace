@@ -2,106 +2,68 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "smite",
   "version": "4.0.0",
-  "description": "Zero-debt engineering with 4-flag composable system (speed, scale, quality, team). Features auto-detection, Claude Code Agent Teams integration, token optimization (75% savings), and parallel execution (2-3x speedup).",
+  "description": "Zero-debt engineering with unified development workflow. Features 3-plugin architecture (core, studio, essentials), semantic search with 75% token savings, and parallel execution (2-3x speedup).",
   "owner": {
     "name": "Pamacea",
     "email": "[email protected]"
   },
   "metadata": {
-    "description": "SMITE v4.0.0 - 4-flag composable system with auto-detection and native Agent Teams integration. Simplified architecture: 5 core plugins + 3 utility plugins.",
+    "description": "SMITE v4.0.0 - Consolidated 3-plugin architecture. Core infrastructure + Studio (complete dev workflow) + Essentials (productivity tools).",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
       "name": "core",
       "source": "./plugins/core",
-      "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes shell aliases installation scripts.",
-      "version": "4.0.0",
+      "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes platform detection, cross-platform utilities, and parallel execution infrastructure.",
+      "version": "3.6.0",
       "author": { "name": "Pamacea" },
-      "category": "utilities",
-      "tags": ["utilities", "templates", "validation", "schemas", "shell", "aliases"],
-      "keywords": ["core", "utilities", "templates", "validation", "shell", "aliases"],
+      "category": "infrastructure",
+      "tags": ["utilities", "templates", "validation", "schemas", "platform"],
+      "keywords": ["core", "utilities", "templates", "validation", "infrastructure"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/core",
       "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
+      "license": "MIT",
+      "required": true
     },
     {
-      "name": "implement",
-      "source": "./plugins/implement",
-      "description": "Unified implementation with 4-flag composable system: speed, scale, quality, team. Auto-detection, Claude Code Agent Teams integration, and technical subagents. Consolidates all implementation workflows including basics essential commands (commit, note, learn, data, teach).",
-      "version": "2.0.0",
-      "author": { "name": "Pamacea" },
-      "category": "development",
-      "tags": ["implementation", "workflow", "unified", "4-flag", "composable", "teams", "auto-detection"],
-      "keywords": ["implement", "speed", "scale", "quality", "team", "4-flag", "composable", "epct", "oneshot"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/implement",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "agents",
-      "source": "./plugins/agents",
-      "description": "Multi-agent orchestration system with spec-first workflow - Architect, Builder, Refactor agents. Tech-specific subagents for Next.js, Rust, Python, Go. Includes session renaming automation.",
-      "version": "4.2.0",
-      "author": { "name": "Pamacea" },
-      "category": "agents",
-      "tags": ["agents", "workflow", "spec-first", "orchestration", "architecture", "implementation", "qa"],
-      "keywords": ["agents", "architect", "builder", "refactor", "auto-rename"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/agents",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "refactor",
-      "source": "./plugins/refactor",
-      "description": "Unified code refactoring with systematic validation. Modes: quick, full, analyze, review, resolve, verify. Auto-parallel for complex refactors.",
+      "name": "studio",
+      "source": "./plugins/studio",
+      "description": "Complete development workflow - explore, architect, build, refactor. Unified command namespace with 4 exploration modes, architecture design with creative workflow, 4-flag implementation system (speed, scale, quality, team), and systematic refactoring. Merged from agents, implement, explore, refactor.",
       "version": "1.0.0",
       "author": { "name": "Pamacea" },
       "category": "development",
-      "tags": ["refactoring", "quality", "debugging", "validation", "parallel"],
-      "keywords": ["refactor", "quality", "debug", "analyze", "review", "parallel"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/refactor",
+      "tags": ["workflow", "exploration", "architecture", "implementation", "refactoring", "4-flag", "unified"],
+      "keywords": ["studio", "explore", "architect", "build", "refactor", "speed", "scale", "quality", "team"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/studio",
       "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
+      "license": "MIT",
+      "required": true,
+      "commands": {
+        "studio": "Main orchestration command",
+        "explore": "Code exploration with 4 modes",
+        "architect": "Architecture and design",
+        "build": "Feature implementation with 4 flags",
+        "refactor": "Systematic refactoring"
+      }
     },
     {
-      "name": "explore",
-      "source": "./plugins/explore",
-      "description": "Unified code exploration with native grepai integration (75% token savings). Modes: deep, quick, pattern, impact, semantic. Multi-source research capabilities.",
+      "name": "essentials",
+      "source": "./plugins/essentials",
+      "description": "Productivity utilities - automatic session renaming and cross-platform shell aliases (cc, ccc). Smart session naming based on context with customizable triggers and filters. Merged from shell and auto-rename.",
       "version": "1.0.0",
       "author": { "name": "Pamacea" },
-      "category": "analysis",
-      "tags": ["exploration", "search", "semantic", "grepai", "token-optimization"],
-      "keywords": ["explore", "search", "semantic", "grepai", "codebase", "patterns"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/explore",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "shell",
-      "source": "./plugins/shell",
-      "description": "Shell aliases for Claude Code (cc, ccc) - cross-platform installation scripts. Works on Windows (PowerShell, cmd), macOS (Bash, Zsh), and Linux.",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
       "category": "productivity",
-      "tags": ["shell", "aliases", "shortcuts", "cli", "utilities"],
-      "keywords": ["shell", "aliases", "shortcuts", "bash", "zsh", "powershell"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/shell",
+      "tags": ["productivity", "session", "rename", "shell", "aliases", "cli"],
+      "keywords": ["essentials", "rename", "session", "shell", "aliases", "shortcuts"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/essentials",
       "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
-    },
-    {
-      "name": "auto-rename",
-      "source": "./plugins/auto-rename",
-      "description": "Intelligent session renaming based on context. Automatically suggests meaningful session names from task content.",
-      "version": "3.1.0",
-      "author": { "name": "Pamacea" },
-      "category": "productivity",
-      "tags": ["session", "naming", "automation", "ui"],
-      "keywords": ["session", "rename", "automation", "context"],
-      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/auto-rename",
-      "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT"
+      "license": "MIT",
+      "required": false,
+      "commands": {
+        "rename": "Automatic session renaming",
+        "install-aliases": "Cross-platform shell aliases"
+      }
     }
   ]
 }
