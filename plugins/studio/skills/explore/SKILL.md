@@ -1,5 +1,5 @@
 ---
-name: explore
+name: studio explore
 description: Unified code exploration with native semantic search
 version: 1.0.0
 ---

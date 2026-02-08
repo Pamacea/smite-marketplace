@@ -1,5 +1,5 @@
 ---
-name: refactor
+name: studio refactor
 description: Unified code refactoring with systematic validation
 version: 1.0.0
 ---

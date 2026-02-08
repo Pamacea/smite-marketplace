@@ -1,6 +1,6 @@
 ---
-name: shell
-description: Cross-platform shell aliases for Claude Code (cc and ccc)
+name: install-aliases
+description: Install global shell aliases (cc and ccc) for Claude Code
 version: 3.1.0
 ---
 

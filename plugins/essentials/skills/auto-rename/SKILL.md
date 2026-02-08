@@ -1,5 +1,5 @@
 ---
-name: auto-rename
+name: rename
 description: Automatic session renaming with LLM-based context analysis
 version: 3.1.2
 ---
