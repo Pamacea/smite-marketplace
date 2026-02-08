@@ -1,5 +1,5 @@
 {
-  "name": "@smite/studio",
+  "name": "studio",
   "version": "1.0.0",
   "description": "Complete development workflow - explore, architect, build, refactor",
   "author": {
@@ -30,7 +30,7 @@
     "development"
   ],
   "dependencies": {
-    "@smite/core": "^3.6.0"
+    "core": "^3.6.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

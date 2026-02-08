@@ -1,5 +1,5 @@
 {
-  "name": "@smite/essentials",
+  "name": "essentials",
   "version": "1.0.0",
   "description": "Productivity utilities - auto-rename, shell aliases",
   "author": {
@@ -29,7 +29,7 @@
     "productivity"
   ],
   "dependencies": {
-    "@smite/core": "^3.6.0"
+    "/core": "^3.6.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

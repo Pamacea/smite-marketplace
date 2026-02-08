@@ -3,8 +3,8 @@
   "lastUpdated": "2026-02-08",
   "plugins": [
     {
-      "id": "@smite/core",
-      "name": "SMITE Core",
+      "id": "core",
+      "name": "core",
       "version": "3.6.0",
       "description": "Shared utilities, templates, and validation schemas",
       "category": "infrastructure",
@@ -18,7 +18,7 @@
         "Parallel execution infrastructure"
       ],
       "installation": {
-        "command": "/plugin install core@smite",
+        "command": "/plugin install core",
         "postInstall": null
       },
       "compatibility": {
@@ -27,13 +27,13 @@
       }
     },
     {
-      "id": "@smite/studio",
-      "name": "SMITE Studio",
+      "id": "studio",
+      "name": "studio",
       "version": "1.0.0",
       "description": "Complete development workflow - explore, architect, build, refactor",
       "category": "development",
       "required": true,
-      "dependencies": ["@smite/core"],
+      "dependencies": ["/core"],
       "features": [
         "Code exploration (4 modes: deep, quick, semantic, impact)",
         "Architecture design (init, design, strategy, creative workflow)",
@@ -48,7 +48,7 @@
         "refactor": "/studio refactor [--quick|--full|--scope=bug]"
       },
       "installation": {
-        "command": "/plugin install studio@smite",
+        "command": "/plugin install studio",
         "postInstall": null
       },
       "compatibility": {
@@ -58,13 +58,13 @@
       }
     },
     {
-      "id": "@smite/essentials",
-      "name": "SMITE Essentials",
+      "id": "essentials",
+      "name": "essentials",
       "version": "1.0.0",
       "description": "Productivity utilities - auto-rename, shell aliases",
       "category": "productivity",
       "required": false,
-      "dependencies": ["@smite/core"],
+      "dependencies": ["/core"],
       "features": [
         "Automatic session renaming",
         "Manual rename command",
@@ -76,7 +76,7 @@
         "install-aliases": "/install-aliases"
       },
       "installation": {
-        "command": "/plugin install essentials@smite",
+        "command": "/plugin install essentials",
         "postInstall": "/install-aliases"
       },
       "compatibility": {

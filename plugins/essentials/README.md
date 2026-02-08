@@ -1,4 +1,4 @@
-# @smite/essentials
+# essentials
 
 Productivity utilities - auto-rename, shell aliases.
 
@@ -8,7 +8,7 @@ Productivity utilities - auto-rename, shell aliases.
 
 SMITE Essentials provides productivity utilities that enhance your daily development workflow with intelligent session renaming and cross-platform shell aliases.
 
-**Merged from:** `@smite/shell`, `@smite/auto-rename`
+**Merged from:** `/shell`, `/auto-rename`
 
 ---
 
@@ -86,7 +86,7 @@ ccc "Hello, Claude!"     # Bypass permissions mode
 ## Installation
 
 ```bash
-/plugin install essentials@smite
+/plugin install essentials
 ```
 
 **Post-Installation:**
@@ -98,7 +98,7 @@ ccc "Hello, Claude!"     # Bypass permissions mode
 
 **Requirements:**
 - SMITE v4.0.0 or higher
-- @smite/core (installed automatically)
+- /core (installed automatically)
 - Node.js 18.0.0 or higher
 
 ---
@@ -214,9 +214,6 @@ ccc "Quick fix this bug"
 
 ---
 
-## Migration from v3.x
-
-**Coming from:** `@smite/shell`, `@smite/auto-rename`
 
 ### Command Mapping
 

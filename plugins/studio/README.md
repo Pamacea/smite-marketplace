@@ -1,4 +1,4 @@
-# @smite/studio
+# studio
 
 Complete development workflow - explore, architect, build, refactor.
 
@@ -8,7 +8,7 @@ Complete development workflow - explore, architect, build, refactor.
 
 SMITE Studio unifies the entire development lifecycle into one cohesive plugin. It combines code exploration, architecture design, feature implementation, and systematic refactoring into a seamless workflow.
 
-**Merged from:** `@smite/agents`, `@smite/implement`, `@smite/explore`, `@smite/refactor`
+**Merged from:** `/agents`, `/implement`, `/explore`, `/refactor`
 
 ---
 
@@ -152,12 +152,12 @@ Systematic code refactoring with comprehensive validation.
 ## Installation
 
 ```bash
-/plugin install studio@smite
+/plugin install studio
 ```
 
 **Requirements:**
 - SMITE v4.0.0 or higher
-- @smite/core (installed automatically)
+- core (installed automatically)
 - Node.js 18.0.0 or higher
 
 **Optional:**
@@ -295,9 +295,6 @@ Configuration file: `.claude/.smite/studio.json`
 
 ---
 
-## Migration from v3.x
-
-**Coming from:** `@smite/agents`, `@smite/implement`, `@smite/explore`, `@smite/refactor`
 
 ### Command Mapping
 

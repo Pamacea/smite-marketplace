@@ -1,5 +1,5 @@
 {
-  "name": "@smite/essentials",
+  "name": "essentials",
   "version": "1.0.0",
   "description": "Productivity utilities - auto-rename, shell aliases",
   "author": {

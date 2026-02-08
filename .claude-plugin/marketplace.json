@@ -16,7 +16,7 @@
       "name": "core",
       "source": "./plugins/core",
       "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes platform detection, cross-platform utilities, and parallel execution infrastructure.",
-      "version": "3.6.0",
+      "version": "1.0.0",
       "author": { "name": "Pamacea" },
       "category": "infrastructure",
       "tags": ["utilities", "templates", "validation", "schemas", "platform"],

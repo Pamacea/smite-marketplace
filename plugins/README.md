@@ -16,20 +16,20 @@ The Smite Plugin Marketplace v4.0 introduces a **simplified architecture** with 
 
 ```bash
 # 1. Install core infrastructure (required)
-/plugin install core@smite
+/plugin install core
 
 # 2. Install development workflow (recommended)
-/plugin install studio@smite
+/plugin install studio
 
 # 3. (Optional) Install productivity tools
-/plugin install essentials@smite
+/plugin install essentials
 ```
 
 ## Available Plugins
 
 ### Infrastructure
 
-#### [@smite/core](./core/README.md)
+#### [/core](./core/README.md)
 
 Shared utilities, templates, and validation schemas.
 
@@ -46,7 +46,7 @@ Shared utilities, templates, and validation schemas.
 
 ### Development
 
-#### [@smite/studio](./studio/README.md)
+#### [/studio](./studio/README.md)
 
 Complete development workflow - explore, architect, build, refactor.
 
@@ -74,7 +74,7 @@ Complete development workflow - explore, architect, build, refactor.
 
 ### Productivity
 
-#### [@smite/essentials](./essentials/README.md)
+#### [/essentials](./essentials/README.md)
 
 Productivity utilities - auto-rename, shell aliases.
 
@@ -99,13 +99,13 @@ Productivity utilities - auto-rename, shell aliases.
 
 | v3.x Plugin | v4.0 Plugin |
 |-------------|-------------|
-| `@smite/core` | `@smite/core` (no changes) |
-| `@smite/agents` | `@smite/studio` |
-| `@smite/implement` | `@smite/studio` |
-| `@smite/explore` | `@smite/studio` |
-| `@smite/refactor` | `@smite/studio` |
-| `@smite/shell` | `@smite/essentials` |
-| `@smite/auto-rename` | `@smite/essentials` |
+| `/core` | `/core` (no changes) |
+| `/agents` | `/studio` |
+| `/implement` | `/studio` |
+| `/explore` | `/studio` |
+| `/refactor` | `/studio` |
+| `/shell` | `/essentials` |
+| `/auto-rename` | `/essentials` |
 
 ### Command Mapping
 
@@ -125,13 +125,13 @@ Productivity utilities - auto-rename, shell aliases.
 ### By Category
 
 **Infrastructure:**
-- @smite/core - Shared utilities
+- /core - Shared utilities
 
 **Development:**
-- @smite/studio - Complete workflow
+- /studio - Complete workflow
 
 **Productivity:**
-- @smite/essentials - Utilities
+- /essentials - Utilities
 
 ### By Use Case
 
@@ -169,13 +169,13 @@ Productivity utilities - auto-rename, shell aliases.
 
 ```bash
 # Core (required)
-/plugin install core@smite
+/plugin install core
 
 # Studio (recommended)
-/plugin install studio@smite
+/plugin install studio
 
 # Essentials (optional)
-/plugin install essentials@smite
+/plugin install essentials
 ```
 
 ### Post-Installation
@@ -228,9 +228,9 @@ All plugins use JSON configuration files in `.claude/.smite/`:
 
 | Plugin | SMITE Version | Node Version |
 |--------|---------------|--------------|
-| @smite/core | >=3.1.0 | >=18.0.0 |
-| @smite/studio | >=4.0.0 | >=18.0.0 |
-| @smite/essentials | >=4.0.0 | >=18.0.0 |
+| /core | >=3.1.0 | >=18.0.0 |
+| /studio | >=4.0.0 | >=18.0.0 |
+| /essentials | >=4.0.0 | >=18.0.0 |
 
 **External Dependencies:**
 - `grepai-cli` (optional, for semantic search in studio)
@@ -252,7 +252,7 @@ The [index.json](./index.json) file contains metadata for all plugins:
 /plugin list
 
 # Get plugin info
-/plugin info studio@smite
+/plugin info studio
 
 # Search plugins
 /plugin search "development"

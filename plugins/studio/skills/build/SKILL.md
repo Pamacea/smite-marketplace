@@ -1,5 +1,5 @@
 ---
-name: studio build
+name: build
 description: Unified implementation agent with 4-flag system (speed, scale, quality, team) + auto-detection
 version: 2.0.0
 ---

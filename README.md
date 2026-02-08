@@ -11,18 +11,18 @@
 /plugin marketplace add Pamacea/smite
 
 # Step 2: Install core (REQUIRED)
-/plugin install core@smite
+/plugin install core
 
 # Step 3: Install unified agents
-/plugin install refactor@smite
-/plugin install explore@smite
-/plugin install implement@smite
+/plugin install refactor
+/plugin install explore
+/plugin install implement
 
 # Step 4: Install supporting plugins (optional)
-/plugin install agents@smite      # Architect, Builder
-/plugin install basics@smite      # Commit, Note, etc.
-/plugin install shell@smite       # Shell aliases
-/plugin install auto-rename@smite # Session renaming
+/plugin install agents      # Architect, Builder
+/plugin install basics      # Commit, Note, etc.
+/plugin install shell       # Shell aliases
+/plugin install auto-rename # Session renaming
 
 # Step 5: Use it!
 /studio build "fix login button"           # Auto-detects
@@ -344,24 +344,24 @@ smite/
 
 ```bash
 /plugin marketplace add Pamacea/smite
-/plugin install core@smite
-/plugin install refactor@smite
-/plugin install explore@smite
-/plugin install implement@smite
+/plugin install core
+/plugin install refactor
+/plugin install explore
+/plugin install implement
 ```
 
 ### Full Installation
 
 ```bash
 /plugin marketplace add Pamacea/smite
-/plugin install core@smite
-/plugin install refactor@smite
-/plugin install explore@smite
-/plugin install implement@smite
-/plugin install agents@smite
-/plugin install basics@smite
-/plugin install shell@smite
-/plugin install auto-rename@smite
+/plugin install core
+/plugin install refactor
+/plugin install explore
+/plugin install implement
+/plugin install agents
+/plugin install basics
+/plugin install shell
+/plugin install auto-rename
 ```
 
 ---
