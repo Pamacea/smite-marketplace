@@ -1,340 +1,284 @@
-# Smite Plugin Marketplace
+# SMITE Plugin Marketplace v4.0
 
 Official plugin marketplace for the Smite Code Quality & Documentation System.
 
 ## Overview
 
-The Smite Plugin Marketplace is a centralized registry of plugins that extend Smite's functionality. All plugins are published as npm packages with the `@smite/` scope and can be easily installed and configured.
+The Smite Plugin Marketplace v4.0 introduces a **simplified architecture** with **3 curated plugins** (down from 7), providing a clearer, more focused development experience.
+
+**Key changes in v4.0:**
+- **Consolidation**: 7 plugins → 3 plugins
+- **Simpler commands**: Namespaced under `/studio` and `/rename`
+- **Better integration**: All development tools in one plugin
+- **Ecosystem maturity**: Production-ready with comprehensive migration path
+
+## Quick Start
+
+```bash
+# 1. Install core infrastructure (required)
+/plugin install core@smite
+
+# 2. Install development workflow (recommended)
+/plugin install studio@smite
+
+# 3. (Optional) Install productivity tools
+/plugin install essentials@smite
+```
 
 ## Available Plugins
 
-### Orchestration
+### Infrastructure
 
-- **[@smite/ralph](./ralph/README.md)** - Multi-agent orchestrator with parallel execution (2-3x speedup)
-  - PRD auto-generation from natural language
-  - Dependency analysis and intelligent batching
-  - Auto-iterating loop for complex tasks
-  - Progress tracking and state persistence
+#### [@smite/core](./core/README.md)
 
-- **[@smite/agents](./agents/README.md)** - Multi-agent system with Spec-First development workflow
-  - **Architect** - Design, strategy, and creative workflow with 5 UI style variations
-  - **Builder** - Tech-specialized implementation (Next.js, Rust, Python, Go)
-  - **Refactor** - Systematic 5-step refactoring with validation and subagents
-  - Spec-Lock Policy enforcement
-  - Multi-tech stack support
-  - Design-to-code capabilities
+Shared utilities, templates, and validation schemas.
+
+**Version:** 3.6.0 | **Required:** Yes
+
+**Features:**
+- Markdown templates for commands
+- JSON validation schemas
+- Cross-platform utilities
+- Platform detection
+- Parallel execution infrastructure
+
+---
 
 ### Development
 
-- **[@smite/basics](./basics/README.md)** - Essential development commands (11 commands)
-  - **/oneshot** - Ultra-fast implementation (5-10 min max)
-  - **/epct** - Systematic 4-phase implementation
-  - **/explore** - Deep codebase exploration
-  - **/debug** - Systematic bug debugging
-  - **/commit** - Quick commit & push
+#### [@smite/studio](./studio/README.md)
 
-- **[@smite/predator](./predator/README.md)** - Advanced modular workflow with 8-step systematic execution
-  - **/predator** - Feature implementation workflow
-  - **/debug** - Systematic bug resolution
-  - **/brainstorm** - Collaborative idea generation
-  - Adversarial code review capability
-  - Auto-iteration with limits
-  - Pull request automation
+Complete development workflow - explore, architect, build, refactor.
 
-### Analysis
+**Version:** 1.0.0 | **Required:** Yes
 
-- **[@smite/toolkit](./toolkit/README.md)** - Token optimization + semantic search (75% savings)
-  - **/toolkit search** - Semantic code search with 2x precision
-  - **/toolkit explore** - Codebase exploration
-  - **/toolkit graph** - Dependency analysis
-  - **/toolkit detect** - Bug detection (40% more bugs found)
-  - **/toolkit surgeon** - Token-optimized context (70-85% savings)
-  - grepai integration for semantic search
-  - RAG (Retrieval Augmented Generation)
+**Commands:**
+- `/studio explore` - Code exploration with 4 modes (deep, quick, semantic, impact)
+- `/studio architect` - Architecture and design system creation
+- `/studio build` - Feature implementation with 4 flags (speed, scale, quality, team)
+- `/studio refactor` - Systematic code refactoring
+
+**Features:**
+- **Exploration**: Native semantic search via grepai (75% token savings)
+- **Architecture**: Creative workflow with MCP tools, 5 UI style variations
+- **Implementation**: Auto-detection, 4 composable flags, multi-tech stack support
+- **Refactoring**: Systematic validation, bug fixing, code quality improvement
+
+**Tech Stack Support:**
+- Next.js 15 (TypeScript, Tailwind CSS, Zustand, TanStack Query)
+- Rust (Actix/Axum, SQLx)
+- Python (FastAPI, SQLAlchemy)
+- Go (Gin/Echo, GORM)
+
+---
 
 ### Productivity
 
-- **[@smite/auto-rename](./auto-rename/README.md)** - Intelligent session renaming
-  - Automatic renaming based on session content
-  - Smart triggers at optimal moments
-  - Slash command filtering
-  - Manual override with /rename command
-  - Format consistency ("Action: Context" pattern)
+#### [@smite/essentials](./essentials/README.md)
 
-- **[@smite/shell](./shell/README.md)** - Cross-platform shell aliases
-  - Global aliases: `cc` (normal mode) and `ccc` (bypass-permissions)
-  - Cross-platform support (Windows, macOS, Linux)
-  - One-time installation with safe backups
-  - PowerShell functions and shell aliases
+Productivity utilities - auto-rename, shell aliases.
 
-- **[@smite/statusline](./statusline/README.md)** - Lightweight session statusline
-  - Git branch and changes display (+N/-M format)
-  - Project path with smart abbreviation
-  - Model name detection (Opus, Sonnet, Haiku)
-  - Session cost calculation
-  - Token count with K suffix
-  - Visual progress bar (10 chars)
-  - Context percentage
-  - Session duration (Hh Mm format)
+**Version:** 1.0.0 | **Required:** No
 
-## Installation
+**Commands:**
+- `/rename [custom-name]` - Automatic session renaming
+- `/install-aliases` - Cross-platform shell aliases (cc/ccc)
 
-All plugins follow a standard installation pattern:
+**Features:**
+- **Auto-rename**: Smart session naming based on context
+- **Shell aliases**: Global shortcuts for Claude Code (cc, ccc)
+- **Cross-platform**: PowerShell, Bash, Zsh, cmd.exe support
 
-```bash
-# Install plugin
-/plugin install [plugin-name]@smite
+---
 
-# Run installation command (varies by plugin)
-/smite          # For basics
-/install-aliases # For shell
-/statusline     # Display current status
-```
+## Migration from v3.x
 
-See individual plugin documentation for detailed installation instructions.
+**Upgrading from SMITE v3.x?** See the [Migration Guide](./MIGRATION_v3_to_v4.md).
 
-## Marketplace Index
+### Quick Migration Summary
 
-The [index.json](./index.json) file contains metadata for all plugins including:
+| v3.x Plugin | v4.0 Plugin |
+|-------------|-------------|
+| `@smite/core` | `@smite/core` (no changes) |
+| `@smite/agents` | `@smite/studio` |
+| `@smite/implement` | `@smite/studio` |
+| `@smite/explore` | `@smite/studio` |
+| `@smite/refactor` | `@smite/studio` |
+| `@smite/shell` | `@smite/essentials` |
+| `@smite/auto-rename` | `@smite/essentials` |
 
-- Plugin name and version
-- Description and author
-- Dependencies and compatibility
-- Installation commands
-- Feature lists
-- Changelog
+### Command Mapping
 
-## Plugin Categories
+**Old → New:**
+- `/implement` → `/studio build`
+- `/architect` → `/studio architect`
+- `/builder` → `/studio build`
+- `/explore` → `/studio explore`
+- `/refactor` → `/studio refactor`
+- `/rename` → `/rename` (no change)
+- `/install-aliases` → `/install-aliases` (no change)
 
-- **Orchestration** - Multi-agent orchestration and workflow automation
-- **Development** - Development commands and workflows
-- **Analysis** - Code analysis, search, and optimization
-- **Productivity** - Productivity enhancements and utilities
-
-## Creating Plugins
-
-All Smite plugins follow these standards:
-
-### Package Structure
-
-```
-plugins/[plugin-name]/
-├── src/              # Source code
-├── dist/             # Compiled output
-├── README.md         # User documentation
-├── INSTALL.md        # Installation guide
-├── MARKETPLACE.md    # Marketplace listing
-├── CONTRIBUTING.md   # Contribution guidelines
-├── LICENSE           # MIT License
-├── package.json      # Package metadata
-└── [config].example.json  # Example configuration
-```
-
-### Package.json Requirements
-
-All plugins must include:
-
-```json
-{
-  "name": "@smite/[plugin-name]",
-  "version": "1.0.0",
-  "description": "Plugin description",
-  "author": {
-    "name": "Author Name",
-    "email": "contact@example.com",
-    "url": "https://github.com/username"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/pamacea/smite#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/pamacea/smite.git",
-    "directory": "plugins/[plugin-name]"
-  },
-  "bugs": {
-    "url": "https://github.com/pamacea/smite/issues"
-  },
-  "smite": {
-    "type": "hook|mcp-server|tool",
-    "minVersion": "1.0.0",
-    "configFile": ".claude/.smite/[config].json"
-  },
-  "keywords": [
-    "smite",
-    "smite-plugin"
-  ]
-}
-```
-
-### Required Files
-
-Every plugin must include:
-
-1. **README.md** - User-facing documentation
-2. **INSTALL.md** - Installation and setup guide
-3. **MARKETPLACE.md** - Marketplace listing with features
-4. **CONTRIBUTING.md** - Contribution guidelines
-5. **LICENSE** - MIT License
-6. **package.json** - Package metadata with smite section
-7. **[config].example.json** - Example configuration
-
-### Coding Standards
-
-Follow SMITE engineering rules:
-
-- Zod validation at entry points
-- Pure functions for business logic
-- Result types for error handling
-- Barrel exports for tree-shaking
-- TypeScript strict mode
-- Comprehensive error handling
-
-## Publishing Plugins
-
-### 1. Update Plugin Metadata
-
-Ensure all metadata in `package.json` is complete:
-
-```json
-{
-  "name": "@smite/[plugin-name]",
-  "version": "1.0.0",
-  "author": { ... },
-  "repository": { ... },
-  "bugs": { ... },
-  "homepage": "..."
-}
-```
-
-### 2. Build Plugin
-
-```bash
-cd plugins/[plugin-name]
-npm run build
-```
-
-### 3. Update Marketplace Index
-
-Add plugin entry to `index.json`:
-
-```json
-{
-  "id": "@smite/[plugin-name]",
-  "name": "Plugin Name",
-  "version": "1.0.0",
-  "description": "Plugin description",
-  "author": "Author Name",
-  "license": "MIT",
-  "category": "category-name",
-  "tags": ["tag1", "tag2"],
-  "smite": { ... },
-  "dependencies": { ... },
-  "features": [ ... ],
-  "installation": { ... },
-  "compatibility": { ... }
-}
-```
-
-### 4. Create Documentation
-
-Ensure all required files are present and up to date:
-
-- README.md with usage examples
-- INSTALL.md with troubleshooting
-- MARKETPLACE.md with feature list
-- CONTRIBUTING.md with guidelines
-- LICENSE (MIT)
-
-### 5. Test Installation
-
-Verify plugin can be installed:
-
-```bash
-cd plugins/[plugin-name]
-npm install
-npm run build
-npm run install-hook  # If applicable
-```
-
-### 6. Publish to npm
-
-```bash
-npm publish --access public
-```
+---
 
 ## Plugin Discovery
 
-Search available plugins:
+### By Category
 
+**Infrastructure:**
+- @smite/core - Shared utilities
+
+**Development:**
+- @smite/studio - Complete workflow
+
+**Productivity:**
+- @smite/essentials - Utilities
+
+### By Use Case
+
+**Starting a new project:**
 ```bash
-# List all plugins
-cat plugins/index.json | jq '.plugins[] | {name, description, category}'
-
-# Search by category
-cat plugins/index.json | jq '.plugins[] | select(.category == "quality")'
-
-# Search by tag
-cat plugins/index.json | jq '.plugins[] | select(.tags[] | contains("security"))'
+/studio architect --mode=init "Build a SaaS platform"
+/studio architect --mode=design "Create design system"
+/studio build --scale "Implement core features"
 ```
 
-## Version Compatibility
+**Working on existing code:**
+```bash
+/studio explore --mode=deep "How does authentication work?"
+/studio explore --mode=impact src/features/auth/
+/studio build --scale "Add OAuth2 provider"
+/studio refactor --quick
+```
 
-All plugins specify minimum Smite version requirements:
+**Quick fixes:**
+```bash
+/studio build --speed "Fix button bug"
+/studio refactor --scope=bug "TypeError in auth"
+```
 
+**Large projects:**
+```bash
+/studio build --team "Build full SaaS platform"
+```
+
+---
+
+## Installation
+
+### Standard Installation
+
+```bash
+# Core (required)
+/plugin install core@smite
+
+# Studio (recommended)
+/plugin install studio@smite
+
+# Essentials (optional)
+/plugin install essentials@smite
+```
+
+### Post-Installation
+
+**Studio:**
+- Configuration: `.claude/.smite/studio.json`
+- No post-install steps required
+
+**Essentials:**
+```bash
+# Install shell aliases (optional)
+/install-aliases
+```
+
+---
+
+## Configuration
+
+All plugins use JSON configuration files in `.claude/.smite/`:
+
+| Plugin | Config File |
+|--------|-------------|
+| studio | `.claude/.smite/studio.json` |
+| essentials | `.claude/.smite/essentials.json` |
+
+**Example studio.json:**
 ```json
 {
-  "smite": {
-    "minVersion": "1.0.0"
+  "explore": {
+    "defaults": {
+      "mode": "deep"
+    }
+  },
+  "build": {
+    "defaults": {
+      "flag": "scale"
+    }
+  },
+  "refactor": {
+    "defaults": {
+      "scope": "recent"
+    }
   }
 }
 ```
 
-Check compatibility before installing:
+---
 
-```bash
-# Get Smite version
-smite --version
+## Version Compatibility
 
-# Check plugin compatibility
-cat plugins/index.json | jq '.plugins[] | select(.id == "@smite/quality-gate") | .smite'
-```
+| Plugin | SMITE Version | Node Version |
+|--------|---------------|--------------|
+| @smite/core | >=3.1.0 | >=18.0.0 |
+| @smite/studio | >=4.0.0 | >=18.0.0 |
+| @smite/essentials | >=4.0.0 | >=18.0.0 |
 
-## Support
-
-For plugin-specific issues:
-- Check individual plugin README
-- Review plugin's GitHub Issues
-- Start a GitHub Discussion
-- Contact plugin author
-
-For marketplace issues:
-- [GitHub Issues](https://github.com/pamacea/smite/issues)
-- [GitHub Discussions](https://github.com/pamacea/smite/discussions)
-
-## Contributing
-
-To contribute a new plugin:
-
-1. Follow the plugin structure standards
-2. Include all required files
-3. Add comprehensive documentation
-4. Update index.json with plugin metadata
-5. Submit a pull request
-
-See individual plugin's CONTRIBUTING.md for specific contribution guidelines.
-
-## License
-
-All plugins are licensed under the MIT License. See individual plugin LICENSE files for details.
-
-### Marketplace Features
-
-- Plugin search and discovery
-- Version compatibility checking
-- Automated dependency resolution
-- Plugin ratings and reviews
-- Usage analytics
+**External Dependencies:**
+- `grepai-cli` (optional, for semantic search in studio)
 
 ---
 
-**Extend Smite with plugins to enhance your development workflow.**
+## Plugin Registry
+
+The [index.json](./index.json) file contains metadata for all plugins:
+- Plugin name and version
+- Description and category
+- Dependencies and features
+- Installation commands
+- Compatibility requirements
+
+**Usage:**
+```bash
+# List all plugins
+/plugin list
+
+# Get plugin info
+/plugin info studio@smite
+
+# Search plugins
+/plugin search "development"
+```
+
+---
+
+## Support
+
+**Documentation:**
+- [SMITE Docs](https://github.com/Pamacea/smite/docs)
+- [Migration Guide](./MIGRATION_v3_to_v4.md)
+
+**Community:**
+- [GitHub Issues](https://github.com/Pamacea/smite/issues)
+- [GitHub Discussions](https://github.com/Pamacea/smite/discussions)
+
+**Contributing:**
+- See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+---
+
+## License
+
+All SMITE plugins are released under the MIT License.
+
+---
+
+**Version:** 4.0.0 | **Last Updated:** 2026-02-08

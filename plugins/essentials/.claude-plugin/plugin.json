@@ -1,0 +1,39 @@
+{
+  "name": "@smite/essentials",
+  "version": "1.0.0",
+  "description": "Productivity utilities - auto-rename, shell aliases",
+  "type": "hook",
+  "smiteVersion": ">=4.0.0",
+  "commands": {
+    "rename": {
+      "file": "commands/rename.md",
+      "description": "Automatic session renaming"
+    },
+    "install-aliases": {
+      "file": "commands/install-aliases.md",
+      "description": "Cross-platform shell aliases (cc/ccc)"
+    }
+  },
+  "skills": {
+    "auto-rename": {
+      "file": "skills/auto-rename/SKILL.md",
+      "description": "Automatic session renaming based on context"
+    },
+    "shell": {
+      "file": "skills/shell/SKILL.md",
+      "description": "Shell aliases installation and management"
+    }
+  },
+  "hooks": {
+    "auto-rename": {
+      "file": "hooks/auto-rename/hooks.json",
+      "description": "Session rename hooks"
+    },
+    "shell": {
+      "file": "hooks/shell/install.ps1",
+      "description": "PowerShell installation script"
+    }
+  },
+  "config": "config/essentials.json",
+  "dependencies": ["@smite/core"]
+}

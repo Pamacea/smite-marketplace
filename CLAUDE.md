@@ -2,11 +2,11 @@
 
 ## 🎯 I'm here to...
 
-- **Build features**: `/implement` (with 4 composable flags)
-- **Fix bugs**: `/implement --speed` or `/refactor --scope=bug`
-- **Explore code**: `/explore --mode=semantic` or `/toolkit search`
-- **Design architecture**: `/architect`
-- **Note taking**: `/note write`
+- **Build features**: `/studio build` (with 4 composable flags)
+- **Fix bugs**: `/studio build --speed` or `/studio refactor --scope=bug`
+- **Explore code**: `/studio explore --mode=semantic`
+- **Design architecture**: `/studio architect`
+- **Refactor code**: `/studio refactor`
 
 ---
 
@@ -16,18 +16,18 @@
 
 ```bash
 # Auto-detection (smart default)
-/implement "fix button"
+/studio build "fix button"
 
 # With flags
-/implement --speed "quick fix"
-/implement --scale "build feature"
-/implement --quality "critical system"
-/implement --team "large project"
+/studio build --speed "quick fix"
+/studio build --scale "build feature"
+/studio build --quality "critical system"
+/studio build --team "large project"
 
 # Combine flags!
-/implement --speed --team "quick parallel"
-/implement --scale --quality "thorough + validated"
-/implement --scale --quality --team "maximum power"
+/studio build --speed --team "quick parallel"
+/studio build --scale --quality "thorough + validated"
+/studio build --scale --quality --team "maximum power"
 ```
 
 ### The 4 Flags
@@ -52,15 +52,15 @@
 
 | Command | Purpose | When to use |
 |---------|---------|-------------|
-| `/implement "..."` | Auto-detected implementation | Smart default |
-| `/implement --speed` | Quick fix | Small tasks |
-| `/implement --scale` | Thorough implementation | Complex features |
-| `/implement --quality` | Quality-gated implementation | Critical code |
-| `/implement --team` | Parallel agents | Large projects |
-| `/architect` | Architecture design | Design systems |
-| `/explore --mode=semantic` | Semantic code search | ALWAYS before exploring |
-| `/refactor --scope=bug` | Bug fixing | Any bug/issue |
-| `/note write inbox` | Quick note | Capture ideas |
+| `/studio build "..."` | Auto-detected implementation | Smart default |
+| `/studio build --speed` | Quick fix | Small tasks |
+| `/studio build --scale` | Thorough implementation | Complex features |
+| `/studio build --quality` | Quality-gated implementation | Critical code |
+| `/studio build --team` | Parallel agents | Large projects |
+| `/studio architect` | Architecture design | Design systems |
+| `/studio explore --mode=semantic` | Semantic code search | ALWAYS before exploring |
+| `/studio refactor --scope=bug` | Bug fixing | Any bug/issue |
+| `/rename` | Session renaming | Productivity |
 
 ---
 
@@ -68,11 +68,11 @@
 
 **CRITICAL: ALWAYS use semantic search before ANY code exploration.**
 
-1. **ALWAYS** use `/toolkit search "query"` first (75% token savings, 2x precision)
+1. **ALWAYS** use `/studio explore --mode=semantic "query"` first (75% token savings, 2x precision)
 2. **NEVER** use Grep/Glob first (wastes tokens)
-3. **Spec-first**: Architect → Builder → Verify
+3. **Spec-first**: Architect → Build → Verify
 
-**Why?** Traditional search: 180k tokens. Toolkit: 45k tokens. **75% savings.**
+**Why?** Traditional search: 180k tokens. Semantic: 45k tokens. **75% savings.**
 
 ---
 
@@ -80,16 +80,16 @@
 
 | Old Command | New Command |
 |-------------|-------------|
-| `/oneshot` | `/implement --speed` |
-| `/epct` | `/implement --scale` |
-| `/predator` | `/implement --quality` |
-| `/ralph` | `/implement --scale --team` |
-| `/builder --tech=nextjs` | `/implement --scale --tech=nextjs` |
-| `/implement --quick` | `/implement --speed` |
-| `/implement --epct` | `/implement --scale` |
-| `/implement --predator` | `/implement --quality` |
-| `/implement --ralph` | `/implement --scale --team` |
-| `/implement --builder` | `/implement --scale --tech=*` |
+| `/oneshot` | `/studio build --speed` |
+| `/epct` | `/studio build --scale` |
+| `/predator` | `/studio build --quality` |
+| `/ralph` | `/studio build --scale --team` |
+| `/builder --tech=nextjs` | `/studio build --scale --tech=nextjs` |
+| `/studio build --quick` | `/studio build --speed` |
+| `/studio build --epct` | `/studio build --scale` |
+| `/studio build --predator` | `/studio build --quality` |
+| `/studio build --ralph` | `/studio build --scale --team` |
+| `/studio build --builder` | `/studio build --scale --tech=*` |
 
 ---
 
@@ -111,8 +111,9 @@
 
 - **All docs**: [docs/INDEX.md](docs/INDEX.md)
 - **Plugins**: [plugins/README.md](plugins/README.md)
-- **Agents**: [plugins/agents/README.md](plugins/agents/README.md)
-- **Implement**: [plugins/implement/README.md](plugins/implement/README.md)
+- **Studio**: [plugins/studio/README.md](plugins/studio/README.md)
+- **Essentials**: [plugins/essentials/README.md](plugins/essentials/README.md)
+- **Migration**: [plugins/MIGRATION_v3_to_v4.md](plugins/MIGRATION_v3_to_v4.md)
 
 ---
 
@@ -141,11 +142,11 @@ src/
 
 ```
 Need to implement?
-├─ Simple/quick? → /implement --speed
-├─ Complex/multi-file? → /implement --scale
-├─ Quality-critical? → /implement --quality
-├─ Large/multi-domain? → /implement --team
-├─ Not sure? → /implement (auto-detect)
+├─ Simple/quick? → /studio build --speed
+├─ Complex/multi-file? → /studio build --scale
+├─ Quality-critical? → /studio build --quality
+├─ Large/multi-domain? → /studio build --team
+├─ Not sure? → /studio build (auto-detect)
 └─ Combine flags for custom behavior!
 ```
 

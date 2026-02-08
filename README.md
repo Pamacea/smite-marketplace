@@ -25,10 +25,10 @@
 /plugin install auto-rename@smite # Session renaming
 
 # Step 5: Use it!
-/implement "fix login button"           # Auto-detects
-/implement --speed "quick fix"         # Explicit
-/implement --scale "build feature"     # Thorough
-/implement --team "large project"      # Parallel
+/studio build "fix login button"           # Auto-detects
+/studio build --speed "quick fix"         # Explicit
+/studio build --scale "build feature"     # Thorough
+/studio build --team "large project"      # Parallel
 ```
 
 ---
@@ -54,11 +54,11 @@ Add Swarm Mode & tmux to your settings.json !
 
 | Old (v3.5) | New (v4.0) | Benefit |
 |-----------|------------|---------|
-| `/implement --quick` | `/implement --speed` | Clearer intent |
-| `/implement --epct` | `/implement --scale` | Clearer intent |
-| `/implement --predator` | `/implement --quality` | Clearer intent |
-| `/implement --ralph` | `/implement --team` | Matches Claude Code |
-| `/implement --builder` | `/implement --scale --tech=*` | Consistent |
+| `/studio build --quick` | `/studio build --speed` | Clearer intent |
+| `/studio build --epct` | `/studio build --scale` | Clearer intent |
+| `/studio build --predator` | `/studio build --quality` | Clearer intent |
+| `/studio build --ralph` | `/studio build --team` | Matches Claude Code |
+| `/studio build --builder` | `/studio build --scale --tech=*` | Consistent |
 
 ### Key Improvements
 
@@ -72,13 +72,13 @@ Add Swarm Mode & tmux to your settings.json !
 
 ```bash
 # NEW: Quick parallel implementation
-/implement --speed --team "quick parallel fix"
+/studio build --speed --team "quick parallel fix"
 
 # NEW: Thorough + validated
-/implement --scale --quality "production feature"
+/studio build --scale --quality "production feature"
 
 # NEW: Maximum power
-/implement --scale --quality --team "critical SaaS system"
+/studio build --scale --quality --team "critical SaaS system"
 ```
 
 ---
@@ -100,12 +100,12 @@ Add Swarm Mode & tmux to your settings.json !
 
 ```bash
 # Single flag - simple behavior
-/implement --speed "fix button"
+/studio build --speed "fix button"
 
 # Multiple flags - composed behavior
-/implement --speed --team "quick parallel"
-/implement --scale --quality "thorough + validated"
-/implement --scale --quality --team "maximum power"
+/studio build --speed --team "quick parallel"
+/studio build --scale --quality "thorough + validated"
+/studio build --scale --quality --team "maximum power"
 ```
 
 ---
@@ -126,63 +126,63 @@ Add Swarm Mode & tmux to your settings.json !
 
 ```bash
 # Auto-detects as --speed
-/implement "fix login button"
+/studio build "fix login button"
 
 # Auto-detects as --scale
-/implement "build user dashboard with authentication"
+/studio build "build user dashboard with authentication"
 
 # Auto-detects as --team
-/implement "create full SaaS platform with billing"
+/studio build "create full SaaS platform with billing"
 
 # Auto-detects as --quality
-/implement "implement payment processing system"
+/studio build "implement payment processing system"
 ```
 
 ---
 
 ## 🛠️ Unified Agents
 
-### 1. /implement - Unified Implementation
+### 1. /studio build - Unified Implementation
 
 **NEW in v4.0: 4-flag system**
 
 ```bash
 # Auto-detection (smart default)
-/implement "fix button"
+/studio build "fix button"
 
 # Explicit flags
-/implement --speed "quick fix"
-/implement --scale "build feature"
-/implement --quality "critical system"
-/implement --team "large project"
+/studio build --speed "quick fix"
+/studio build --scale "build feature"
+/studio build --quality "critical system"
+/studio build --team "large project"
 
 # Tech stack (works with any flags)
-/implement --scale --tech=nextjs "..."
+/studio build --scale --tech=nextjs "..."
 ```
 
 **Best for:** All implementation tasks
 
 ---
 
-### 2. /refactor - Unified Refactoring
+### 2. /studio refactor - Unified Refactoring
 
 ```bash
-/refactor --quick "Improve code"
-/refactor --full "Refactor entire module"
-/refactor --scope=bug "Fix issue"
-/refactor --analyze "Analyze problems"
+/studio refactor --quick "Improve code"
+/studio refactor --full "Refactor entire module"
+/studio refactor --scope=bug "Fix issue"
+/studio refactor --analyze "Analyze problems"
 ```
 
 **Best for:** Code improvement, bug fixes, quality assurance
 
 ---
 
-### 3. /explore - Unified Exploration
+### 3. /studio explore - Unified Exploration
 
 ```bash
-/explore --mode=deep "How does payment work?"
-/explore --mode=semantic "Find authentication code"
-/explore --mode=quick "Search components"
+/studio explore --mode=deep "How does payment work?"
+/studio explore --mode=semantic "Find authentication code"
+/studio explore --mode=quick "Search components"
 ```
 
 **Best for:** Understanding codebase, finding files, code search
@@ -195,14 +195,14 @@ Add Swarm Mode & tmux to your settings.json !
 
 | Command | Purpose | When to use |
 |---------|---------|-------------|
-| `/implement "..."` | Auto-detected implementation | Smart default |
-| `/implement --speed` | Quick fix | Small tasks |
-| `/implement --scale` | Thorough implementation | Complex features |
-| `/implement --quality` | Quality-gated implementation | Critical code |
-| `/implement --team` | Parallel agents | Large projects |
-| `/refactor --quick` | Quick refactoring | Code improvements |
-| `/explore --mode=semantic` | Semantic code search | ALWAYS before exploring |
-| `/architect` | Architecture design | Design systems |
+| `/studio build "..."` | Auto-detected implementation | Smart default |
+| `/studio build --speed` | Quick fix | Small tasks |
+| `/studio build --scale` | Thorough implementation | Complex features |
+| `/studio build --quality` | Quality-gated implementation | Critical code |
+| `/studio build --team` | Parallel agents | Large projects |
+| `/studio refactor --quick` | Quick refactoring | Code improvements |
+| `/studio explore --mode=semantic` | Semantic code search | ALWAYS before exploring |
+| `/studio architect` | Architecture design | Design systems |
 | `/note write inbox` | Quick note | Capture ideas |
 
 ---
@@ -215,16 +215,16 @@ Old commands still work (with deprecation notice):
 
 | Old Command | New Command |
 |-------------|-------------|
-| `/oneshot` | `/implement --speed` |
-| `/epct` | `/implement --scale` |
-| `/predator` | `/implement --quality` |
-| `/ralph` | `/implement --scale --team` |
-| `/builder --tech=nextjs` | `/implement --scale --tech=nextjs` |
-| `/implement --quick` | `/implement --speed` |
-| `/implement --epct` | `/implement --scale` |
-| `/implement --predator` | `/implement --quality` |
-| `/implement --ralph` | `/implement --scale --team` |
-| `/implement --builder` | `/implement --scale --tech=*` |
+| `/oneshot` | `/studio build --speed` |
+| `/epct` | `/studio build --scale` |
+| `/predator` | `/studio build --quality` |
+| `/ralph` | `/studio build --scale --team` |
+| `/builder --tech=nextjs` | `/studio build --scale --tech=nextjs` |
+| `/studio build --quick` | `/studio build --speed` |
+| `/studio build --epct` | `/studio build --scale` |
+| `/studio build --predator` | `/studio build --quality` |
+| `/studio build --ralph` | `/studio build --scale --team` |
+| `/studio build --builder` | `/studio build --scale --tech=*` |
 
 ### For Developers
 
@@ -262,16 +262,16 @@ SMITE v4.0.0 (SIMPLIFIÉ)
 │ AGENTS UNIFIÉS (point d'entrée unique)     │
 ├───────────────────────────────────────────────┤
 │                                             │
-│  1. /implement (4-FLAG SYSTEM)              │
+│  1. /studio build (4-FLAG SYSTEM)              │
 │     - Auto-détection intelligente           │
 │     - Flags composables: speed, scale,      │
 │                       quality, team         │
 │     - Agent Teams natif Claude Code         │
 │                                             │
-│  2. /refactor                                 │
+│  2. /studio refactor                                 │
 │     - Refactorisation unifiée               │
 │                                             │
-│  3. /explore                                  │
+│  3. /studio explore                                  │
 │     - Exploration + grepai native (75%)      │
 │                                             │
 ├───────────────────────────────────────────────┤
@@ -332,8 +332,8 @@ smite/
 
 ## 📚 Documentation
 
-- **[Implement Guide](plugins/implement/README.md)** - Complete 4-flag documentation
-- **[Teams Integration](plugins/implement/skills/teams/SKILL.md)** - Agent Teams guide
+- **[Implement Guide](plugins/studio build/README.md)** - Complete 4-flag documentation
+- **[Teams Integration](plugins/studio build/skills/teams/SKILL.md)** - Agent Teams guide
 - **[Migration Guide](MIGRATION_V4.0.0.md)** - Complete migration guide
 
 ---

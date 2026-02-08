@@ -1,0 +1,49 @@
+{
+  "name": "@smite/studio",
+  "version": "1.0.0",
+  "description": "Complete development workflow - explore, architect, build, refactor",
+  "author": {
+    "name": "Pamacea",
+    "email": "contact@pamacea.dev",
+    "url": "https://github.com/pamacea"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Pamacea/smite#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pamacea/smite.git",
+    "directory": "plugins/studio"
+  },
+  "bugs": {
+    "url": "https://github.com/Pamacea/smite/issues"
+  },
+  "smite": {
+    "type": "agent",
+    "minVersion": "4.0.0",
+    "configFile": ".claude/.smite/studio.json"
+  },
+  "keywords": [
+    "smite",
+    "smite-plugin",
+    "studio",
+    "workflow",
+    "development"
+  ],
+  "dependencies": {
+    "@smite/core": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "explore": {
+    "defaults": {
+      "mode": "deep",
+      "depth": "medium",
+      "output": "summary"
+    },
+    "semantic": {
+      "optimize": true,
+      "hybrid": false,
+      "limit": 20
+    }
+  },
+  "architect": {
+    "defaults": {
+      "mode": "design"
+    },
+    "design": {
+      "styles": ["minimalist", "brutalist", "glassmorphism", "neumorphism", "bento"]
+    }
+  },
+  "build": {
+    "defaults": {
+      "flag": "scale"
+    },
+    "techStacks": {
+      "nextjs": {
+        "framework": "Next.js 15",
+        "language": "TypeScript",
+        "styling": "Tailwind CSS",
+        "state": "Zustand + TanStack Query"
+      },
+      "rust": {
+        "framework": "Actix/Axum",
+        "language": "Rust",
+        "database": "SQLx"
+      },
+      "python": {
+        "framework": "FastAPI",
+        "language": "Python",
+        "database": "SQLAlchemy"
+      },
+      "go": {
+        "framework": "Gin/Echo",
+        "language": "Go",
+        "database": "GORM"
+      }
+    }
+  },
+  "refactor": {
+    "defaults": {
+      "scope": "recent",
+      "riskThreshold": 30,
+      "complexityThreshold": 8,
+      "coverageTarget": 80
+    },
+    "exclude": [
+      "node_modules/**",
+      "dist/**",
+      ".claude/**"
+    ]
+  }
+}
