@@ -5,7 +5,7 @@
   "description": "Zero-debt engineering with unified development workflow. Features 3-plugin architecture (core, studio, essentials), semantic search with 75% token savings, and parallel execution (2-3x speedup).",
   "owner": {
     "name": "Pamacea",
-    "email": "[email protected]"
+    "email": "[email protected]"
   },
   "metadata": {
     "description": "SMITE v4.0.0 - Consolidated 3-plugin architecture. Core infrastructure + Studio (complete dev workflow) + Essentials (productivity tools).",
@@ -23,8 +23,7 @@
       "keywords": ["core", "utilities", "templates", "validation", "infrastructure"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/core",
       "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT",
-      "required": true
+      "license": "MIT"
     },
     {
       "name": "studio",
@@ -37,15 +36,7 @@
       "keywords": ["studio", "explore", "architect", "build", "refactor", "speed", "scale", "quality", "team"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/studio",
       "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT",
-      "required": true,
-      "commands": {
-        "studio": "Main orchestration command",
-        "explore": "Code exploration with 4 modes",
-        "architect": "Architecture and design",
-        "build": "Feature implementation with 4 flags",
-        "refactor": "Systematic refactoring"
-      }
+      "license": "MIT"
     },
     {
       "name": "essentials",
@@ -58,12 +49,7 @@
       "keywords": ["essentials", "rename", "session", "shell", "aliases", "shortcuts"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/essentials",
       "repository": "https://github.com/Pamacea/smite",
-      "license": "MIT",
-      "required": false,
-      "commands": {
-        "rename": "Automatic session renaming",
-        "install-aliases": "Cross-platform shell aliases"
-      }
+      "license": "MIT"
     }
   ]
 }
