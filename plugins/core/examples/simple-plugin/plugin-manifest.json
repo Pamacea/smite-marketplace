@@ -1,0 +1,11 @@
+{
+  "name": "simple-example",
+  "version": "1.0.0",
+  "description": "Minimal SMITE plugin example",
+  "smite": "1.5.1",
+  "core": "1.5.1",
+  "provides": ["simple-example"],
+  "tags": ["example", "simple"],
+  "author": "Pamacea",
+  "license": "MIT"
+}

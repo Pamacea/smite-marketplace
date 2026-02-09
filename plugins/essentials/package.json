@@ -1,7 +1,7 @@
 {
   "name": "essentials",
-  "version": "1.0.0",
-  "description": "Productivity utilities - auto-rename, shell aliases",
+  "version": "1.5.1",
+  "description": "Productivity utilities - auto-rename, shell aliases, git workflow integration",
   "author": {
     "name": "Pamacea",
     "email": "contact@pamacea.dev",
@@ -19,17 +19,20 @@
   },
   "smite": {
     "type": "hook",
-    "minVersion": "4.0.0",
+    "minVersion": "1.5.1",
     "configFile": ".claude/.smite/essentials.json"
   },
   "keywords": [
     "smite",
     "smite-plugin",
     "essentials",
-    "productivity"
+    "productivity",
+    "git",
+    "workflow",
+    "versioning"
   ],
   "dependencies": {
-    "/core": "^3.6.0"
+    "core": "^1.5.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "defaults": {
+    "type": "chore",
+    "scope": "smite",
+    "baseBranch": "main"
+  },
+  "conventionalCommits": {
+    "enabled": true,
+    "types": ["feat", "fix", "refactor", "docs", "chore", "test", "build"],
+    "scopes": ["build", "refactor", "explore", "git", "core", "studio", "essentials"]
+  },
+  "branches": {
+    "namingConvention": "conventional",
+    "protectedBranches": ["main", "master", "develop"]
+  },
+  "smiteIntegration": {
+    "detectFlags": true,
+    "includeSession": true,
+    "autoGenerateMessage": true
+  }
+}

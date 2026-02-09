@@ -9,11 +9,11 @@ export type { PluginManifest, DependencyGraph } from './loader';
 
 /**
  * Current SMITE version
- * Matches marketplace.json version 3.6.0
+ * Matches marketplace.json version 1.5.1
  */
-export const SMITE_VERSION = '3.6.0';
+export const SMITE_VERSION = '1.5.1';
 
 /**
  * Current core version
  */
-export const CORE_VERSION = '1.0.0';
+export const CORE_VERSION = '1.5.1';

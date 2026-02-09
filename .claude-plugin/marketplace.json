@@ -1,26 +1,26 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "smite",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Zero-debt engineering with unified development workflow. Features 3-plugin architecture (core, studio, essentials) with 4-flag composable system, semantic search with 75% token savings, and parallel execution (2-3x speedup).",
   "owner": {
     "name": "Pamacea",
     "email": "[email protected]"
   },
   "metadata": {
-    "description": "SMITE v1.5.0 - Unified 4-flag architecture with 3-plugin system. Core infrastructure + Studio (complete dev workflow) + Essentials (productivity tools).",
+    "description": "SMITE v1.5.1 - Complete core infrastructure implementation + git workflow integration. Core (config, hooks, validation, platform, templates) + Studio (complete dev workflow) + Essentials (productivity + git integration).",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
       "name": "core",
       "source": "./plugins/core",
-      "description": "Shared utilities, templates, and validation schemas for all SMITE plugins. Includes platform detection, cross-platform utilities, and parallel execution infrastructure.",
-      "version": "1.0.0",
+      "description": "Complete core infrastructure with ConfigManager (load, merge, validate), HookRegistry (plugin lifecycle), SchemaValidator (runtime validation), PlatformDetector (cross-platform), TemplateEngine (variable substitution), Logger (structured logging), ErrorHandler (standardized errors), and ManifestLoader (dependency management). All declared capabilities fully implemented.",
+      "version": "1.5.1",
       "author": { "name": "Pamacea" },
       "category": "infrastructure",
-      "tags": ["utilities", "templates", "validation", "schemas", "platform"],
-      "keywords": ["core", "utilities", "templates", "validation", "infrastructure"],
+      "tags": ["infrastructure", "config", "hooks", "validation", "platform", "templates", "logging", "error-handling"],
+      "keywords": ["core", "utilities", "configuration", "lifecycle", "validation", "platform", "templates", "logger", "error-handler"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/core",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"
@@ -29,7 +29,7 @@
       "name": "studio",
       "source": "./plugins/studio",
       "description": "Complete development workflow - explore, architect, build, refactor. Unified command namespace with 4 exploration modes, architecture design with creative workflow, 4-flag implementation system (speed, scale, quality, team), and systematic refactoring. Merged from agents, implement, explore, refactor.",
-      "version": "1.0.0",
+      "version": "1.5.1",
       "author": { "name": "Pamacea" },
       "category": "development",
       "tags": ["workflow", "exploration", "architecture", "implementation", "refactoring", "4-flag", "unified"],
@@ -41,12 +41,12 @@
     {
       "name": "essentials",
       "source": "./plugins/essentials",
-      "description": "Productivity utilities - automatic session renaming and cross-platform shell aliases (cc, ccc). Smart session naming based on context with customizable triggers and filters. Merged from shell and auto-rename.",
-      "version": "1.0.0",
+      "description": "Productivity utilities - automatic session renaming, cross-platform shell aliases (cc, ccc), and lightweight git workflow integration. Smart session naming based on context with customizable triggers and filters. Git integration generates smart commands based on SMITE 4-flag system (conventional commits, branch management, changelog generation). Merged from shell, auto-rename, and git-integration.",
+      "version": "1.5.1",
       "author": { "name": "Pamacea" },
       "category": "productivity",
-      "tags": ["productivity", "session", "rename", "shell", "aliases", "cli"],
-      "keywords": ["essentials", "rename", "session", "shell", "aliases", "shortcuts"],
+      "tags": ["productivity", "session", "rename", "shell", "aliases", "cli", "git", "workflow", "versioning", "conventional-commits"],
+      "keywords": ["essentials", "rename", "session", "shell", "aliases", "shortcuts", "git", "commit", "changelog", "versioning"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/essentials",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"

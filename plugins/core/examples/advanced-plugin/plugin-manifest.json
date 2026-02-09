@@ -1,0 +1,11 @@
+{
+  "name": "advanced-example",
+  "version": "1.0.0",
+  "description": "Advanced SMITE plugin example with full core integration",
+  "smite": "1.5.1",
+  "core": "1.5.1",
+  "provides": ["advanced-example", "custom-hooks", "config-validation"],
+  "tags": ["example", "advanced", "hooks", "config"],
+  "author": "Pamacea",
+  "license": "MIT"
+}
