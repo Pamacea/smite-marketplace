@@ -1,5 +1,11 @@
 # 🔥 SMITE v1.5.0
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub release](https://img.shields.io/github/v/release/Pamacea/smite)](https://github.com/Pamacea/smite/releases/latest)
+[![CI](https://github.com/Pamacea/smite/actions/workflows/ci.yml/badge.svg)](https://github.com/Pamacea/smite/actions)
+
+
+
 **Multi-agent orchestration with 4-flag composable system**
 
 ---
