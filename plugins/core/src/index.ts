@@ -4,7 +4,7 @@
  * Shared utilities, configuration, hooks, validation, platform detection,
  * templates, and error handling for all SMITE plugins.
  *
- * @version 1.5.1
+ * @version 1.6.0
  */
 
 // Manifest System
@@ -62,3 +62,31 @@ export {
   getVersionRange,
 } from './utils/version';
 export type { Semver } from './utils/version';
+
+// DOT Visualization (v1.6.0)
+export {
+  prdToDOT,
+  prdToDOTWithClusters,
+  validateDOT,
+} from './utils/prd-to-dot';
+export type {
+  PRD,
+  UserStory,
+  DOTOptions,
+} from './utils/prd-to-dot';
+
+export {
+  DOTGenerator,
+  createDOTGenerator,
+  generateDOT,
+  THEMES,
+} from './utils/dot-generator';
+export type {
+  DOTTheme,
+  NodeStyle,
+  EdgeStyle,
+  GraphStyle,
+  NodeShape,
+  GraphvizColor,
+  RankDir,
+} from './utils/dot-generator';

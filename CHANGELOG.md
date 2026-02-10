@@ -12,6 +12,92 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced team coordination features
 - Performance analytics dashboard
 
+## [1.6.0] - 2026-02-10
+
+### Added - Attractor Features
+
+#### 1. Checkpoint/Resume for Ralph
+- Save execution state at any point during Ralph orchestration
+- Resume from checkpoints after interruptions
+- Automatic checkpoint creation at critical milestones
+- Manual checkpoint API: `ralph.checkpoint.create()`
+- Resume command: `/ralph --resume=<checkpoint-id>`
+- State persistence includes:
+  - Task graph and dependencies
+  - Agent states and progress
+  - PRD parsing results
+  - Batch execution status
+
+#### 2. DOT Visualization for PRD
+- Generate Graphviz DOT diagrams from PRD dependency graphs
+- Visualize user story relationships and execution flow
+- Command: `/ralph --visualize` or `/studio visualize --format=dot`
+- Output formats: DOT, SVG (via dot), PNG (via dot)
+- Customizable styling:
+  - Color coding by story status (pending, in-progress, completed)
+  - Batch grouping visualization
+  - Critical path highlighting
+- Integration with dependency graph analyzer
+- Export to files or display in terminal (ASCII fallback)
+
+#### 3. Retry Policies for Strike
+- Configurable retry strategies for failed operations
+- Policy types:
+  - `exponential`: Backoff with increasing delays
+  - `linear`: Fixed delay between attempts
+  - `immediate`: No delay (fast retry)
+  - `custom`: User-defined retry function
+- Configuration per operation type:
+    ```json
+    {
+      "retry": {
+        "policy": "exponential",
+        "maxAttempts": 3,
+        "initialDelay": 1000,
+        "maxDelay": 10000,
+        "backoffMultiplier": 2.0
+      }
+    }
+    ```
+- Jitter support to avoid thundering herd
+- Conditional retry based on error type
+- Retry context tracking (attempt count, last error, total delay)
+
+#### 4. Goal Gates Validation
+- Pre-execution validation of goal specifications
+- Gate types:
+  - `syntax`: JSON schema validation
+  - `semantic`: Goal completeness and clarity checks
+  - `feasibility`: Technical feasibility assessment
+  - `scope`: Scope validation (not too broad/narrow)
+- Validation rules:
+  - Goal must be specific and measurable
+  - Required context must be present
+  - Dependencies must be satisfiable
+  - Resource requirements must be realistic
+- CLI command: `/studio validate --goal`
+- Integration with all implementation modes
+- Validation reports with actionable feedback
+- Auto-fix suggestions for common issues
+
+### Changed
+- Enhanced error messages with retry hints
+- Improved checkpoint serialization performance
+- Better DOT graph layout algorithms
+- Enhanced validation error reporting
+
+### Fixed
+- Checkpoint restoration on different working directories
+- DOT visualization memory leaks
+- Retry policy edge cases with zero delays
+- Goal gates false positives in complex goals
+
+### Documentation
+- Checkpoint/Resume guide
+- DOT visualization examples
+- Retry policies reference
+- Goal gates validation rules
+
 ## [1.5.1] - 2026-02-09
 
 ### Added
@@ -111,8 +197,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial project structure
 - Proof of concept
 
-[Unreleased]: https://github.com/Pamacea/smite/compare/v1.5.1...HEAD
-[1.5.1]: https://github.com/Pamacea/smile/releases/tag/v1.5.1
+[Unreleased]: https://github.com/Pamacea/smite/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/Pamacea/smite/releases/tag/v1.6.0
+[1.5.1]: https://github.com/Pamacea/smite/compare/v1.6.0...v1.5.1
 [1.5.0]: https://github.com/Pamacea/smite/releases/tag/v1.5.0
 [1.4.0]: https://github.com/Pamacea/smite/releases/tag/v1.4.0
 [1.3.0]: https://github.com/Pamacea/smite/releases/tag/v1.3.0

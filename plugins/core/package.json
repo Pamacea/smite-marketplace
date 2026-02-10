@@ -1,7 +1,7 @@
 {
-  "name": "studio",
-  "version": "1.6.0",
-  "description": "Complete development workflow - explore, architect, build, refactor",
+  "name": "core",
+  "version": "1.0.0",
+  "description": "Core SMITE infrastructure - base types, utilities, shared patterns",
   "author": {
     "name": "Pamacea",
     "email": "contact@pamacea.dev",
@@ -12,26 +12,22 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Pamacea/smite.git",
-    "directory": "plugins/studio"
+    "directory": "plugins/core"
   },
   "bugs": {
     "url": "https://github.com/Pamacea/smite/issues"
   },
   "smite": {
-    "type": "agent",
-    "minVersion": "1.6.0",
-    "configFile": ".claude/.smite/studio.json"
+    "type": "library",
+    "minVersion": "1.0.0"
   },
   "keywords": [
     "smite",
     "smite-plugin",
-    "studio",
-    "workflow",
-    "development"
+    "core",
+    "infrastructure",
+    "utilities"
   ],
-  "dependencies": {
-    "core": "^1.0.0"
-  },
   "devDependencies": {
     "@types/jest": "^29.5.0",
     "ts-jest": "^29.1.0",
