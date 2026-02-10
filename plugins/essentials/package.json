@@ -1,7 +1,7 @@
 {
   "name": "essentials",
   "version": "1.5.1",
-  "description": "Productivity utilities - auto-rename, shell aliases, git workflow integration",
+  "description": "Productivity utilities - auto-rename, shell aliases",
   "author": {
     "name": "Pamacea",
     "email": "contact@pamacea.dev",
@@ -27,9 +27,7 @@
     "smite-plugin",
     "essentials",
     "productivity",
-    "git",
-    "workflow",
-    "versioning"
+    "workflow"
   ],
   "dependencies": {
     "core": "^1.5.1"
