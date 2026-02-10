@@ -1,4 +1,4 @@
-# 🚀 SMITE - Quick Reference v1.6.5
+# 🚀 SMITE - Quick Reference v1.6.6
 
 ## 🎯 I'm here to...
 
@@ -182,4 +182,4 @@ Need to implement?
 
 ---
 
-**Version**: 1.6.5 | **Last updated**: 2026-02-10
+**Version**: 1.6.6 | **Last updated**: 2026-02-10

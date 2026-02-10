@@ -12,6 +12,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced team coordination features
 - Performance analytics dashboard
 
+## [1.6.6] - 2026-02-10
+
+### Changed
+
+#### Essentials Plugin (v1.5.1 → v1.6.6)
+- **Removed** git-integration skill
+  - Delete git-integration skill directory and all files
+  - Update package.json description and keywords
+  - Simplify essentials to core productivity utilities
+- **Rationale**: Git workflow integration is better handled by dedicated git tools
+
+### Removed
+
+- **git-integration skill** from essentials plugin
+  - SKILL.md documentation
+  - Implementation source code
+  - User documentation and templates
+  - Configuration files
+
+**Migration**: If you were using the git-integration skill, consider using:
+- Built-in Claude Code git commands
+- External git workflow tools
+- Custom git aliases
+
 ## [1.6.5] - 2026-02-10
 
 ### Added
@@ -308,7 +332,8 @@ See:
 - Initial project structure
 - Proof of concept
 
-[Unreleased]: https://github.com/Pamacea/smite/compare/v1.6.5...HEAD
+[Unreleased]: https://github.com/Pamacea/smite/compare/v1.6.6...HEAD
+[1.6.6]: https://github.com/Pamacea/smite/compare/v1.6.5...v1.6.6
 [1.6.5]: https://github.com/Pamacea/smite/compare/v1.6.0...v1.6.5
 [1.6.0]: https://github.com/Pamacea/smite/releases/tag/v1.6.0
 [1.5.1]: https://github.com/Pamacea/smite/compare/v1.6.0...v1.5.1

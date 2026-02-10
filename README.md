@@ -1,4 +1,4 @@
-# 🔥 SMITE v1.6.5
+# 🔥 SMITE v1.6.6
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub release](https://img.shields.io/github/v/release/Pamacea/smite)](https://github.com/Pamacea/smite/releases/latest)
@@ -49,6 +49,17 @@ Add Swarm Mode & tmux to your settings.json !
   "teammateMode": "tmux"
 } 
 ```
+
+## 🆕 What's New in v1.6.6
+
+### Essentials Plugin Cleanup
+
+**Removed git-integration skill:**
+- Simplified essentials plugin to focus on core productivity utilities
+- Git workflow integration better handled by dedicated tools
+- Cleaner plugin structure with fewer dependencies
+
+---
 
 ## 🆕 What's New in v1.6.5
 
@@ -366,7 +377,7 @@ await implement({ flags: ['scale', 'quality'], task: 'feature' })
 ## 🏗️ Architecture
 
 ```
-SMITE v1.6.5 (UNIFIED 4-PLUGIN ARCHITECTURE)
+SMITE v1.6.6 (UNIFIED 4-PLUGIN ARCHITECTURE)
 ├───────────────────────────────────────────────┐
 │ STUDIO UNIFIED AGENTS (point d'entrée)     │
 ├───────────────────────────────────────────────┤
@@ -416,7 +427,7 @@ SMITE v1.6.5 (UNIFIED 4-PLUGIN ARCHITECTURE)
 
 ```
 smite/
-├── .claude-plugin/           # Marketplace manifest (v1.6.5)
+├── .claude-plugin/           # Marketplace manifest (v1.6.6)
 ├── plugins/
 │   ├── core/                # REQUIRED - shared utilities & infrastructure
 │   ├── studio/              # UNIFIED - dev workflow (explore, architect, build, refactor)
@@ -500,6 +511,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**SMITE v1.6.5** • **4-Flag System** • **Native Agents** • **Auto-Detection** • **Unified Architecture** • **Production Ready**
+**SMITE v1.6.6** • **4-Flag System** • **Native Agents** • **Auto-Detection** • **Unified Architecture** • **Production Ready**
 
 **License:** MIT • **Repository:** [github.com/Pamacea/smite](https://github.com/Pamacea/smite)
