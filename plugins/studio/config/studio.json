@@ -1,25 +1,5 @@
 {
   "version": "1.0.0",
-  "explore": {
-    "defaults": {
-      "mode": "deep",
-      "depth": "medium",
-      "output": "summary"
-    },
-    "semantic": {
-      "optimize": true,
-      "hybrid": false,
-      "limit": 20
-    }
-  },
-  "architect": {
-    "defaults": {
-      "mode": "design"
-    },
-    "design": {
-      "styles": ["minimalist", "brutalist", "glassmorphism", "neumorphism", "bento"]
-    }
-  },
   "build": {
     "defaults": {
       "flag": "scale"

@@ -17,7 +17,6 @@ version: 1.0.0
 
 🎯 DECISION TREE:
    Need to search? → grepai or /toolkit search
-   Need to explore? → grepai search "" (empty pattern)
    Need to read?    → Read tool (NOT cat/head)
 ═════════════════════════════════════════════════════
 

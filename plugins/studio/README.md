@@ -1,81 +1,18 @@
 # studio
 
-Complete development workflow - explore, architect, build, refactor.
+Complete development workflow - build, refactor.
 
 **Version:** 1.0.0 | **SMITE Version:** 1.5.0
 
 ## Overview
 
-SMITE Studio unifies the entire development lifecycle into one cohesive plugin. It combines code exploration, architecture design, feature implementation, and systematic refactoring into a seamless workflow.
+SMITE Studio unifies the entire development lifecycle into one cohesive plugin. It combines feature implementation and systematic refactoring into a seamless workflow.
 
-**Merged from:** `/agents`, `/implement`, `/explore`, `/refactor`
+**Merged from:** `/agents`, `/implement`, `/refactor`
 
 ---
 
 ## Commands
-
-### /studio explore
-
-Code exploration with 4 specialized modes and native semantic search.
-
-```bash
-# Deep exploration (multi-source research)
-/studio explore --mode=deep "How does the payment system work?"
-
-# Quick search (fast targeted)
-/studio explore --mode=quick "Authentication components"
-
-# Semantic search (native grepai)
-/studio explore --mode=semantic "How to implement JWT refresh?"
-
-# Impact analysis (dependency graph)
-/studio explore --mode=impact src/auth/jwt.ts
-```
-
-**Modes:**
-- `--mode=deep` - Comprehensive understanding with multi-source research
-- `--mode=quick` - Fast, targeted search for specific files
-- `--mode=semantic` - Native semantic search via grepai (75% token savings)
-- `--mode=impact` - Impact analysis before changes
-
-**See:** [commands/explore.md](./commands/explore.md)
-
----
-
-### /studio architect
-
-Architecture design with creative workflow powered by MCP tools.
-
-```bash
-# Initialize new project
-/studio architect --mode=init "Build a SaaS platform"
-
-# Create design system
-/studio architect --mode=design "Modern dashboard design"
-
-# Business strategy
-/studio architect --mode=strategy "Analyze pricing strategy"
-
-# Creative workflow (NEW)
-/studio architect -b -w -v -x "Design modern SaaS dashboard"
-```
-
-**Modes:**
-- `--mode=init` - Project initialization with tech stack
-- `--mode=design` - Design system and UI specifications
-- `--mode=strategy` - Business and market strategy
-- `--mode=brainstorm` - Creative problem-solving
-
-**Creative Workflow:**
-- `-b` - Create design brief
-- `-w` - Research via WebSearch MCP
-- `-v` - Analyze references via Vision MCP
-- `-x` - Create interactive previews
-- `--select=<style>` - Implement chosen style
-
-**See:** [commands/architect.md](./commands/architect.md)
-
----
 
 ### /studio build
 
@@ -171,26 +108,6 @@ Configuration file: `.claude/.smite/studio.json`
 
 ```json
 {
-  "explore": {
-    "defaults": {
-      "mode": "deep",
-      "depth": "medium",
-      "output": "summary"
-    },
-    "semantic": {
-      "optimize": true,
-      "hybrid": false,
-      "limit": 20
-    }
-  },
-  "architect": {
-    "defaults": {
-      "mode": "design"
-    },
-    "design": {
-      "styles": ["minimalist", "brutalist", "glassmorphism", "neumorphism", "bento"]
-    }
-  },
   "build": {
     "defaults": {
       "flag": "scale"
@@ -219,35 +136,20 @@ Configuration file: `.claude/.smite/studio.json`
 ### Starting a New Project
 
 ```bash
-# 1. Initialize project
-/studio architect --mode=init "Build a project management SaaS"
-
-# 2. Design system
-/studio architect --mode=design "Create professional design system"
-
-# 3. Explore existing patterns (if any)
-/studio explore --mode=semantic "Repository pattern"
-
-# 4. Build features
+# 1. Build features
 /studio build --scale "Build user authentication"
 
-# 5. Refactor as needed
+# 2. Refactor as needed
 /studio refactor --quick
 ```
 
 ### Working on Existing Codebase
 
 ```bash
-# 1. Explore the code
-/studio explore --mode=deep "How does authentication work?"
-
-# 2. Understand impact
-/studio explore --mode=impact src/features/auth/
-
-# 3. Implement changes
+# 1. Implement changes
 /studio build --scale "Add OAuth2 provider"
 
-# 4. Verify quality
+# 2. Verify quality
 /studio refactor --scope=cleanup
 ```
 
@@ -264,20 +166,6 @@ Configuration file: `.claude/.smite/studio.json`
 ---
 
 ## Features
-
-### Exploration
-- **Multi-mode exploration**: Deep, quick, semantic, impact
-- **Native semantic search**: Direct grepai integration (75% token savings)
-- **Multi-source research**: Codebase, docs, web search
-- **Evidence-based**: File references and examples
-- **Auto-parallel**: Automatic multi-agent exploration for complex queries
-
-### Architecture
-- **Spec-first development**: Complete specs before implementation
-- **Creative workflow**: MCP-powered design with 5 UI style variations
-- **Tech stack detection**: Automatic stack selection
-- **Design tokens**: Semantic naming for consistency
-- **Interactive previews**: Live design exploration
 
 ### Implementation
 - **Auto-detection**: Zero-configuration for beginners
@@ -300,18 +188,13 @@ Configuration file: `.claude/.smite/studio.json`
 
 | Old Command | New Command |
 |-------------|-------------|
-| `/architect` | `/studio architect` |
 | `/builder` | `/studio build` |
 | `/implement` | `/studio build` |
-| `/explore` | `/studio explore` |
 | `/refactor` | `/studio refactor` |
 | `/oneshot` | `/studio build --speed` |
 | `/epct` | `/studio build --scale` |
 | `/predator` | `/studio build --quality` |
 | `/ralph` | `/studio build --team` |
-| `/toolkit search` | `/studio explore --mode=semantic` |
-| `/toolkit explore` | `/studio explore --mode=deep` |
-| `/toolkit graph` | `/studio explore --mode=impact` |
 
 **See:** [Migration Guide](../MIGRATION_v3_to_v4.md)
 
@@ -321,8 +204,6 @@ Configuration file: `.claude/.smite/studio.json`
 
 Studio uses specialized skills for each workflow:
 
-- **[explore](./skills/explore/SKILL.md)** - Code exploration agent
-- **[architect](./skills/architect/SKILL.md)** - Architecture design agent
 - **[build](./skills/build/SKILL.md)** - Feature implementation agent
 - **[refactor](./skills/refactor/SKILL.md)** - Code refactoring agent
 

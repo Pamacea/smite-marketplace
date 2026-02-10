@@ -1,12 +1,12 @@
-# 🔥 SMITE v1.5.0
+# 🔥 SMITE v1.6.5
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub release](https://img.shields.io/github/v/release/Pamacea/smite)](https://github.com/Pamacea/smite/releases/latest)
-[![CI](https://github.com/Pamacea/smite/actions/workflows/ci.yml/badge.svg)](https://github.com/Pamacea/smite/actions)
+[![CI](https://github.com/Pamacea/smite/actions/workflows/ci.yml/badge.svg)](https://github.com/Pamacea/smite/actions/workflows/ci.yml/badge.svg)
 
 
 
-**Multi-agent orchestration with 4-flag composable system**
+**Multi-agent orchestration with 4-flag composable system + native agents**
 
 ---
 
@@ -20,12 +20,10 @@
 /plugin install core
 
 # Step 3: Install unified agents
-/plugin install refactor
-/plugin install explore
-/plugin install implement
+/plugin install studio      # Build, Refactor (v1.0.0)
+/plugin install agents      # Specialized agents (NEW in v1.6.5)
 
 # Step 4: Install supporting plugins (optional)
-/plugin install agents      # Architect, Builder
 /plugin install basics      # Commit, Note, etc.
 /plugin install shell       # Shell aliases
 /plugin install auto-rename # Session renaming
@@ -51,6 +49,85 @@ Add Swarm Mode & tmux to your settings.json !
   "teammateMode": "tmux"
 } 
 ```
+
+## 🆕 What's New in v1.6.5
+
+### Agents Plugin - NEW!
+
+**Specialized development agents organized by domain:**
+
+```
+plugins/agents/
+├── frontend/       # Next.js, Vite, React Native
+├── backend/        # Rust, NestJS, API routes
+├── database/       # Prisma, SQLx, Drizzle
+├── devops/         # Docker, Kubernetes
+└── optimization/   # Performance, SEO, Optimization
+```
+
+**8 Specialized Agents Created:**
+- Frontend: `nextjs`, `vitejs`, `react-native`
+- Backend: `rust`, `nestjs`, `route-api`
+- Database: `prisma`
+- DevOps: `docker`
+- Optimization: `performance`, `seo`, `optimization`
+
+### Agent Discovery System
+
+**Automatic agent selection via `--tech` flag:**
+
+```bash
+/studio build --tech=nextjs "Build feature"
+→ Automatically loads agents/frontend/nextjs.agent.md
+
+/studio build --tech=rust --scale "Build API"
+→ Automatically loads agents/backend/rust.agent.md
+
+/studio build --tech=vitejs "Create React app"
+→ Automatically loads agents/frontend/vitejs.agent.md
+```
+
+### Core Restructure
+
+**Simplified infrastructure organization:**
+
+```
+plugins/core@1.6.5/
+└── infrastructure/
+    ├── templates/      # Markdown templates
+    ├── validation/     # JSON schemas
+    ├── platform/       # Cross-platform
+    ├── parallel/       # Git worktrees
+    └── docs/           # Documentation
+```
+
+**Removed:** adversarial, learning, teaching, data modes
+
+### Studio Cleanup
+
+**Focused on build + refactor workflow:**
+
+- ❌ Removed: `architect` skill (moved to conceptual phase only)
+- ❌ Removed: `explore` skill (use `/toolkit search` instead)
+- ✅ Kept: `build` with 4-flag system
+- ✅ Kept: `refactor` with validation
+
+### Enhanced 4-Flag System
+
+The 4-flag system now integrates seamlessly with specialized agents:
+
+```bash
+# Architect for design
+/studio architect "Design payment system"
+
+# Builder for implementation (with flags!)
+/studio builder --tech=nextjs --scale "Build payment flow"
+
+# Or use unified build directly
+/studio build --scale --team "Build full payment system"
+```
+
+---
 
 ## 🆕 What's New in v1.5.0
 
@@ -197,6 +274,31 @@ Add Swarm Mode & tmux to your settings.json !
 
 ---
 
+### 4. /studio architect - Architecture Design (NEW in v1.6)
+
+```bash
+/studio architect "Design authentication system"
+/studio architect "Plan database schema for SaaS"
+```
+
+**Best for:** System design, architecture planning, technical specifications
+
+---
+
+### 5. /studio builder - Tech-Specific Implementation (NEW in v1.6)
+
+```bash
+/studio builder --tech=nextjs "Build user dashboard"
+/studio builder --tech=rust "Create API service"
+/studio builder --tech=saas "Full SaaS platform"
+```
+
+**Supported stacks:** Next.js, Vite+React, Rust DDD, SaaS
+
+**Best for:** Tech-stack-specific implementation with best practices
+
+---
+
 ## 📋 Quick Commands
 
 | Command | Purpose | When to use |
@@ -206,9 +308,10 @@ Add Swarm Mode & tmux to your settings.json !
 | `/studio build --scale` | Thorough implementation | Complex features |
 | `/studio build --quality` | Quality-gated implementation | Critical code |
 | `/studio build --team` | Parallel agents | Large projects |
+| `/studio architect` | Architecture design | Design systems |
+| `/studio builder --tech=*` | Tech-stack implementation | Stack-specific code |
 | `/studio refactor --quick` | Quick refactoring | Code improvements |
 | `/studio explore --mode=semantic` | Semantic code search | ALWAYS before exploring |
-| `/studio architect` | Architecture design | Design systems |
 | `/note write inbox` | Quick note | Capture ideas |
 
 ---
@@ -263,7 +366,7 @@ await implement({ flags: ['scale', 'quality'], task: 'feature' })
 ## 🏗️ Architecture
 
 ```
-SMITE v1.5.0 (UNIFIED 3-PLUGIN ARCHITECTURE)
+SMITE v1.6.5 (UNIFIED 4-PLUGIN ARCHITECTURE)
 ├───────────────────────────────────────────────┐
 │ STUDIO UNIFIED AGENTS (point d'entrée)     │
 ├───────────────────────────────────────────────┤
@@ -279,6 +382,18 @@ SMITE v1.5.0 (UNIFIED 3-PLUGIN ARCHITECTURE)
 │                                             │
 │  3. /studio explore                                  │
 │     - Exploration + grepai native (75%)      │
+│                                             │
+├───────────────────────────────────────────────┤
+│ AGENTS PLUGIN (NEW in v1.6)                │
+├───────────────────────────────────────────────┤
+│                                             │
+│  1. /studio architect                             │
+│     - Design d'architecture système         │
+│     - Diagrammes et spécifications          │
+│                                             │
+│  2. /studio builder                                  │
+│     - Implémentation tech-spécifique        │
+│     - Next.js, Vite+React, Rust, SaaS       │
 │                                             │
 ├───────────────────────────────────────────────┤
 │ CORE INFRASTRUCTURE (requis)              │
@@ -301,7 +416,7 @@ SMITE v1.5.0 (UNIFIED 3-PLUGIN ARCHITECTURE)
 
 ```
 smite/
-├── .claude-plugin/           # Marketplace manifest (v1.5.0)
+├── .claude-plugin/           # Marketplace manifest (v1.6.5)
 ├── plugins/
 │   ├── core/                # REQUIRED - shared utilities & infrastructure
 │   ├── studio/              # UNIFIED - dev workflow (explore, architect, build, refactor)
@@ -314,6 +429,9 @@ smite/
 │   │   │   ├── explore/     # Semantic code search
 │   │   │   ├── architect/   # Architecture design
 │   │   │   └── refactor/    # Systematic refactoring
+│   ├── agents/              # NEW - specialized agents (architect, builder)
+│   │   ├── architect/       # System design workflows
+│   │   └── builder/         # Tech-stack implementation
 │   └── essentials/          # Productivity tools (auto-rename, shell aliases)
 ├── docs/                    # Documentation
 └── README.md                # This file
@@ -339,9 +457,12 @@ smite/
 
 ## 📚 Documentation
 
-- **[Implement Guide](plugins/studio build/README.md)** - Complete 4-flag documentation
-- **[Teams Integration](plugins/studio build/skills/teams/SKILL.md)** - Agent Teams guide
+- **[Implement Guide](plugins/studio/skills/build/README.md)** - Complete 4-flag documentation
+- **[Architect Guide](plugins/agents/architect/README.md)** - Architecture design workflows
+- **[Builder Guide](plugins/agents/builder/README.md)** - Tech-stack implementation
+- **[Teams Integration](plugins/studio/skills/build/teams/SKILL.md)** - Agent Teams guide
 - **[Migration Guide](MIGRATION_V4.0.0.md)** - Complete migration guide
+- **[Full Documentation](docs/INDEX.md)** - All guides and references
 
 ---
 
@@ -365,7 +486,7 @@ smite/
 /plugin install refactor
 /plugin install explore
 /plugin install implement
-/plugin install agents
+/plugin install agents       # NEW: Specialized agents (Architect, Builder)
 /plugin install basics
 /plugin install shell
 /plugin install auto-rename
@@ -379,6 +500,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**SMITE v1.5.0** • **4-Flag System** • **Auto-Detection** • **Unified Architecture** • **Production Ready**
+**SMITE v1.6.5** • **4-Flag System** • **Native Agents** • **Auto-Detection** • **Unified Architecture** • **Production Ready**
 
 **License:** MIT • **Repository:** [github.com/Pamacea/smite](https://github.com/Pamacea/smite)

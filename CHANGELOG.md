@@ -12,6 +12,117 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced team coordination features
 - Performance analytics dashboard
 
+## [1.6.5] - 2026-02-10
+
+### Added
+
+#### Agents Plugin (v1.0.0)
+- **8 Specialized Development Agents** organized by domain:
+  - **Frontend**: `nextjs`, `vitejs`, `react-native`
+  - **Backend**: `rust`, `nestjs`, `route-api`
+  - **Database**: `prisma`
+  - **DevOps**: `docker`
+  - **Optimization**: `performance`, `seo`, `optimization`
+- **Agent Discovery System** via `--tech` flag
+  - Automatic agent selection based on technology stack
+  - Manual selection with `--agent` flag
+  - See `plugins/agents/AGENT_DISCOVERY.md` for details
+
+#### Core Infrastructure
+- **MIGRATION_1.5_to_1.6.md** - Complete migration guide
+- **New structure**: All utilities organized under `infrastructure/`
+
+### Changed
+
+#### Core Plugin (v1.5.1 → v1.6.5)
+- **Restructured** with `infrastructure/` directory organization
+  - Moved: `templates/`, `validation/`, `platform/`, `parallel/` to `infrastructure/`
+  - Added: `infrastructure/docs/` with centralized documentation
+- **Simplified** by removing specialized modes:
+  - ❌ `adversarial/` - Removed
+  - ❌ `learning/` - Removed
+  - ❌ `teaching/` - Removed
+  - ❌ `data/` - Removed
+- **Focus**: Essential infrastructure only
+
+#### Studio Plugin (v1.0.0)
+- **Removed** `architect` skill from documentation
+- **Removed** `explore` skill (use semantic search instead)
+- **Focused** on `build` + `refactor` workflow
+- **Updated** documentation to reflect changes
+
+### Deprecated
+
+- **Core modes**: `adversarial`, `learning`, `teaching`, `data` (removed in v1.6.5)
+- **Studio commands**: `/studio architect`, `/studio explore` (removed in v1.6.5)
+
+### Migration
+
+See:
+- `plugins/core/infrastructure/docs/MIGRATION_1.5_to_1.6.md` - Core migration guide
+- `plugins/agents/AGENT_DISCOVERY.md` - Agent discovery system documentation
+  - `/agents list` - Display all available agents with descriptions
+  - `/agents search <query>` - Semantic search across agent capabilities
+- **Unified Agent Interface**:
+  - Consistent agent execution framework
+  - Standardized error handling
+  - Progress tracking for long-running agents
+  - Result caching for repeated operations
+
+#### 2. Enhanced Agent Capabilities
+- **Analyzer Agent**: Multi-language support (TypeScript, Python, Rust)
+- **Architect Agent**: Component visualization with ASCII diagrams
+- **Builder Agent**: Dry-run mode for safe testing
+- **Critic Agent**: Configurable rule sets (security, performance, maintainability)
+- **Debugger Agent**: State snapshot comparison
+- **Explorer Agent**: Recursive directory scanning with depth limits
+- **Optimizer Agent**: CPU/memory profiling integration
+- **Refactor Agent**: Rename and extract operations with type inference
+
+#### 3. Developer Experience
+- **Agent Composition**: Chain multiple agents with `/agents pipeline`
+- **Parallel Execution**: Run multiple agents simultaneously on different code paths
+- **Custom Agent Templates**: Create custom agents from templates
+- **Agent Configuration**: Per-project agent settings in `.smite/agents.json`
+
+### Changed
+
+#### 1. Core Restructure
+- **Modular Core Architecture**:
+  - Core split into focused subsystems (validation, execution, coordination)
+  - Better separation of concerns
+  - Improved testability
+- **Studio Cleanup**:
+  - Removed legacy implementation modes (oneshot, epct, predator modes)
+  - Deprecated 4-flag system in favor of direct agent calls
+  - Simplified command structure
+- **Plugin System Enhancements**:
+  - Improved plugin discovery and loading
+  - Better dependency management between plugins
+  - Enhanced plugin lifecycle hooks
+
+### Deprecated
+
+#### 1. Legacy Implementation Modes
+- **Deprecated Commands** (still working with warnings):
+  - `/studio build --speed` → Use `/agents call builder --mode=fast`
+  - `/studio build --scale` → Use `/agents call builder --mode=thorough`
+  - `/studio build --quality` → Use `/agents call critic`
+  - `/studio build --team` → Use `/agents pipeline` with multiple agents
+  - `/studio architect` → Use `/agents call architect`
+  - `/studio refactor` → Use `/agents call refactor`
+  - `/studio explore` → Use `/agents call explorer`
+- **Migration Path**:
+  - All deprecated commands will be removed in v2.0.0
+  - See `plugins/MIGRATION_v1.6_to_v2.0.md` for migration guide
+  - Automatic migration script: `npm run smite:migrate`
+
+### Documentation
+- **Agents Guide**: Complete documentation for all 8 agents
+- **Discovery System Docs**: Agent search and discovery usage
+- **Migration Guide**: v1.6 to v2.0 migration path
+- **Examples**: Real-world agent usage patterns
+
 ## [1.6.0] - 2026-02-10
 
 ### Added - Attractor Features
@@ -197,7 +308,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial project structure
 - Proof of concept
 
-[Unreleased]: https://github.com/Pamacea/smite/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/Pamacea/smite/compare/v1.6.5...HEAD
+[1.6.5]: https://github.com/Pamacea/smite/compare/v1.6.0...v1.6.5
 [1.6.0]: https://github.com/Pamacea/smite/releases/tag/v1.6.0
 [1.5.1]: https://github.com/Pamacea/smite/compare/v1.6.0...v1.5.1
 [1.5.0]: https://github.com/Pamacea/smite/releases/tag/v1.5.0

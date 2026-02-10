@@ -1,0 +1,12 @@
+{
+  "id": "agents",
+  "name": "agents",
+  "version": "1.0.0",
+  "description": "Specialized development agents by domain",
+  "smite": "1.6.5",
+  "dependencies": {
+    "core": "^1.6.5"
+  },
+  "provides": ["frontend", "backend", "database", "devops", "testing"],
+  "tags": ["agents", "specialized", "tech-stacks"]
+}

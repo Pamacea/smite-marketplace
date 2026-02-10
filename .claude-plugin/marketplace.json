@@ -1,22 +1,22 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "smite",
-  "version": "1.5.1",
-  "description": "Zero-debt engineering with unified development workflow. Features 3-plugin architecture (core, studio, essentials) with 4-flag composable system, semantic search with 75% token savings, and parallel execution (2-3x speedup).",
+  "version": "1.6.5",
+  "description": "Zero-debt engineering with unified development workflow. Features 4-plugin architecture (core, studio, agents, essentials) with 4-flag composable system, specialized development agents by domain, and parallel execution (2-3x speedup).",
   "owner": {
     "name": "Pamacea",
     "email": "[email protected]"
   },
   "metadata": {
-    "description": "SMITE v1.5.1 - Complete core infrastructure implementation + git workflow integration. Core (config, hooks, validation, platform, templates) + Studio (complete dev workflow) + Essentials (productivity + git integration).",
+    "description": "SMITE v1.6.5 - 4-plugin architecture: Core (infrastructure/ reorganized), Studio (build + refactor focused), Agents (8 specialized agents by domain), Essentials (productivity + git integration). Agent discovery system via --tech flag.",
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
       "name": "core",
       "source": "./plugins/core",
-      "description": "Complete core infrastructure with ConfigManager (load, merge, validate), HookRegistry (plugin lifecycle), SchemaValidator (runtime validation), PlatformDetector (cross-platform), TemplateEngine (variable substitution), Logger (structured logging), ErrorHandler (standardized errors), and ManifestLoader (dependency management). All declared capabilities fully implemented.",
-      "version": "1.5.1",
+      "description": "Complete core infrastructure reorganized with infrastructure/ directory (templates, validation, platform, parallel, docs). ConfigManager, HookRegistry, SchemaValidator, PlatformDetector, TemplateEngine, Logger, ErrorHandler, ManifestLoader. Removed: adversarial, learning, teaching, data modes.",
+      "version": "1.6.5",
       "author": { "name": "Pamacea" },
       "category": "infrastructure",
       "tags": ["infrastructure", "config", "hooks", "validation", "platform", "templates", "logging", "error-handling"],
@@ -28,21 +28,34 @@
     {
       "name": "studio",
       "source": "./plugins/studio",
-      "description": "Complete development workflow - explore, architect, build, refactor. Unified command namespace with 4 exploration modes, architecture design with creative workflow, 4-flag implementation system (speed, scale, quality, team), and systematic refactoring. Merged from agents, implement, explore, refactor.",
-      "version": "1.5.1",
+      "description": "Unified development workflow - build, refactor. 4-flag implementation system (speed, scale, quality, team) with auto-detection and composable flags. Systematic refactoring with validation. Removed: explore (use semantic search), architect (moved to agents plugin).",
+      "version": "1.0.0",
       "author": { "name": "Pamacea" },
       "category": "development",
-      "tags": ["workflow", "exploration", "architecture", "implementation", "refactoring", "4-flag", "unified"],
-      "keywords": ["studio", "explore", "architect", "build", "refactor", "speed", "scale", "quality", "team"],
+      "tags": ["workflow", "implementation", "refactoring", "4-flag", "unified", "build", "dev"],
+      "keywords": ["studio", "build", "refactor", "speed", "scale", "quality", "team", "4-flag"],
       "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/studio",
+      "repository": "https://github.com/Pamacea/smite",
+      "license": "MIT"
+    },
+    {
+      "name": "agents",
+      "source": "./plugins/agents",
+      "description": "8 specialized development agents organized by domain: Frontend (nextjs, vitejs, react-native), Backend (rust, nestjs, route-api), Database (prisma), DevOps (docker), Optimization (performance, seo, optimization). Agent discovery system via --tech flag for automatic selection or --agent flag for manual selection.",
+      "version": "1.0.0",
+      "author": { "name": "Pamacea" },
+      "category": "development",
+      "tags": ["agents", "frontend", "backend", "database", "devops", "optimization", "tech-stacks", "specialized"],
+      "keywords": ["agents", "nextjs", "vitejs", "react-native", "rust", "nestjs", "route-api", "prisma", "docker", "performance", "seo", "optimization", "tech-discovery"],
+      "homepage": "https://github.com/Pamacea/smite/tree/main/plugins/agents",
       "repository": "https://github.com/Pamacea/smite",
       "license": "MIT"
     },
     {
       "name": "essentials",
       "source": "./plugins/essentials",
-      "description": "Productivity utilities - automatic session renaming, cross-platform shell aliases (cc, ccc), and lightweight git workflow integration. Smart session naming based on context with customizable triggers and filters. Git integration generates smart commands based on SMITE 4-flag system (conventional commits, branch management, changelog generation). Merged from shell, auto-rename, and git-integration.",
-      "version": "1.5.1",
+      "description": "Productivity utilities - automatic session renaming with LLM-based context analysis, cross-platform shell aliases (cc, ccc), and lightweight git workflow integration. Smart session naming based on context with customizable triggers and filters. Git integration generates smart commands based on SMITE 4-flag system.",
+      "version": "1.6.5",
       "author": { "name": "Pamacea" },
       "category": "productivity",
       "tags": ["productivity", "session", "rename", "shell", "aliases", "cli", "git", "workflow", "versioning", "conventional-commits"],

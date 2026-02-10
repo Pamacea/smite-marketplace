@@ -1,11 +1,10 @@
-# 🚀 SMITE - Quick Reference v1.5.0
+# 🚀 SMITE - Quick Reference v1.6.5
 
 ## 🎯 I'm here to...
 
 - **Build features**: `/studio build` (with 4 composable flags)
 - **Fix bugs**: `/studio build --speed` or `/studio refactor --scope=bug`
-- **Explore code**: `/studio explore --mode=semantic`
-- **Design architecture**: `/studio architect`
+- **Discover agents**: `/agents discover --tech=nextjs`
 - **Refactor code**: `/studio refactor`
 
 ---
@@ -57,22 +56,43 @@
 | `/studio build --scale` | Thorough implementation | Complex features |
 | `/studio build --quality` | Quality-gated implementation | Critical code |
 | `/studio build --team` | Parallel agents | Large projects |
-| `/studio architect` | Architecture design | Design systems |
-| `/studio explore --mode=semantic` | Semantic code search | ALWAYS before exploring |
+| `/studio build --tech=nextjs` | Tech-specific implementation | Next.js projects |
+| `/agents discover --tech=nextjs` | Find specialized agents | Agent discovery |
+| `/agents list` | List all available agents | Agent overview |
 | `/studio refactor --scope=bug` | Bug fixing | Any bug/issue |
 | `/rename` | Session renaming | Productivity |
 
 ---
 
-## 🔍 Mandatory Workflow
+## 🔍 Agents Plugin Usage
 
-**CRITICAL: ALWAYS use semantic search before ANY code exploration.**
+**Discover specialized agents for your tech stack:**
 
-1. **ALWAYS** use `/studio explore --mode=semantic "query"` first (75% token savings, 2x precision)
-2. **NEVER** use Grep/Glob first (wastes tokens)
-3. **Spec-first**: Architect → Build → Verify
+```bash
+# Find agents for specific technology
+/agents discover --tech=nextjs
+/agents discover --tech=react
+/agents discover --tech=python
+/agents discover --tech=rust
 
-**Why?** Traditional search: 180k tokens. Semantic: 45k tokens. **75% savings.**
+# List all available agents
+/agents list
+
+# Use discovered agents in your build
+/studio build --tech=nextjs --scale "Build auth feature"
+```
+
+### Agent Discovery Examples
+
+```bash
+# Next.js specialist agent
+/agents discover --tech=nextjs
+# → Finds: nextjs-architect, nextjs-builder, nextjs-tester
+
+# Full-stack with team
+/studio build --team --tech=nextjs "Build SaaS platform"
+# → Automatically assigns specialist agents
+```
 
 ---
 
@@ -162,4 +182,4 @@ Need to implement?
 
 ---
 
-**Version**: 1.5.0 | **Last updated**: 2026-02-09
+**Version**: 1.6.5 | **Last updated**: 2026-02-10

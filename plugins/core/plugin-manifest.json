@@ -1,9 +1,9 @@
 {
   "id": "core",
   "name": "core",
-  "version": "1.5.1",
+  "version": "1.6.5",
   "description": "SMITE Core Infrastructure - Config, hooks, validation, platform detection, templates, error handling, and manifest loader",
-  "smite": "1.5.1",
+  "smite": "1.6.5",
   "repository": "https://github.com/Pamacea/smite",
   "provides": [
     "manifest-loader",

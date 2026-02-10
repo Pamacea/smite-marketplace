@@ -13,10 +13,10 @@ version: 2.0.0
    grep | egrep | find | ack | ag | ls | dir | glob
 
 ✅ MANDATORY REPLACEMENT:
-   /explore --mode=quick | grepai search "pattern" | /toolkit search "query"
+   grepai search "pattern" | /toolkit search "query"
 
 🎯 DECISION TREE:
-   Need to explore? → /explore (NOT grep/ls/find)
+   Need to search code? → grepai search or /toolkit search (NOT grep/ls/find)
    Quick implementation → /studio build --speed
    Thorough implementation → /studio build --scale
    Quality-critical → /studio build --quality

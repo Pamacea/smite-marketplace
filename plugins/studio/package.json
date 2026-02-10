@@ -1,7 +1,7 @@
 {
   "name": "studio",
   "version": "1.6.0",
-  "description": "Complete development workflow - explore, architect, build, refactor",
+  "description": "Complete development workflow - architect, build, refactor",
   "author": {
     "name": "Pamacea",
     "email": "contact@pamacea.dev",
