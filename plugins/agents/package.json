@@ -1,12 +1,12 @@
 {
   "name": "@smite/agents",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Specialized development agents by domain",
   "private": true,
   "smite": {
     "id": "agents",
-    "version": "1.0.0",
-    "smite": "1.6.5",
+    "version": "2.0.0",
+    "smite": "2.0.0",
     "dependencies": {
       "core": "^1.6.5"
     },
