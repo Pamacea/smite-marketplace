@@ -1,12 +1,32 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "build": {
     "defaults": {
       "flag": "scale"
     },
+    "memory": {
+      "enabled": true,
+      "autoSave": true,
+      "categories": [
+        "patterns",
+        "decisions",
+        "anti-patterns",
+        "workflows",
+        "solutions"
+      ]
+    },
+    "progress": {
+      "enabled": true,
+      "showPhases": true,
+      "showPercentage": true
+    },
+    "quality": {
+      "metrics": true,
+      "reportAfterBuild": true
+    },
     "techStacks": {
       "nextjs": {
-        "framework": "Next.js 15",
+        "framework": "Next.js 16",
         "language": "TypeScript",
         "styling": "Tailwind CSS",
         "state": "Zustand + TanStack Query"
@@ -34,6 +54,27 @@
       "riskThreshold": 30,
       "complexityThreshold": 8,
       "coverageTarget": 80
+    },
+    "team": {
+      "autoActivate": true,
+      "fileThreshold": 5,
+      "maxAgents": 3
+    },
+    "security": {
+      "owaspTop10": true,
+      "dependencyCheck": true,
+      "p0Threshold": "critical",
+      "p1Threshold": "high"
+    },
+    "types": {
+      "strictMode": true,
+      "allowAny": false,
+      "coverageTarget": 95
+    },
+    "performance": {
+      "improvementTarget": 20,
+      "measureBefore": true,
+      "measureAfter": true
     },
     "exclude": [
       "node_modules/**",

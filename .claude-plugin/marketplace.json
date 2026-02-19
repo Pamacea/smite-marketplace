@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "smite",
-  "version": "1.6.5",
-  "description": "Zero-debt engineering with unified development workflow. Features 4-plugin architecture (core, studio, agents, essentials) with 4-flag composable system, specialized development agents by domain, and parallel execution (2-3x speedup).",
+  "version": "2.0.0",
+  "description": "Zero-debt engineering with lazy loading, intelligent model routing, and advanced orchestration. Features 4-plugin architecture with progressive enhancement, multi-agent review, agent memory, skill marketplace, team orchestration, and telemetry analytics.",
   "owner": {
     "name": "Pamacea",
     "email": "[email protected]"

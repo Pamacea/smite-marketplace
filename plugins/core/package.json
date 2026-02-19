@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Core SMITE infrastructure - base types, utilities, shared patterns",
   "author": {
     "name": "Pamacea",
@@ -36,6 +36,9 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
+    "test:verify": "ts-node integration/run-tests.ts",
+    "test:verify:lazy-loading": "ts-node -e \"require('./integration/__tests__/verification.test.ts').describe('Lazy Loading System')\"",
+    "test:verify:model-routing": "ts-node -e \"require('./integration/__tests__/verification.test.ts').describe('Model Routing System')\"",
     "lint": "eslint src/"
   },
   "engines": {

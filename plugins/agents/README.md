@@ -40,6 +40,16 @@ This plugin provides domain-specific development agents that bring specialized k
 - **Playwright** - E2E testing, page objects, fixtures
 - **Jest** - Classic testing, snapshots, mocks
 - **MSW** - API mocking, handlers, scenarios
+- **TDD Guide** - Test-driven development workflow
+
+### Workflow Agents (Studio v2.0 Integration)
+- **Performance Profiler** - Systematic performance optimization with before/after metrics
+- **Security Scanner** - OWASP Top 10 vulnerability scanning and P0/P1 classification
+- **TypeScript Improver** - Complete type safety, eliminate `any`, Zod validation
+- **Planner** - Implementation planning and architecture design
+- **Code Reviewer** - Adversarial code review and quality assessment
+- **Security Reviewer** - Security-focused code review
+- **TDD Guide** - Test-driven development best practices
 
 ## Installation
 
@@ -94,6 +104,16 @@ Specify exact agent or domain:
 | `--tech=postgresql` | database | `database/postgresql.agent.md` |
 | `--tech=docker` | devops | `devops/docker.agent.md` |
 | `--tech=vitest` | testing | `testing/vitest.agent.md` |
+
+### Studio v2.0 Flag → Agent Mapping
+
+| Studio Flag | Agent Auto-Loaded | Purpose |
+|-------------|------------------|---------|
+| `--profile` (build/refactor) | `workflow/performance-profiler.agent.md` | Performance profiling with metrics |
+| `--security` (build/refactor) | `workflow/security-scanner.agent.md` | OWASP Top 10 security scanning |
+| `--types` (build/refactor) | `workflow/typescript-improver.agent.md` | TypeScript strict mode + Zod |
+| `--test` (build) | `workflow/tdd-guide.agent.md` | TDD workflow (RED-GREEN-REFACTOR) |
+| `--team` (refactor) | **Creates Agent Team** | Parallel multi-agent execution |
 
 **Full documentation:** See [AGENT_DISCOVERY.md](AGENT_DISCOVERY.md) for complete agent discovery system details.
 
@@ -333,6 +353,13 @@ When adding new agents:
 5. Update domain index.md
 
 ## Version History
+
+- **v1.1.0** (2026-02-19) - Studio v2.0 integration
+  - 🆕 Performance profiler agent (workflow/performance-profiler.agent.md)
+  - 🆕 Security scanner agent (workflow/security-scanner.agent.md)
+  - 🆕 TypeScript improver agent (workflow/typescript-improver.agent.md)
+  - 🤖 Auto-activation system for build/refactor flags
+  - 📋 Agent team creation for complex refactors
 
 - **v1.0.0** (2026-02-10) - Initial release with 5 core agents
   - Rust backend agent
