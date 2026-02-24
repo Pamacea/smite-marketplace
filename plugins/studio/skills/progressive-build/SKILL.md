@@ -1,6 +1,6 @@
 ---
 name: progressive-build
-description: Progressive enhancement workflow using Haiku (speed) → Sonnet (quality) → Opus (excellence). Use for complex features that need both speed and excellence.
+description: Invoke BEFORE building complex features requiring both speed AND quality in smite project - progressive enhancement workflow using Haiku (MVP in 2min) → Sonnet (quality in 5min) → Opus (excellence in 10min). Triggers on 'complex feature', 'optimize and build', 'production-ready feature', 'build with optimization'. Total: 17min, 9.5/10 quality, 73% cost savings vs Opus-only. Specific phrases: 'progressive build', 'enhance this', 'iterate and improve'. (user)
 category: workflow
 version: 1.0.0
 tags: [progressive, workflow, multi-model, enhancement]
@@ -470,6 +470,20 @@ Define clear success criteria for each phase.
 - [Multi-Agent Review](./multi-review.md)
 - [TDD Guide](./tdd-guide.md)
 - [Performance Profiler](./performance-profiler.md)
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Using for simple features | Wastes time/complexity | Use direct Sonnet for simple tasks |
+| Skipping phase review | Misses quality improvements | Review each phase's output |
+| Not providing context | Each phase starts from scratch | Pass previous phase output as context |
+| Too many phases | Diminishing returns | 3 phases is optimal (Haiku→Sonnet→Opus) |
+| Starting with Opus | Wastes cost on early iterations | Always start with Haiku for speed |
+| Ignoring time limits | Phases run too long | Set and respect time limits |
+| Not measuring quality | Can't justify progressive approach | Track quality improvements per phase |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: multi-review
-description: Orchestrate parallel code review by multiple specialized agents (security, performance, testing, documentation). Use when comprehensive code review is needed.
+description: MANDATORY gate BEFORE merging PR or deploying to production in smite project. Invoke FIRST when 'comprehensive review', 'check security', 'performance review', 'test coverage review', 'code quality audit' - orchestrates parallel review by 4 specialized agents (security, performance, testing, documentation) with consolidated report and scoring. Specific phrases: 'review this PR', 'security audit', 'performance check', 'test review'. (user)
 category: workflow
 version: 1.0.0
 tags: [review, multi-agent, security, performance, testing]
@@ -14,13 +14,38 @@ lazy_load: true
 
 Orchestrate parallel code review by specialized agents, each focusing on their domain expertise, then consolidate findings into a unified report.
 
+---
+
 ## When to Use
 
-- **Before merging PR**: Comprehensive review
+- **Before merging PR**: "Review this PR before merge"
 - **Security-critical code**: Auth, payments, data handling
-- **Performance concerns**: Slow operations, large datasets
-- **Test coverage gaps**: Need thorough test review
-- **Documentation**: Ensure code is well-documented
+- **Performance concerns**: "Check performance of this code"
+- **Test coverage gaps**: "Review test coverage"
+- **Documentation**: "Ensure code is well-documented"
+
+### Examples
+```bash
+# Comprehensive PR review
+/studio review --team --all
+
+# Security only
+/studio review --team --scope=security
+
+# Performance + testing
+/studio review --team --scope=performance,testing
+```
+
+---
+
+## When NOT to Use
+
+- ❌ **Single file simple changes** (use standard review)
+- ❌ **Quick style fixes** (use linter/formatter)
+- ❌ **Trivial changes** (comments, formatting)
+- ❌ **Documentation-only changes** (use docs reviewer)
+- ❌ **Configuration changes** (review manually)
+- ❌ **Local development** (not ready for review)
 
 ## Review Agents
 
@@ -359,6 +384,19 @@ Good multi-review setup:
 - [Performance Profiler](./performance-profiler.md)
 - [TDD Guide](./tdd-guide.md)
 - [Code Reviewer](./code-reviewer.md)
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Running on every commit | Wastes time/cost | Run only before PR merge |
+| Reviewing trivial changes | No value added | Skip for formatting/comments |
+| Ignoring review findings | Defeats purpose | Address critical issues |
+| Running all reviewers unnecessarily | Slows workflow | Select relevant reviewers only |
+| Not fixing P0/P1 issues | Security/performance risks | Always fix critical findings |
+| Review without tests | Incomplete quality check | Ensure tests pass first |
 
 ---
 

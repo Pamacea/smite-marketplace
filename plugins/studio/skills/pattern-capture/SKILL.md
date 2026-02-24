@@ -1,6 +1,6 @@
 ---
 name: pattern-capture
-description: Capture and document reusable code patterns. Use when a successful implementation could be reused in the future.
+description: Invoke AFTER successful feature implementation when 'that went well', 'save this pattern', 'document this approach', 'capture this solution' - captures reusable code patterns with context (before/after, steps, benefits, trade-offs) for future team knowledge sharing. Auto-triggers on multi-file refactors or complex problem solutions. Specific phrases: 'save pattern', 'document approach', 'capture solution'. (user)
 category: workflow
 version: 1.0.0
 tags: [patterns, documentation, reuse, best-practices]
@@ -14,12 +14,38 @@ lazy_load: true
 
 Automatically capture, document, and organize successful code patterns for future reuse. Transform ad-hoc solutions into reusable knowledge.
 
+---
+
 ## When to Use
 
 - **After successful feature implementation**: "That went well, let me save this pattern"
 - **When solving a tricky problem**: Document the solution for next time
 - **During refactoring**: Extract reusable patterns from existing code
 - **Team knowledge sharing**: Document patterns for others to use
+
+### Examples
+```bash
+# After successful implementation
+/studio build --capture-pattern "Rust async refactor"
+
+# Manual pattern capture
+/pattern-capture "document authentication flow"
+
+# Search patterns
+/pattern list rust
+/pattern show rust/async-refactor
+```
+
+---
+
+## When NOT to Use
+
+- ❌ **Failed implementations** (only capture successful patterns)
+- ❌ **Trivial code** (not worth documenting)
+- ❌ **Project-specific hacks** (not reusable)
+- ❌ **Temporary solutions** (not worth preserving)
+- ❌ **One-off fixes** (no reusable value)
+- ❌ **During active debugging** (capture after success)
 
 ## Pattern Template
 
@@ -253,6 +279,20 @@ This skill works with:
 - **tdd-guide**: Capture test patterns
 - **code-reviewer**: Extract improvement patterns
 - **planner**: Document architectural patterns
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Capturing failed attempts | Wastes time, teaches wrong patterns | Only capture successful implementations |
+| Documenting trivial code | Noise in pattern library | Only capture non-obvious, reusable patterns |
+| Missing trade-offs | Overpromises benefits | Always document downsides |
+| No examples | Hard to apply pattern | Include before/after code examples |
+| Outdated patterns | Misleading information | Review and update monthly |
+| Too specific | Not reusable | Generalize to make applicable across contexts |
+| No context | Hard to know when to use | Always include "when to use this pattern" |
 
 ## Maintenance
 

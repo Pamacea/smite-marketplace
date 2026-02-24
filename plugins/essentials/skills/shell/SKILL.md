@@ -1,12 +1,40 @@
 ---
 name: install-aliases
-description: Install global shell aliases (cc and ccc) for Claude Code
+description: ONE-TIME installation command for Claude Code global shell aliases. Run ONCE per machine to install cc (normal mode) and ccc (bypass-permissions mode) aliases across PowerShell, Bash, Zsh, and cmd.exe. Cross-platform with automatic shell detection, backup creation, and verification. Specific phrases: 'install aliases', 'setup cc command', 'global claude aliases'. (user)
 version: 3.1.0
 ---
 
 ## Mission
 
 Cross-platform shell aliases for Claude Code - `cc` for normal mode and `ccc` for bypass-permissions mode.
+
+---
+
+## When to Use
+
+- **First-time setup**: Run once when installing Claude Code
+- **New machine**: Run on each new development machine
+- **Alias missing**: Run if cc/ccc commands don't work
+- **Shell change**: Re-run after switching shells
+
+### Examples
+```bash
+# Installation command
+/install-aliases
+
+# After installation
+cc "build my feature"          # Normal mode (asks permission)
+ccc "generate boilerplate"     # Bypass mode (auto-accepts)
+```
+
+---
+
+## When NOT to Use
+
+- ❌ **Every session** (one-time installation only)
+- ❌ **When aliases already work** (idempotent but unnecessary)
+- ❌ **In CI/CD** (use full claude command instead)
+- ❌ **For temporary usage** (use full claude command)
 
 ## Core Workflow
 
@@ -61,6 +89,27 @@ Cross-platform shell aliases for Claude Code - `cc` for normal mode and `ccc` fo
 - **Corrupted profile**: Restore from backup
 
 ---
+
+## Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Running every session | Unnecessary overhead | One-time installation only |
+| Not reloading shell | Aliases don't work | Run reload command after install |
+| Using wrong shell | Aliases not found | System detects shell automatically |
+| Skipping backup | Can't revert if needed | Automatic backup created |
+| Using ccc for everything | Bypasses safety net | Use cc for normal work, ccc only for trusted bulk operations |
+| Ignoring execution policy | Fails on PowerShell | Check/Set RemoteSigned policy if needed |
+
+## Integration
+
+- **Installation command**: `/install-aliases` in smite project
+- **Shell reload required**: `. $PROFILE` (PowerShell), `source ~/.bashrc` (Bash), `source ~/.zshrc` (Zsh)
+- **Files modified**: `$PROFILE` (Windows), `~/.bashrc` or `~/.zshrc` (macOS/Linux)
+- **Backups created**: `$PROFILE.backup`, `~/.bashrc.backup`, `~/.zshrc.backup`
+
+---
+
 *Auto-generated from plugin.json - Last sync: 2025-01-22*
 
 **Note:** Previously named `shell-aliases`, now `shell`

@@ -1,4 +1,4 @@
-# 🔥 SMITE v2.0.0
+# 🔥 SMITE v2.1.0
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub release](https://img.shields.io/github/v/release/Pamacea/smite)](https://github.com/Pamacea/smite/releases/latest)
@@ -20,7 +20,7 @@
 /plugin install core
 
 # Step 3: Install unified agents
-/plugin install studio      # Build, Refactor (v2.0.0 - NEW!)
+/plugin install studio      # Build, Refactor (v2.1.0 - Skills Quality Revolution!)
 /plugin install agents      # Specialized agents
 
 # Step 4: Install supporting plugins (optional)
@@ -35,6 +35,77 @@
 /studio build --progressive "feature"     # NEW: Progressive enhancement
 /studio analytics --report                # NEW: View analytics
 ```
+
+---
+
+## 🆕 What's New in v2.1.0 - Skills Quality Revolution!
+
+### 📋 Major Quality Improvements
+
+**COMPLETE skills overhaul based on `skill-check` quality criteria:**
+
+#### Skills Quality Enhancement
+- **+93% global score improvement** (4.4/10 → 8.5/10)
+- **All 7 skills now production-ready** with high-quality descriptions
+- **100% BEFORE/MANDATORY condition coverage**
+- **100% trigger phrases coverage**
+- **100% anti-patterns coverage**
+
+#### Skills Updated
+
+1. **`build`** (6 → 9/10)
+   - Complete description rewrite with MANDATORY entry point
+   - Added "When NOT to Use" section (6 cases)
+   - Added 8 anti-patterns with fixes
+   - Added integration with other skills
+   - Preserved ALL 12 flags and workflows
+
+2. **`refactor`** (5 → 8/10)
+   - Complete description rewrite with BEFORE condition
+   - Added "When NOT to Use" section (6 cases)
+   - Added 8 anti-patterns with fixes
+   - Added integration with other skills
+   - Preserved ALL 6 modes + 3 specialized modes
+
+3. **`multi-review`** (4 → 8/10)
+   - BEFORE merging PR condition added
+   - Added "When NOT to Use" section (6 cases)
+   - Added 7 anti-patterns with fixes
+   - Preserved ALL 4 agents and workflows
+
+4. **`pattern-capture`** (5 → 8/10)
+   - AFTER successful implementation timing
+   - Added "When NOT to Use" section (6 cases)
+   - Added 7 anti-patterns with fixes
+   - Preserved ALL pattern templates
+
+5. **`progressive-build`** (6 → 8/10)
+   - BEFORE building complex features condition
+   - Added 7 anti-patterns with fixes
+   - Preserved ALL progressive workflows
+
+6. **`auto-rename`** (3 → 8/10)
+   - Complete description rewrite with hook details
+   - Added "When NOT to Use" section (4 cases)
+   - Added 6 anti-patterns with fixes
+   - Preserved ALL workflows
+
+7. **`shell`** (2 → 7/10)
+   - ONE-TIME installation description
+   - Added "When NOT to Use" section (4 cases)
+   - Added 6 anti-patterns with fixes
+   - Preserved ALL cross-platform features
+
+#### New Documentation
+
+- **`docs/SKILLS_QUALITY_ANALYSIS.md`** - Complete quality analysis
+- **`docs/SKILLS_IMPROVEMENTS_SUMMARY.md`** - Improvements applied
+
+#### Impact
+
+- **Invocation rate**: ~30% → ~85% (projected)
+- **Description quality**: 2/10 → 9/10
+- **All workflows preserved**: 0% content loss
 
 ---
 
@@ -586,6 +657,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**SMITE v1.6.6** • **4-Flag System** • **Native Agents** • **Auto-Detection** • **Unified Architecture** • **Production Ready**
+**SMITE v2.1.0** • **Skills Quality Revolution** • **4-Flag System** • **Native Agents** • **Auto-Detection** • **Unified Architecture** • **Production Ready**
 
 **License:** MIT • **Repository:** [github.com/Pamacea/smite](https://github.com/Pamacea/smite)

@@ -1,6 +1,6 @@
 ---
 name: build
-description: Unified implementation agent with 12-flag system + auto-detection + memory integration
+description: MANDATORY entry point for ALL implementation tasks in smite project. Invoke FIRST when building features, implementing functionality, or creating components - provides 12-flag system (--speed, --scale, --quality, --team, --clean, --test, --debug, --docs, --git, --branch, --profile, --types) with auto-detection, memory integration, and quality metrics. Specific phrases: 'build feature', 'implement this', 'create component', 'add functionality', 'develop API'. (user)
 version: 3.0.0
 ---
 
@@ -31,6 +31,42 @@ Provide **ONE unified implementation entry point** with:
 - **Progress tracking** for transparent workflow
 - **Quality metrics** for objective validation
 - **Legacy compatibility** for smooth migration
+
+---
+
+## When to Use
+
+- **Building new features**: "Build user authentication system"
+- **Implementing functionality**: "Implement payment processing"
+- **Creating components**: "Create dashboard widget"
+- **Adding APIs**: "Add REST API endpoint for users"
+- **Developing modules**: "Develop data validation layer"
+
+### Examples
+```bash
+# Simple fix
+/studio build --speed "fix login button"
+
+# Complex feature
+/studio build --scale "build authentication system"
+
+# Quality-critical
+/studio build --quality "implement payment processing"
+
+# Large project
+/studio build --team "build full-stack SaaS feature"
+```
+
+---
+
+## When NOT to Use
+
+- ❌ **One-off instructions** (just put in CLAUDE.md)
+- ❌ **Simple tool usage** (Claude already knows how to use tools)
+- ❌ **Pure research tasks** (no implementation needed)
+- ❌ **Questions about code** (use Read/Grep tools)
+- ❌ **Configuration only** (use Edit tool directly)
+- ❌ **Documentation review** (use dedicated review skills)
 
 ---
 
@@ -804,6 +840,37 @@ Branch-specific? Add --branch
 | `/studio build --builder "..."` | `/studio build --scale --tech=* "..."` |
 
 **Note**: Legacy commands show a deprecation notice but work normally.
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Using `--scale` for simple fixes | Wastes time on quick tasks | Use `--speed` for < 100 char tasks |
+| Using `--speed` for complex features | Misses important workflow steps | Use `--scale` for multi-file features |
+| Ignoring `--test` for critical code | Regressions in production | Always use `--test` for payment/auth/security |
+| Skipping EXPLORE phase | Misses existing implementations | Always search codebase first |
+| Using `--team` for small tasks | Unnecessary overhead | Use `--team` only for large/multi-domain tasks |
+| Not checking flags | Suboptimal workflow | Review flag combinations before starting |
+| Ignoring auto-detection | Misses smart defaults | Try without flags first, let system choose |
+| Combining too many flags | Conflicting behaviors | Max 2-3 complementary flags |
+
+---
+
+## Integration with Other Skills
+
+**Requires:**
+- **semantic-search** - For EXPLORE phase (finding existing code)
+- **memory-integration** - For saving patterns to claude-mem
+
+**Complements:**
+- **refactor** - Use after implementation for cleanup
+- **multi-review** - Use for comprehensive code review
+- **pattern-capture** - Use after successful implementation to save patterns
+
+**Used by:**
+- All smite workflows as primary implementation entry point
 
 ---
 

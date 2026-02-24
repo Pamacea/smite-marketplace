@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: Unified code refactoring with systematic validation + 3 new specialized modes
+description: MANDATORY gate before ANY refactoring task in smite project. Invoke FIRST when cleaning up code, improving structure, or optimizing - provides systematic validation with 6 modes (--quick, --full, --analyze, --review, --resolve, --verify) plus 3 specialized modes (--profile for performance, --security for vulnerabilities, --types for TypeScript) with auto-team activation for complex refactors. Specific phrases: 'refactor this', 'clean up code', 'improve this function', 'optimize this', 'restructure this module'. (user)
 version: 2.0.0
 ---
 
@@ -27,6 +27,46 @@ version: 2.0.0
 Provide unified, systematic code refactoring through comprehensive validation, ensuring safe improvements while preserving functionality.
 
 **Version 2.0 adds:** Performance profiling, security scanning, and TypeScript improvement modes.
+
+---
+
+## When to Use
+
+- **Cleaning up code**: "Clean up this function"
+- **Improving structure**: "Refactor this module"
+- **Optimizing performance**: "Optimize slow code"
+- **Fixing security issues**: "Fix security vulnerabilities"
+- **Improving types**: "Fix TypeScript errors"
+- **Removing duplication**: "Remove duplicate code"
+
+### Examples
+```bash
+# Quick cleanup
+/studio refactor --quick
+
+# Full refactor with analysis
+/studio refactor --full --scope=recent
+
+# Performance optimization
+/studio refactor --profile --scope=all
+
+# Security audit
+/studio refactor --security --scope=directory:src/auth
+
+# Type safety improvement
+/studio refactor --types --scope=recent
+```
+
+---
+
+## When NOT to Use
+
+- ❌ **New feature implementation** (use `/studio build` instead)
+- ❌ **Simple fixes** (use inline editing)
+- ❌ **Renaming only** (use Edit tool)
+- ❌ **Documentation updates** (use Edit tool directly)
+- ❌ **Configuration changes** (use Edit tool)
+- ❌ **Test writing** (use `/studio build --test`)
 
 ---
 
@@ -980,6 +1020,37 @@ Default config in `.claude/.smite/studio refactor.json`:
 # Team-based performance + security
 /studio refactor --profile --security --team
 ```
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| Refactoring without tests | High risk of breaking functionality | Always ensure tests pass first |
+| Large refactors in one commit | Hard to review/revert | Break into small, reviewable commits |
+| Ignoring complexity scores | Missing the real issues | Focus on high-complexity areas first |
+| Skipping ANALYZE phase | Refactoring wrong things | Always analyze before making changes |
+| Not measuring results | No objective improvement | Measure before/after metrics |
+| Refactoring working code unnecessarily | Waste of time/risk | Only refactor when needed |
+| Using --quick for complex changes | Misses important issues | Use --full for complex refactors |
+| Fixing style during logic refactor | Mixed concerns, hard to review | Separate style from logic refactors |
+
+---
+
+## Integration with Other Skills
+
+**Requires:**
+- **semantic-search** - For finding code to refactor
+- **test-runner** - For validation after changes
+
+**Complements:**
+- **build** - Use after implementation for cleanup
+- **multi-review** - Use for comprehensive review after refactor
+- **pattern-capture** - Use after successful refactor to save patterns
+
+**Used by:**
+- All smite workflows for code improvement
 
 ---
 
